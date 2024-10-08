@@ -16,6 +16,7 @@ import sys
 sys.path.append('/kaggle/working/cogload/')
 from processing_data import Preprocessing
 from selection_feature import Feature_Selection
+from model import train_model
 
 #Using model
 from sklearn.model_selection import StratifiedKFold
@@ -63,7 +64,7 @@ processing_data = Preprocessing(window_size=1,
                                 label_df = label_df,
                                 normalize="Standard")
 X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data()
-print(X_train)
+X_train, X_test = Feature_Selection.selected_RFECV(X_train, X_test, y_train, user_train, estimator = XGBClassifier(n_jobs=-1))
+print(X_train.shape)
 
-X_train, X_test = Feature_Selection.selected_SFS(X_train, X_test, y_train, model = SVC(kernel='linear'), k_features = 11, forward = False, floating = True)
-print(X_train)
+train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6)
