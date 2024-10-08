@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 class Preprocessing :
-    def __init__(self, window_size = 1, temp_df, hr_df, gsr_df, rr_df, normalize = "Standard"):
+    def __init__(self, temp_df, hr_df, gsr_df, rr_df, label_df, window_size = 1, normalize = "Standard"):
         if(window_size > len(temp_df.columns)):
             raise ValueError("Window size is greater than the number of samples. Please choose a smaller window size.")
         self.window_size = window_size
@@ -13,6 +14,7 @@ class Preprocessing :
         self.hr_df = hr_df
         self.gsr_df = gsr_df
         self.rr_df = rr_df
+        self.label_df = label_df
 
     def SMA(self):
         self.temp_df = self.temp_df.rolling(self.window_size,axis=1).mean()
@@ -46,22 +48,74 @@ class Preprocessing :
         return pd.DataFrame(values,columns = final_names) 
     
     def extract_features(self):
-        temp_features = self.extract_stat_features(self.temp_df,'temp')
-        hr_features = self.extract_stat_features(self.hr_df,'hr')
-        gsr_features = self.extract_stat_features(self.gsr_df,'gsr')
-        rr_features = self.extract_stat_features(self.rr_df,'rr')
+        temp_features = Preprocessing.extract_stat_features(self.temp_df,'temp')
+        hr_features = Preprocessing.extract_stat_features(self.hr_df,'hr')
+        gsr_features = Preprocessing.extract_stat_features(self.gsr_df,'gsr')
+        rr_features = Preprocessing.extract_stat_features(self.rr_df,'rr')
         self.stat_feat_all = pd.concat([temp_features,hr_features,gsr_features,rr_features],axis=1)
 
-    def normalize_data(self):
+    def splits_train_test(self):
+        test_ids = ['3caqi','6frz4','bd47a','f1gjp','iz3x1']
+        train_ids = ['1mpau', '2nxs5', '5gpsc', '7swyk', '8a1ep', 'b7mrd',
+               'c24ur', 'dkhty', 'e4gay', 'ef5rq', 'f3j25', 'hpbxa',
+               'ibvx8', 'iz2ps', 'rc1in', 'tn4vl', 'wjxci', 'yljm5']
+
+        X_train = []
+        y_train = []
+        X_test = []
+        y_test = []
+        self.user_train = []
+        self.user_test = []
+
+        for user in self.label_df.user_id.unique():
+            if user in train_ids:
+                user_features = self.stat_feat_all[self.label_df.user_id == user]
+                X_train.append(user_features)
+                y = self.label_df.loc[self.label_df.user_id == user, 'level'].values
+
+                # Convert labels (rest,0,1,2) to binary (rest vs task)
+                y[y == 'rest'] = -1
+                y = y.astype(int) + 1
+                y[y > 0] = 1
+                y_train.extend(y)
+
+                temp = self.label_df.loc[self.label_df.user_id==user,'user_id'].values #labels
+                self.user_train.extend(temp)
+                
+            elif user in test_ids:
+                user_features = self.stat_feat_all[self.label_df.user_id == user]
+                X_test.append(user_features)
+                y = self.label_df.loc[self.label_df.user_id == user, 'level'].values
+
+                # Convert labels (rest,0,1,2) to binary (rest vs task)
+                y[y == 'rest'] = -1
+                y = y.astype(int) + 1
+                y[y > 0] = 1
+                y_test.extend(y)
+
+                temp = self.label_df.loc[self.label_df.user_id==user,'user_id'].values #labels
+                self.user_test.extend(temp)
+
+        # Concatenate and convert to DataFrame/NumPy array
+        self.X_train = pd.concat(X_train)
+        self.y_train = np.array(y_train)
+        self.X_test = pd.concat(X_test)
+        self.y_test = np.array(y_test)
+        
+    def normalize_data(self, data):
+        columns = data.columns 
+        standard = StandardScaler()
+        minmax = MinMaxScaler()
+
         if self.normalize == "Standard":
-            self.stat_feat_all = (self.stat_feat_all - self.stat_feat_all.mean())/self.stat_feat_all.std()
+            return pd.DataFrame(standard.fit_transform(data), columns = columns)
         elif self.normalize == "MinMax":
-            self.stat_feat_all = (self.stat_feat_all - self.stat_feat_all.min())/(self.stat_feat_all.max() - self.stat_feat_all.min())
-        return self.stat_feat_all
+            return pd.DataFrame(minmax.fit_transform(data), columns = columns)
 
     def get_data(self):
         if(self.window_size > 1):
             self.SMA()
         self.extract_features()
-        return self.normalize_data()
+        self.splits_train_test()
+        return self.normalize_data(self.X_train), self.y_train, self.normalize_data(self.X_test), self.y_test, self.user_train, self.user_test
 

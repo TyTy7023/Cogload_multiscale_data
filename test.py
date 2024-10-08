@@ -15,6 +15,7 @@ warnings.simplefilter("ignore")#ignore warnings during executiona
 import sys
 sys.path.append('/kaggle/working/cogload/')
 from processing_data import Preprocessing
+from selection_feature import Feature_Selection
 
 #Using model
 from sklearn.model_selection import StratifiedKFold
@@ -38,13 +39,12 @@ from sklearn.svm import SVC
 #read the data
 data_folder_path = '/kaggle/input/cognitiveload/UBIcomp2020/last_30s_segments/'
 #read the data
-print('Reading data')
 label_df = pd.read_excel(data_folder_path+'labels.xlsx',index_col=0)
 temp_df= pd.read_excel(data_folder_path+'temp.xlsx',index_col=0)
 hr_df= pd.read_excel(data_folder_path+'hr.xlsx',index_col=0)
 gsr_df = pd.read_excel(data_folder_path+'gsr.xlsx',index_col=0)
 rr_df= pd.read_excel(data_folder_path+'rr.xlsx',index_col=0)
-print('Done')
+print('Done reading data')
 
 #check 30-second segments
 print("Data shapes:")
@@ -59,12 +59,11 @@ processing_data = Preprocessing(window_size=1,
                                 temp_df=temp_df, 
                                 hr_df=hr_df, 
                                 gsr_df=gsr_df, 
-                                rr_df=rr_df, 
+                                rr_df=rr_df,
+                                label_df = label_df,
                                 normalize="Standard")
+X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data()
+print(X_train)
 
-# Lấy dữ liệu
-data = processing_data.get_data()
-
-# In dữ liệu
-print(data)
-
+X_train, X_test = Feature_Selection.selected_SFS(X_train, X_test, y_train, model = SVC(kernel='linear'), k_features = 11, forward = False, floating = True)
+print(X_train)
