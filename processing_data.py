@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 class Preprocessing :
     def __init__(self, temp_df, hr_df, gsr_df, rr_df, label_df, window_size = 1, normalize = "Standard"):
@@ -102,11 +103,13 @@ class Preprocessing :
         self.y_test = np.array(y_test)
         
     def normalize_data(self, data):
+        standard = StandardScaler()
+        minmax = MinMaxScaler()
+
         if self.normalize == "Standard":
-            data = (data - data.mean())/data.std()
+            return standard.fit_transform(data)
         elif self.normalize == "MinMax":
-            data = (data - data.min())/(data.max() - data.min())
-        return data
+            return minmax.fit_transform(data)
 
     def get_data(self):
         if(self.window_size > 1):

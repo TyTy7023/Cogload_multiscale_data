@@ -44,7 +44,7 @@ class Feature_Selection:
                 scoring = 'accuracy',
                 cv = 4,
                 n_jobs = -1)
-        sfs = sbs.fit(X_train, y_train)
-        selected_features = X_train.columns[selected_indices]
+        sfs = sfs.fit(X_train, y_train)
+        selected_features = X_train.columns[sfs.k_feature_idx_]
         print(f"Selected feature : {selected_features}")
         return Feature_Selection.selected_feature(selected_features, X_train, X_test)
