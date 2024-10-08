@@ -62,8 +62,10 @@ processing_data = Preprocessing(window_size=1,
                                 rr_df=rr_df,
                                 label_df = label_df,
                                 normalize="Standard")
-
 X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data()
+print(X_train)
 
+X_train = pd.DataFrame(X_train)
+X_test = pd.DataFrame(X_test)
 X_train, X_test = Feature_Selection.selected_SFS(X_train, X_test, y_train, model = SVC(kernel='linear'), k_features = 11, forward = False, floating = True)
 print(X_train)
