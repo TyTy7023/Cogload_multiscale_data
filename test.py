@@ -65,5 +65,5 @@ processing_data = Preprocessing(window_size=1,
 
 X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data()
 
-X_train, X_test = Feature_Selection.selected_RFECV(X_train, X_test, y_train, user_train)
+X_train, X_test = Feature_Selection.selected_SFS(X_train, X_test, y_train, model = SVC(kernel='linear'), k_features = 11, forward = False, floating = True)
 print(X_train)
