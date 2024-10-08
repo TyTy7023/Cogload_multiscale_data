@@ -103,13 +103,14 @@ class Preprocessing :
         self.y_test = np.array(y_test)
         
     def normalize_data(self, data):
+        columns = data.columns 
         standard = StandardScaler()
         minmax = MinMaxScaler()
 
         if self.normalize == "Standard":
-            return standard.fit_transform(data)
+            return pd.DataFrame(standard.fit_transform(data), columns = columns)
         elif self.normalize == "MinMax":
-            return minmax.fit_transform(data)
+            return pd.DataFrame(minmax.fit_transform(data), columns = columns)
 
     def get_data(self):
         if(self.window_size > 1):

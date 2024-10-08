@@ -11,7 +11,6 @@ class Feature_Selection:
     def selected_feature(selected_features, X_train, X_test):
         fs_train_orig = pd.DataFrame()
         fs_test_orig = pd.DataFrame()
-        columns = X_train.columns
 
         # Thay đổi cách nối cột và tên cột
         for i in selected_features:
