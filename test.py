@@ -10,7 +10,11 @@ import seaborn as sns
 sns.set() #use a specific color theme
 
 import warnings
-warnings.simplefilter("ignore")#ignore warnings during execution
+warnings.simplefilter("ignore")#ignore warnings during executiona
+
+import sys
+sys.path.append('/kaggle/working/cogload/')
+from processing_data import Preprocessing
 
 #Using model
 from sklearn.model_selection import StratifiedKFold
@@ -32,7 +36,7 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.svm import SVC
 
 #read the data
-data_folder_path = 'C:\Users\Admin\OneDrive\Máy tính\NCKH\BayesNetwork\cognitiveLoad\src\EXPERIMENT\model\cogLoad_experiment\data\last_30s_segments/'
+data_folder_path = '/kaggle/input/cognitiveload/UBIcomp2020/last_30s_segments/'
 #read the data
 print('Reading data')
 label_df = pd.read_excel(data_folder_path+'labels.xlsx',index_col=0)
@@ -49,3 +53,18 @@ print('Temperature',temp_df.shape)
 print('Heartrate',hr_df.shape)
 print('GSR',gsr_df.shape)
 print('RR',rr_df.shape)
+
+# Khởi tạo đối tượng Preprocessing
+processing_data = Preprocessing(window_size=1, 
+                                temp_df=temp_df, 
+                                hr_df=hr_df, 
+                                gsr_df=gsr_df, 
+                                rr_df=rr_df, 
+                                normalize="Standard")
+
+# Lấy dữ liệu
+data = processing_data.get_data()
+
+# In dữ liệu
+print(data)
+

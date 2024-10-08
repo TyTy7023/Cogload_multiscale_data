@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 class Preprocessing :
-    def __init__(self, window_size, temp_df, hr_df, gsr_df, rr_df, normalize = "Standard"):
+    def __init__(self, window_size = 1, temp_df, hr_df, gsr_df, rr_df, normalize = "Standard"):
         if(window_size > len(temp_df.columns)):
             raise ValueError("Window size is greater than the number of samples. Please choose a smaller window size.")
         self.window_size = window_size
