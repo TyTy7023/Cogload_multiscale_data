@@ -31,4 +31,4 @@ class Feature_Selection:
         fs_clf.fit(X_train, y_train)#perform feature selection. Depending on the size of the data and the estimator, this may last for a while
         selected_features = X_train.columns[fs_clf.ranking_==1]
         print(f"Selected feature : {selected_features}")
-        return selected_feature(selected_features)
+        return Feature_Selection.selected_feature(selected_features)

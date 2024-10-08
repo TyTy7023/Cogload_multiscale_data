@@ -39,13 +39,12 @@ from sklearn.svm import SVC
 #read the data
 data_folder_path = '/kaggle/input/cognitiveload/UBIcomp2020/last_30s_segments/'
 #read the data
-print('Reading data')
 label_df = pd.read_excel(data_folder_path+'labels.xlsx',index_col=0)
 temp_df= pd.read_excel(data_folder_path+'temp.xlsx',index_col=0)
 hr_df= pd.read_excel(data_folder_path+'hr.xlsx',index_col=0)
 gsr_df = pd.read_excel(data_folder_path+'gsr.xlsx',index_col=0)
 rr_df= pd.read_excel(data_folder_path+'rr.xlsx',index_col=0)
-print('Done')
+print('Done reading data')
 
 #check 30-second segments
 print("Data shapes:")
@@ -117,6 +116,6 @@ y_test = np.array(y_test)
 print('Train data:', X_train.shape, y_train.shape)
 print('Test data:', X_test.shape, y_test.shape)
 
-#X_train, X_test = Feature_Selection.selected_RFECV(X_train, y_train, user_train)
-#print(X_train)
+X_train, X_test = Feature_Selection.selected_RFECV(X_train, y_train, user_train)
+print(X_train)
 
