@@ -109,13 +109,14 @@ for user in label_df.user_id.unique():
         user_test.extend(temp)
 
 # Concatenate and convert to DataFrame/NumPy array
-X_train = pd.concat(X_train, ignore_index=True)
+X_train = pd.concat(X_train)
 y_train = np.array(y_train)
-X_test = pd.concat(X_test, ignore_index=True)
+X_test = pd.concat(X_test)
 y_test = np.array(y_test)
 
 print('Train data:', X_train.shape, y_train.shape)
 print('Test data:', X_test.shape, y_test.shape)
 
-Feature_Selection.selected_RFECV(X_train, y_train, user_train)
+#X_train, X_test = Feature_Selection.selected_RFECV(X_train, y_train, user_train)
+#print(X_train)
 

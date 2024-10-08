@@ -4,6 +4,7 @@ from sklearn.feature_selection import RFECV
 from xgboost import XGBClassifier
 
 class Feature_Selection:
+    @staticmethod
     def selected_feature(selected_features):
         fs_train_orig = pd.DataFrame()
         fs_test_orig = pd.DataFrame()
@@ -29,4 +30,5 @@ class Feature_Selection:
                     n_jobs=-1)
         fs_clf.fit(X_train, y_train)#perform feature selection. Depending on the size of the data and the estimator, this may last for a while
         selected_features = X_train.columns[fs_clf.ranking_==1]
+        print(f"Selected feature : {selected_features}")
         return selected_feature(selected_features)
