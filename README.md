@@ -19,11 +19,11 @@
 - Kết nối Kaggle với GitHub với tên thư mục là cogload
 - %run /kaggle/working/cogload/test.py
 - Các thông số truyền vào có thể thay đổi
-	--data_folder_path, default = "/kaggle/input/cognitiveload/UBIcomp2020/last_30s_segments/" 
-	--window_size, default = 1, help ="3, 5, 10,..."
-	--normalize, default = "Standard", help = "Normalization method, Standard or MinMax")
-	--k_features, default = 11, help = "k of feature selected of SFS")
-	--forward", default = False, type = bool, help = "True to use backward, False to use forward")
-	--floating", default = True, type = int, help = "True to use sfs with floating, False with no floating")
-	--model_selected_feature", default = "None", help = "None, RFECV, SFS")
+	+ --data_folder_path, default = "/kaggle/input/cognitiveload/UBIcomp2020/last_30s_segments/" 
+	+ --window_size, default = 1, help ="3, 5, 10,..."
+	+ --normalize, default = "Standard", help = "Normalization method, Standard or MinMax")
+	+ --k_features, default = 11, help = "k of feature selected of SFS")
+	+ --forward", default = False, type = bool, help = "True to use backward, False to use forward")
+	+ --floating", default = True, type = int, help = "True to use sfs with floating, False with no floating")
+	+ --model_selected_feature", default = "None", help = "None, RFECV, SFS")
 - Kết quả sẽ được lưu vào kaggle/ouput/log/
