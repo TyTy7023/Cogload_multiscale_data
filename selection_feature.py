@@ -18,15 +18,15 @@ class Feature_Selection:
 
     @staticmethod
     def selected_RFECV(X_train, y_train, user_train, estimator = XGBClassifier(n_jobs=-1)):
-        gk = GroupKFold(n_splits=len(user_train))
+        gk = GroupKFold(n_splits=len(np.unique(user_train)))
         splits = gk.get_n_splits(X_train, y_train, user_train) #generate folds to evaluate the models using leave-one-subject-out
+        estimator = XGBClassifier(n_jobs=-1)
         fs_clf = RFECV(estimator=estimator, #which estimator to use
                     step=1, #how many features to be removed at each iteration
                     cv=splits,#use pre-defined splits for evaluation (LOSO)
                     scoring='accuracy',
                     min_features_to_select=1,
                     n_jobs=-1)
-
         fs_clf.fit(X_train, y_train)#perform feature selection. Depending on the size of the data and the estimator, this may last for a while
         selected_features = X_train.columns[fs_clf.ranking_==1]
         return selected_feature(selected_features)

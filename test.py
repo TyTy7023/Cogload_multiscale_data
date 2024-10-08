@@ -117,7 +117,7 @@ y_test = np.array(y_test)
 print('Train data:', X_train.shape, y_train.shape)
 print('Test data:', X_test.shape, y_test.shape)
 
-print("HIHI")
+print(len(np.unique(user_train)))
 
 Feature_Selection.selected_RFECV(X_train, y_train, user_train)
 
