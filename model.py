@@ -21,7 +21,7 @@ from sklearn.svm import SVC
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6):
+def train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6, log_results = []):
     np.random.seed(42)
     models = ['LogisticRegression', 'LinearDiscriminantAnalysis', 'KNeighborsClassifier', 'DecisionTreeClassifier', 'GaussianNB', 'RandomForestClassifier', 'AdaBoostClassifier', 'GradientBoostingClassifier', 'SVC']
     for model in models:
@@ -143,22 +143,22 @@ def train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6):
 
         # Dự đoán trên tập kiểm tra
         print(f"Best parameters found: {best_model.best_params_}\n" )
-        y_pred_lr = best_model.predict(X_test)
+        y_pred = best_model.predict(X_test)
         y_pred_proba = best_model.predict_proba(X_test)
 
         # Đánh giá mô hình trên tập kiểm tra
-        lr = accuracy_score(y_test, y_pred_lr)
-        conf_matrix = confusion_matrix(y_test, y_pred_lr)
-        class_report = classification_report(y_test, y_pred_lr)
+        acc = accuracy_score(y_test, y_pred)
+        conf_matrix = confusion_matrix(y_test, y_pred)
+        class_report = classification_report(y_test, y_pred)
         logloss = log_loss(y_test, y_pred_proba)
 
         print("Report:" + class_report)
-        print(f"ACCURACY: {lr}")
+        print(f"ACCURACY: {acc}")
         print(f"LOGLOSS: {logloss}")
 
 
         # Xác định các lớp để hiển thị trong ma trận nhầm lẫn
-        unique_labels = np.unique(np.concatenate((y_test, y_pred_lr)))
+        unique_labels = np.unique(np.concatenate((y_test, y_pred)))
 
         plt.figure(figsize=(6, 4))
         sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False, 
@@ -173,4 +173,15 @@ def train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6):
         logloss_all = np.array(logloss_all)
         print(f"Accucracy all fold: {accuracy_all}\nMean: {accuracy_all.mean()} ---- Std: {accuracy_all.std()}")
         print(f"LogLoss all fold: {logloss_all}\nMean: {logloss_all.mean()} ---- Std: {logloss_all.std()}")
-        print("\n===================================================================================================================================\n\n")
+
+        log_results.append({
+            "model": model,
+            "accuracy": acc,
+            "std_accuracy": accuracy_all.std(),
+            "logloss": logloss,
+            "std_logloss": logloss_all.std(),
+            "best_model": best_model.best_params_,
+            "report": class_report,
+            "confusion_matrix": conf_matrix
+        })
+        print("\n===================================================================================================================================\n")
