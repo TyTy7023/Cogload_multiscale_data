@@ -18,7 +18,7 @@ class Feature_Selection:
 
     @staticmethod
     def selected_RFECV(X_train, y_train, user_train, estimator = XGBClassifier(n_jobs=-1)):
-        gk = GroupKFold(n_splits=len(np.unique(user_train)))
+        gk = GroupKFold(n_splits=len(user_train))
         splits = gk.get_n_splits(X_train, y_train, user_train) #generate folds to evaluate the models using leave-one-subject-out
         fs_clf = RFECV(estimator=estimator, #which estimator to use
                     step=1, #how many features to be removed at each iteration
