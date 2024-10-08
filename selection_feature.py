@@ -4,10 +4,11 @@ from sklearn.model_selection import GroupKFold
 from sklearn.feature_selection import RFECV
 from mlxtend.feature_selection import SequentialFeatureSelector as SFS
 from xgboost import XGBClassifier
+from sklearn.svm import SVC
 
 class Feature_Selection:
     @staticmethod
-    def selected_feature(selected_features):
+    def selected_feature(selected_features, X_train, X_test):
         fs_train_orig = pd.DataFrame()
         fs_test_orig = pd.DataFrame()
         columns = X_train.columns
@@ -20,10 +21,9 @@ class Feature_Selection:
         return fs_train_orig, fs_test_orig
 
     @staticmethod
-    def selected_RFECV(X_train, y_train, user_train, estimator = XGBClassifier(n_jobs=-1)):
+    def selected_RFECV(X_train, X_test, y_train, user_train, estimator = XGBClassifier(n_jobs=-1)):
         gk = GroupKFold(n_splits=len(np.unique(user_train)))
         splits = gk.get_n_splits(X_train, y_train, user_train) #generate folds to evaluate the models using leave-one-subject-out
-        print(splits)
         fs_clf = RFECV(estimator=estimator, #which estimator to use
                     step = 1, #how many features to be removed at each iteration
                     cv = splits,#use pre-defined splits for evaluation (LOSO)
@@ -33,10 +33,10 @@ class Feature_Selection:
         fs_clf.fit(X_train, y_train)#perform feature selection. Depending on the size of the data and the estimator, this may last for a while
         selected_features = X_train.columns[fs_clf.ranking_==1]
         print(f"Selected feature : {selected_features}")
-        return Feature_Selection.selected_feature(selected_features)
+        return Feature_Selection.selected_feature(selected_features, X_train, X_test)
 
     @staticmethod
-    def selected_SFS(model = SVC(kernel='linear'), k_features = 11, forward = False, floating = True):
+    def selected_SFS(X_train, X_test, y_train, model = SVC(kernel='linear'), k_features = 11, forward = False, floating = True):
         sfs = SFS(model, 
                 k_features=k_features, 
                 forward = forward, 
@@ -47,4 +47,4 @@ class Feature_Selection:
         sfs = sbs.fit(X_train, y_train)
         selected_features = X_train.columns[selected_indices]
         print(f"Selected feature : {selected_features}")
-        return Feature_Selection.selected_feature(selected_features)
+        return Feature_Selection.selected_feature(selected_features, X_train, X_test)
