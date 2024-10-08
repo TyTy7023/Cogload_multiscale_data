@@ -25,7 +25,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6):
     np.random.seed(42)
     models = ['LogisticRegression', 'LinearDiscriminantAnalysis', 'KNeighborsClassifier', 'DecisionTreeClassifier', 'GaussianNB', 'RandomForestClassifier', 'AdaBoostClassifier', 'GradientBoostingClassifier', 'SVC']
     for model in models:
-        print(f"\tMODEL: {model}")
+        print(f"\n\t\tMODEL: {model}")
         # K-Fold Cross-Validation với 6 folds
         kf = GroupKFold(n_splits=n_splits)
 
@@ -71,7 +71,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6):
                     'metric': ['euclidean', 'manhattan', 'minkowski']  # Loại khoảng cách: Euclidean, Manhattan hoặc Minkowski
                 }                
             elif model == 'DecisionTreeClassifier':
-                estimator = DecisionTreeClassifier()
+                estimator = DecisionTreeClassifier(random_state=42)
                 param_grid = {
                     'criterion': ['gini', 'entropy'],   # Chỉ số phân chia: Gini hoặc Entropy
                     'max_depth': [None, 10, 20, 30, 40, 50],  # Chiều sâu tối đa của cây
@@ -85,13 +85,13 @@ def train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6):
                             'var_smoothing': [1e-9, 1e-8, 1e-7, 1e-6, 1e-5]  # Điều chỉnh biến nhỏ để tăng độ ổn định tính toán
                             }  
             elif model == 'AdaBoostClassifier':
-                estimator = AdaBoostClassifier()
+                estimator = AdaBoostClassifier(random_state=42)
                 param_grid = {
                     'n_estimators': [50, 100, 200],  # Số lượng bộ phân loại cơ sở (number of weak learners)
                     'learning_rate': [0.01, 0.1, 1.0],  # Tốc độ học (learning rate)
                 }    
             elif model == 'RandomForestClassifier':
-                estimator = RandomForestClassifier()
+                estimator = RandomForestClassifier(random_state=42)
                 param_grid = {
                     'n_estimators': [100, 200, 300],  # Number of trees in the forest
                     'max_depth': [10, 20, 30],        # Maximum depth of the tree
@@ -99,7 +99,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6):
                     'min_samples_leaf': [1, 2, 4]     # Minimum number of samples required at each leaf node
                 }     
             elif model == 'GradientBoostingClassifier':
-                estimator = GradientBoostingClassifier()
+                estimator = GradientBoostingClassifier(random_state=42)
                 param_grid = {
                     'n_estimators': [100, 200, 300],  # Number of boosting stages to be run
                     'learning_rate': [0.01, 0.1, 0.2],  # Step size shrinkage
@@ -108,7 +108,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6):
                     'min_samples_leaf': [1, 2, 4]    # Minimum number of samples required at each leaf node
                 }   
             elif model == 'SVC':
-                estimator = SVC(probability=True)
+                estimator = SVC(probability=True, random_state=42)
                 param_grid = {
                     'C': [0.1, 1, 10, 100],                # Điều chỉnh độ phạt sai số
                     'kernel': ['linear', 'rbf', 'poly'],    # Các loại kernel
