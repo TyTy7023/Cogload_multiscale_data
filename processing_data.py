@@ -102,20 +102,21 @@ class Preprocessing :
         self.X_test = pd.concat(X_test)
         self.y_test = np.array(y_test)
         
-    def normalize_data(self, data):
-        columns = data.columns 
+    def normalize_data(self, X_train, X_test):
+        columns = X_train.columns 
         standard = StandardScaler()
         minmax = MinMaxScaler()
 
         if self.normalize == "Standard":
-            return pd.DataFrame(standard.fit_transform(data), columns = columns)
+            return pd.DataFrame(standard.fit_transform(X_train), columns = columns), pd.DataFrame(standard.transform(X_test), columns = columns)
         elif self.normalize == "MinMax":
-            return pd.DataFrame(minmax.fit_transform(data), columns = columns)
+            return pd.DataFrame(minmax.fit_transform(X_train), columns = columns), pd.DataFrame(minmax.transform(X_test), columns = columns)
 
     def get_data(self):
         if(self.window_size > 1):
             self.SMA()
         self.extract_features()
         self.splits_train_test()
-        return self.normalize_data(self.X_train), self.y_train, self.normalize_data(self.X_test), self.y_test, self.user_train, self.user_test
+        self.X_train, self.X_test = self.normalize_data(self.X_train, self.X_test)
+        return self.X_train, self.y_train, self.X_test, self.y_test, self.user_train, self.user_test
 
