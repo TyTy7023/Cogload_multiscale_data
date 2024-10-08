@@ -1,6 +1,8 @@
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import GroupKFold
 from sklearn.feature_selection import RFECV
+from mlxtend.feature_selection import SequentialFeatureSelector as SFS
 from xgboost import XGBClassifier
 
 class Feature_Selection:
@@ -13,8 +15,8 @@ class Feature_Selection:
         # Thay đổi cách nối cột và tên cột
         for i in selected_features:
             # Thêm cột vào fs_train và fs_test với tên cột tương ứng
-            fs_train_orig[columns[i]] = X_train[columns[i]]
-            fs_test_orig[columns[i]] = X_test[columns[i]]
+            fs_train_orig[i] = X_train[i]
+            fs_test_orig[i] = X_test[i]
         return fs_train_orig, fs_test_orig
 
     @staticmethod
@@ -23,12 +25,26 @@ class Feature_Selection:
         splits = gk.get_n_splits(X_train, y_train, user_train) #generate folds to evaluate the models using leave-one-subject-out
         print(splits)
         fs_clf = RFECV(estimator=estimator, #which estimator to use
-                    step=1, #how many features to be removed at each iteration
-                    cv=splits,#use pre-defined splits for evaluation (LOSO)
+                    step = 1, #how many features to be removed at each iteration
+                    cv = splits,#use pre-defined splits for evaluation (LOSO)
                     scoring='accuracy',
                     min_features_to_select=1,
                     n_jobs=-1)
         fs_clf.fit(X_train, y_train)#perform feature selection. Depending on the size of the data and the estimator, this may last for a while
         selected_features = X_train.columns[fs_clf.ranking_==1]
+        print(f"Selected feature : {selected_features}")
+        return Feature_Selection.selected_feature(selected_features)
+
+    @staticmethod
+    def selected_SFS(model = SVC(kernel='linear'), k_features = 11, forward = False, floating = True):
+        sfs = SFS(model, 
+                k_features=k_features, 
+                forward = forward, 
+                floating = floating, 
+                scoring = 'accuracy',
+                cv = 4,
+                n_jobs = -1)
+        sfs = sbs.fit(X_train, y_train)
+        selected_features = X_train.columns[selected_indices]
         print(f"Selected feature : {selected_features}")
         return Feature_Selection.selected_feature(selected_features)
