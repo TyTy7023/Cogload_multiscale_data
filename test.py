@@ -94,17 +94,13 @@ elif(args.model_selected_feature == "SFS"):
                                                      forward = args.forward,
                                                      floating = args.floating)
 print(X_train.shape,end="\n\n")
-features = ','.join(X_train.columns)
-log_feature = pd.DataFrame({"feature": features})
-
-log_results = []
-train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6, log_results = log_results)
 
 # Save log
+features = ','.join(X_train.columns)
+log_feature = pd.DataFrame({"feature": [features]})
 log = pd.concat([log_args, log_feature], axis=1)
-log_results = pd.DataFrame(log_results)
 
-# isValid folder log
+# is valid directory
 directory_name = '/kaggle/working/log/'
 if not os.path.exists(directory_name):
     os.makedirs(directory_name)
@@ -113,8 +109,17 @@ if not os.path.exists(directory_name):
 timestamp = datetime.now().strftime('%Y_%m_%d')
 sub_directory = directory_name + f"_{timestamp}"
 os.makedirs(sub_directory)
+
+# Save log_args and log_feature
 file_name = f'args_and_feature_selected.csv'  # Tên file tự động
 log.to_csv(os.path.join(sub_directory, file_name), index=False)
+
+# Train model
+log_results = []
+train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6, log_results = log_results)
+log_results = pd.DataFrame(log_results)
+
+# Save log_results
 file_name = f'results_model.csv'  # Tên file tự động
 log_results.to_csv(os.path.join(sub_directory, file_name), index=False)
 
