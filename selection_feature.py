@@ -36,7 +36,7 @@ class Feature_Selection:
 
     @staticmethod
     def selected_SFS(X_train, X_test, y_train, model = SVC(kernel='linear'), k_features = 11, forward = False, floating = True):
-        original_columns = X_train.columns
+        original_columns = list(X_train.columns)
         sfs = SFS(model, 
                 k_features=k_features, 
                 forward = forward, 
@@ -45,6 +45,9 @@ class Feature_Selection:
                 cv = 4,
                 n_jobs = -1)
         sfs = sfs.fit(X_train, y_train)
-        selected_features = original_columns[sfs.k_feature_idx_]
+        selected_feature_indices = sfs.k_feature_idx_
+
+        # Dùng chỉ số để lấy tên cột đã được chọn từ danh sách
+        selected_features = [original_columns[i] for i in selected_feature_indices]
         print(f"Selected feature : {selected_features}")
         return Feature_Selection.selected_feature(selected_features, X_train, X_test)
