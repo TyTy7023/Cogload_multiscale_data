@@ -66,9 +66,6 @@ processing_data = Preprocessing(window_size=1,
 # Lấy dữ liệu
 data = processing_data.get_data()
 
-# In dữ liệu
-print(data)
-
 test_ids = ['3caqi','6frz4','bd47a','f1gjp','iz3x1']
 
 train_ids = ['1mpau', '2nxs5', '5gpsc', '7swyk', '8a1ep', 'b7mrd',
@@ -119,6 +116,8 @@ y_test = np.array(y_test)
 
 print('Train data:', X_train.shape, y_train.shape)
 print('Test data:', X_test.shape, y_test.shape)
+
+print("HIHI")
 
 Feature_Selection.selected_RFECV(X_train, y_train, user_train)
 
