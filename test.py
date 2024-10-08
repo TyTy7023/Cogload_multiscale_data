@@ -1,5 +1,6 @@
 #to access files and folders
 import os
+from datetime import datetime
 #data analysis and manipulation library
 import pandas as pd
 #math operations for multi-dimensional arrays and matrices
@@ -39,16 +40,21 @@ from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.svm import SVC
 
-#read the data
+#argument parser
 parser = ArgumentParser()
 parser.add_argument("--data_folder_path", default = "/kaggle/input/cognitiveload/UBIcomp2020/last_30s_segments/", type = str, help = "Path to the data folder")
 parser.add_argument("--window_size", default = 1, type = int, help = "Window size for feature extraction SMA")
 parser.add_argument("--normalize", default = "Standard", type = str, help = "Normalization method, Standard or MinMax")
-parser.add_argument("--k_features", default = 11, type = int, help = "k of feature selected of SFS")
-parser.add_argument("--forward", default = False, type = bool, help = "True to use backward, False to use forward")
-parser.add_argument("--floating", default = True, type = int, help = "True to use sfs with floating, False with no floating")
 parser.add_argument("--model_selected_feature", default = "None", type = str, help = "None, RFECV, SFS")
 args = parser.parse_args()
+if args.model_selected_feature == "SFS":
+    parser.add_argument("--k_features", default = 11, type = int, help = "k of feature selected of SFS")
+    parser.add_argument("--forward", default = False, type = bool, help = "True to use backward, False to use forward")
+    parser.add_argument("--floating", default = True, type = bool, help = "True to use sfs with floating, False with no floating")
+args = parser.parse_args()
+
+args_dict = vars(args)
+log_args = pd.DataFrame([args_dict])
 
 #read the data
 label_df = pd.read_excel(args.data_folder_path+'labels.xlsx',index_col=0)
@@ -88,5 +94,27 @@ elif(args.model_selected_feature == "SFS"):
                                                      forward = args.forward,
                                                      floating = args.floating)
 print(X_train.shape,end="\n\n")
+features = ','.join(X_train.columns)
+log_feature = pd.DataFrame({"feature": features})
 
-train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6)
+log_results = []
+train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6, log_results = log_results)
+
+# Save log
+log = pd.concat([log_args, log_feature], axis=1)
+log_results = pd.DataFrame(log_results)
+
+# isValid folder log
+directory_name = '/kaggle/working/log/'
+if not os.path.exists(directory_name):
+    os.makedirs(directory_name)
+
+# create folder with timestamp
+timestamp = datetime.now().strftime('%Y_%m_%d')
+sub_directory = directory_name + f"_{timestamp}"
+os.makedirs(sub_directory)
+file_name = f'args_and_feature_selected.csv'  # Tên file tự động
+log.to_csv(os.path.join(sub_directory, file_name), index=False)
+file_name = f'results_model.csv'  # Tên file tự động
+log_results.to_csv(os.path.join(sub_directory, file_name), index=False)
+
