@@ -84,7 +84,7 @@ elif(args.model_selected_feature == "SFS"):
                                                      X_test = X_test, 
                                                      y_train = y_train,
                                                      model = SVC(kernel='linear'),
-                                                     k_features = args.k_feature, 
+                                                     k_features = args.k_features, 
                                                      forward = args.forward,
                                                      floating = args.floating)
 print(X_train.shape,end="\n\n")
