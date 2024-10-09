@@ -46,11 +46,9 @@ parser.add_argument("--data_folder_path", default = "/kaggle/input/cognitiveload
 parser.add_argument("--window_size", default = 1, type = int, help = "Window size for feature extraction SMA")
 parser.add_argument("--normalize", default = "Standard", type = str, help = "Normalization method, Standard or MinMax")
 parser.add_argument("--model_selected_feature", default = "None", type = str, help = "None, RFECV, SFS")
-args = parser.parse_args()
-if args.model_selected_feature == "SFS":
-    parser.add_argument("--k_features", default = 11, type = int, help = "k of feature selected of SFS")
-    parser.add_argument("--forward", default = False, type = bool, help = "True to use backward, False to use forward")
-    parser.add_argument("--floating", default = True, type = bool, help = "True to use sfs with floating, False with no floating")
+parser.add_argument("--k_features", default = 11, type = int, help = "k of feature selected of SFS")
+parser.add_argument("--forward", default = False, type = bool, help = "True to use backward, False to use forward")
+parser.add_argument("--floating", default = True, type = bool, help = "True to use sfs with floating, False with no floating")
 args = parser.parse_args()
 
 args_dict = vars(args)
