@@ -50,12 +50,12 @@ def train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6, log_re
 
             # Train model
             if model == 'LogisticRegression':
-                estimator = LogisticRegression()
+                estimator = LogisticRegression(random_state = 42)
                 # Find best parmeter 
                 param_grid = {
                     'C': [0.01, 0.1, 1, 10, 100],
-                    'penalty': ['l1', 'l2'],        
-                    'solver': ['liblinear']         
+                    'penalty': ['l1', 'l2', 'elasticnet', None],        
+                    'solver': ['saga']         
                 }
             elif model == 'LinearDiscriminantAnalysis':
                 estimator = LinearDiscriminantAnalysis()
