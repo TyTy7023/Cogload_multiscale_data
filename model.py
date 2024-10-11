@@ -1,4 +1,5 @@
-
+import os
+from datetime import datetime
 import numpy as np
 import pandas as pd
 import random
@@ -7,6 +8,7 @@ from sklearn.model_selection import GroupKFold
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import classification_report, accuracy_score, log_loss
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import f1_score
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -21,9 +23,20 @@ from sklearn.svm import SVC
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6, log_results = []):
+import sys
+sys.path.append('/kaggle/working/cogload/')
+from EDA import EDA
+
+def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
     np.random.seed(42)
     models = ['LogisticRegression', 'LinearDiscriminantAnalysis', 'KNeighborsClassifier', 'DecisionTreeClassifier', 'GaussianNB', 'RandomForestClassifier', 'AdaBoostClassifier', 'GradientBoostingClassifier', 'SVC']
+    log_results = []
+    accuracy_models = []
+    log_loss_models = []
+    f1_score_models_0 = []
+    f1_score_models_1 = []
+    y_preds = []
+
     for model in models:
         print(f"\n\t\tMODEL: {model}")
         # K-Fold Cross-Validation với 6 folds
@@ -31,7 +44,6 @@ def train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6, log_re
 
         best_model = None
         best_score = 0
-        fold_results = []
         accuracy_all = []
         logloss_all = []
 
@@ -140,18 +152,9 @@ def train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6, log_re
             y_pred_prob = grid_search.predict_proba(X_val_fold)
 
             accuracy = accuracy_score(y_val_fold, y_val_pred)
-            conf_matrix = confusion_matrix(y_val_fold, y_val_pred)
-            class_report = classification_report(y_val_fold, y_val_pred)
-            logloss = log_loss(y_val_fold, y_pred_prob)
-
-            fold_results.append({
-                "fold": fold,
-                "model": estimator,
-                "accuracy": accuracy,
-                "confusion_matrix": conf_matrix,
-                "classification_report": class_report
-                })
             accuracy_all.append(accuracy)
+
+            logloss = log_loss(y_val_fold, y_pred_prob)
             logloss_all.append(logloss)
 
             if accuracy > best_score:
@@ -161,13 +164,20 @@ def train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6, log_re
         # Dự đoán trên tập kiểm tra
         print(f"Best parameters found: {best_model.best_params_}\n" )
         y_pred = best_model.predict(X_test)
+        y_preds.append(y_pred)
         y_pred_proba = best_model.predict_proba(X_test)
 
         # Đánh giá mô hình trên tập kiểm tra
         acc = accuracy_score(y_test, y_pred)
         conf_matrix = confusion_matrix(y_test, y_pred)
         class_report = classification_report(y_test, y_pred)
+        f1Score = f1_score(y_test, y_pred, average=None)
         logloss = log_loss(y_test, y_pred_proba)
+
+        accuracy_models.append(acc)
+        log_loss_models.append(logloss)
+        f1_score_models_0.append(f1Score[0])
+        f1_score_models_1.append(f1Score[1])
 
         print("Report:" + class_report)
         print(f"ACCURACY: {acc}")
@@ -191,14 +201,22 @@ def train_model(X_train, y_train, X_test, y_test, user_train, n_splits=6, log_re
         print(f"Accucracy all fold: {accuracy_all}\nMean: {accuracy_all.mean()} ---- Std: {accuracy_all.std()}")
         print(f"LogLoss all fold: {logloss_all}\nMean: {logloss_all.mean()} ---- Std: {logloss_all.std()}")
 
+        f1Score = ','.join(f1Score)
         log_results.append({
             "model": model,
-            "accuracy": acc,
-            "std_accuracy": accuracy_all.std(),
-            "logloss": logloss,
-            "std_logloss": logloss_all.std(),
+            "accuracy": f"{acc}+/-{accuracy_all.std()}",
+            "logloss": f"{logloss} +/- {logloss_all.std()}",
             "best_model": best_model.best_params_,
-            "report": class_report,
+            "f1_score": f1Score,
             "confusion_matrix": conf_matrix
         })
         print("\n===================================================================================================================================\n")
+    log_results = pd.DataFrame(log_results)
+    file_name = f'results_model.csv'  # Tên file tự động
+    log_results.to_csv(os.path.join(path, file_name), index=False)
+
+    EDA.draw_ACC(path, models, accuracy_models, 'Accuracy')
+    EDA.draw_ACC(path, models, log_loss_models, 'Log Loss')
+    EDA.draw_ACC(path, models, f1_score_models_0, 'F1 Score 0')
+    EDA.draw_ACC(path, models, f1_score_models_1, 'F1 Score 1')
+    EDA.draw_ROC(path, y_test, y_preds, models)

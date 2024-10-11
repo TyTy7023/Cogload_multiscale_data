@@ -113,12 +113,6 @@ os.makedirs(sub_directory)
 file_name = f'args_and_feature_selected.csv'  # Tên file tự động
 log.to_csv(os.path.join(sub_directory, file_name), index=False)
 
-# Train model
-log_results = []
-train_model(X_train, y_train, X_test, y_test, user_train, n_splits=args.GroupKFold, log_results = log_results)
-log_results = pd.DataFrame(log_results)
+train_model(X_train, y_train, X_test, y_test, user_train, n_splits=args.GroupKFold, path = sub_directory)
 
-# Save log_results
-file_name = f'results_model.csv'  # Tên file tự động
-log_results.to_csv(os.path.join(sub_directory, file_name), index=False)
 
