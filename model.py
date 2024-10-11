@@ -62,12 +62,12 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
 
             # Train model
             if model == 'LogisticRegression':
-                estimator = LogisticRegression(random_state = 42)
+                estimator = LogisticRegression(random_state=42)
                 # Find best parmeter 
                 param_grid = {
                     'C': [0.01, 0.1, 1, 10, 100],
-                    'penalty': ['l1', 'l2', 'elasticnet', None],        
-                    'solver': ['saga']         
+                    'penalty': ['l1', 'l2'],        
+                    'solver': ['liblinear']         
                 }
             elif model == 'LinearDiscriminantAnalysis':
                 estimator = LinearDiscriminantAnalysis()
@@ -80,14 +80,11 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
                 param_grid = {
                     'n_neighbors': [3, 5, 7, 9, 11],        # Số lượng láng giềng k
                     'weights': ['uniform', 'distance'],     # Trọng số: uniform (các điểm đều quan trọng), distance (trọng số theo khoảng cách)
-                    'metric': ['euclidean', 'manhattan', 'minkowski'],  # Loại khoảng cách: Euclidean, Manhattan hoặc Minkowski
-                    'algorithm' : ['auto', 'ball_tree', 'kd_tree', 'brute'], # Thuật toán: auto, ball_tree, kd_tree, brute
-                    'leaf_size': list(range(10, 101, 10))
+                    'metric': ['euclidean', 'manhattan', 'minkowski']  # Loại khoảng cách: Euclidean, Manhattan hoặc Minkowski
                 }                
             elif model == 'DecisionTreeClassifier':
                 estimator = DecisionTreeClassifier(random_state=42)
                 param_grid = {
-                    'splitter' : ["best", "random"], # Phương pháp chia: best (chọn cách chia tốt nhất), random (chọn cách chia ngẫu nhiên)
                     'criterion': ['gini', 'entropy'],   # Chỉ số phân chia: Gini hoặc Entropy
                     'max_depth': [None, 10, 20, 30, 40, 50],  # Chiều sâu tối đa của cây
                     'min_samples_split': [2, 10, 20],  # Số mẫu tối thiểu để chia nút
@@ -104,45 +101,31 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
                 param_grid = {
                     'n_estimators': [50, 100, 200],  # Số lượng bộ phân loại cơ sở (number of weak learners)
                     'learning_rate': [0.01, 0.1, 1.0],  # Tốc độ học (learning rate)
-                    'estimator': [ DecisionTreeClassifier(max_depth=d) for d in range(1, 21) ] + [SVC(probability=True)],  # Cây quyết định hoặc máy vector hỗ trợ
-                    'algorithm': ['SAMME', 'SAMME.R']  # Thuật toán tối ưu hóa
                 }    
             elif model == 'RandomForestClassifier':
                 estimator = RandomForestClassifier(random_state=42)
                 param_grid = {
-                    'n_estimators': [100, 200, 300],  # Số lượng bộ phân loại cơ sở (cây quyết định) trong rừng
-                    'max_depth': [10, 20, 30],         # Độ sâu tối đa của cây quyết định
-                    'min_samples_split': [2, 5, 10],   # Số mẫu tối thiểu để chia một nút của cây
-                    'min_samples_leaf': [1, 2, 4],     # Số mẫu tối thiểu ở mỗi lá của cây quyết định
-                    'max_features': ['auto', 'sqrt', 'log2'],  # Số lượng đặc trưng được chọn để chia tại mỗi lần phân tách
-                    'bootstrap': [True, False],        # Phương pháp chọn mẫu: True (chọn mẫu với phép lặp), False (không phép lặp)
-                    'criterion': ['gini', 'entropy', "log_loss"],  # Hàm dùng để đo chất lượng của lần chia (Gini, Entropy hoặc Log Loss)
-                    'class_weight': ['balanced', 'balanced_subsample', None],  # Trọng số lớp (được tính tự động nếu chọn 'balanced')
-                    'ccp_alpha': [0.0, 0.1, 0.2]       # Tham số cắt tỉa cây để giảm độ phức tạp của mô hình (Minimal Cost-Complexity Pruning)
-                }   
+                    'n_estimators': [100, 200, 300],  # Number of trees in the forest
+                    'max_depth': [10, 20, 30],        # Maximum depth of the tree
+                    'min_samples_split': [2, 5, 10],  # Minimum number of samples required to split a node
+                    'min_samples_leaf': [1, 2, 4]     # Minimum number of samples required at each leaf node
+                }     
             elif model == 'GradientBoostingClassifier':
                 estimator = GradientBoostingClassifier(random_state=42)
                 param_grid = {
-                    'n_estimators': [100, 200, 300],  # Số lượng giai đoạn boosting cần chạy
-                    'learning_rate': [0.01, 0.1, 0.2],  # Tốc độ học (shrinkage bước đi)
-                    'max_depth': [3, 5, 7],             # Độ sâu tối đa của cây quyết định
-                    'min_samples_split': [2, 5, 10],    # Số mẫu tối thiểu cần thiết để chia một nút của cây
-                    'min_samples_leaf': [1, 2, 4],      # Số mẫu tối thiểu cần thiết tại mỗi lá của cây quyết định
-                    'max_features': ['auto', 'sqrt', 'log2'],  # Số lượng đặc trưng được xem xét khi tìm kiếm lần chia tốt nhất
-                    'subsample': [0.8, 0.9, 1.0],       # Tỷ lệ mẫu được sử dụng để huấn luyện các bộ phân loại cơ sở
-                    'loss': ['deviance', 'exponential']  # Hàm mất mát (loss function) cần tối ưu
+                    'n_estimators': [100, 200, 300],  # Number of boosting stages to be run
+                    'learning_rate': [0.01, 0.1, 0.2],  # Step size shrinkage
+                    'max_depth': [3, 5, 7],          # Maximum depth of the tree
+                    'min_samples_split': [2, 5, 10], # Minimum number of samples required to split a node
+                    'min_samples_leaf': [1, 2, 4]    # Minimum number of samples required at each leaf node
                 }   
             elif model == 'SVC':
                 estimator = SVC(probability=True, random_state=42)
                 param_grid = {
                     'C': [0.1, 1, 10, 100],                # Điều chỉnh độ phạt sai số
-                    'kernel': ['linear', 'poly', 'rbf', 'sigmoid', 'precomputed'],    # Các loại kernel
+                    'kernel': ['linear', 'rbf', 'poly'],    # Các loại kernel
                     'gamma': ['scale', 'auto', 0.001, 0.01, 0.1, 1],  # Tham số gamma cho RBF, poly kernels
-                    'degree': [2, 3, 4],                    # Bậc của polynomial kernel (nếu dùng 'poly')
-                    'coef0': [0.0, 0.1, 0.5, 1.0],          # Tham số độc lập trong các kernel sigmoid và polynomial
-                    'shrinking': [True, False],              # Sử dụng hay không sử dụng thuật toán thu hẹp biên
-                    'class_weight': ['balanced', None],      # Trọng số lớp (được tính tự động nếu chọn 'balanced')
-                    'decision_function_shape': ['ovo', 'ovr']  # Chọn giữa 'ovo' (one-vs-one) và 'ovr' (one-vs-rest)
+                    'degree': [2, 3, 4]                    # Bậc của polynomial kernel (nếu dùng 'poly')
                 }
 
             grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=GroupKFold(n_splits=3), scoring='accuracy', verbose=1)
