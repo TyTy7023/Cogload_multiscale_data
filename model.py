@@ -201,7 +201,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
         print(f"Accucracy all fold: {accuracy_all}\nMean: {accuracy_all.mean()} ---- Std: {accuracy_all.std()}")
         print(f"LogLoss all fold: {logloss_all}\nMean: {logloss_all.mean()} ---- Std: {logloss_all.std()}")
 
-        f1Score = ','.join(f1Score)
+        f1Score = ','.join(map(str, f1Score))
         log_results.append({
             "model": model,
             "accuracy": f"{acc}+/-{accuracy_all.std()}",
