@@ -50,7 +50,7 @@ class EDA:
 
         # Vẽ biểu đồ barplot
         plt.figure(figsize=(10, 6))
-        barplot = sns.barplot(x='Model', y='Accuracy', data=df, palette='viridis')
+        barplot = sns.barplot(x='Model', y=Type, data=df, palette='viridis')
         plt.title('Algorithm Comparison')
         plt.ylabel(f'{Type} (Test)')
         plt.ylim(0, 1)  # Đặt giới hạn trục y từ 0 đến 1
