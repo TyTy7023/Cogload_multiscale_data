@@ -55,7 +55,7 @@ class Preprocessing :
         self.stat_feat_all = pd.concat([temp_features,hr_features,gsr_features,rr_features],axis=1)
 
     def remove_features(self, feature_list):
-        self.stat_feat_all = self.stat_feat_all.drop(columns = feature_list, error = 'ignore')
+        self.stat_feat_all = self.stat_feat_all.drop(columns = feature_list, errors = 'ignore')
 
     def splits_train_test(self):
         test_ids = ['3caqi','6frz4','bd47a','f1gjp','iz3x1']
