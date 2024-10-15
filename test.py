@@ -50,6 +50,7 @@ parser.add_argument("--model_selected_feature", default = "None", type = str, he
 parser.add_argument("--k_features", default = 11, type = int, help = "k of feature selected of SFS")
 parser.add_argument("--forward", default = False, type = bool, help = "True to use backward, False to use forward")
 parser.add_argument("--floating", default = True, type = bool, help = "True to use sfs with floating, False with no floating")
+parser.add_argument("--features_to_remove", nargs='+', default=[], type=str, help="List of features to remove")
 args = parser.parse_args()
 
 args_dict = vars(args)
@@ -76,7 +77,7 @@ processing_data = Preprocessing(window_size = args.window_size,
                                 rr_df = rr_df,
                                 label_df = label_df,
                                 normalize=args.normalize)
-X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data()
+X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = args.features_to_remove)
 
 if(args.model_selected_feature == "RFECV"):
     X_train, X_test = Feature_Selection.selected_RFECV(X_train = X_train,
