@@ -10,14 +10,14 @@ from sklearn.metrics import classification_report, accuracy_score, log_loss
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
 
-from sklearn.linear_model import LogisticRegression
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression as LR
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+from sklearn.neighbors import KNeighborsClassifier as KNN
+from sklearn.tree import DecisionTreeClassifier as CART
+from sklearn.naive_bayes import GaussianNB as GNB
+from sklearn.ensemble import RandomForestClassifier as RF
+from sklearn.ensemble import AdaBoostClassifier as AB
+from sklearn.ensemble import GradientBoostingClassifier as GB
 from sklearn.svm import SVC
 
 import matplotlib.pyplot as plt
@@ -29,7 +29,7 @@ from EDA import EDA
 
 def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
     np.random.seed(42)
-    models = ['LogisticRegression', 'LinearDiscriminantAnalysis', 'KNeighborsClassifier', 'DecisionTreeClassifier', 'GaussianNB', 'RandomForestClassifier', 'AdaBoostClassifier', 'GradientBoostingClassifier', 'SVC']
+    models = ['LR', 'LDA', 'KNN', 'CART', 'GNB', 'RF', 'AB', 'GB', 'SVC']
     log_results = []
     accuracy_models = []
     log_loss_models = []
@@ -61,29 +61,29 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
             print(f'User of val_fold({fold}) :{np.unique(val_groups)}')    
 
             # Train model
-            if model == 'LogisticRegression':
-                estimator = LogisticRegression(random_state=42)
+            if model == 'LR':
+                estimator = LR(random_state=42)
                 # Find best parmeter 
                 param_grid = {
                     'C': [0.01, 0.1, 1, 10, 100],
                     'penalty': ['l1', 'l2'],        
                     'solver': ['liblinear']         
                 }
-            elif model == 'LinearDiscriminantAnalysis':
-                estimator = LinearDiscriminantAnalysis()
+            elif model == 'LDA':
+                estimator = LDA()
                 param_grid = {
                     'solver': ['svd', 'lsqr', 'eigen'],  
                     'shrinkage': [None, 'auto', 0.1, 0.5, 0.9] 
                 }
-            elif model == 'KNeighborsClassifier':
-                estimator = KNeighborsClassifier()
+            elif model == 'KNN':
+                estimator = KNN()
                 param_grid = {
                     'n_neighbors': [3, 5, 7, 9, 11],        # Số lượng láng giềng k
                     'weights': ['uniform', 'distance'],     # Trọng số: uniform (các điểm đều quan trọng), distance (trọng số theo khoảng cách)
                     'metric': ['euclidean', 'manhattan', 'minkowski']  # Loại khoảng cách: Euclidean, Manhattan hoặc Minkowski
                 }                
-            elif model == 'DecisionTreeClassifier':
-                estimator = DecisionTreeClassifier(random_state=42)
+            elif model == 'CART':
+                estimator = CART(random_state=42)
                 param_grid = {
                     'criterion': ['gini', 'entropy'],   # Chỉ số phân chia: Gini hoặc Entropy
                     'max_depth': [None, 10, 20, 30, 40, 50],  # Chiều sâu tối đa của cây
@@ -91,27 +91,27 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
                     'min_samples_leaf': [1, 5, 10],    # Số mẫu tối thiểu tại mỗi nút lá
                     'max_features': [None, 'auto', 'sqrt', 'log2']  # Số lượng đặc trưng được xem xét tại mỗi nút phân chia
                 }  
-            elif model == 'GaussianNB':
-                estimator = GaussianNB()
+            elif model == 'GNB':
+                estimator = GNB()
                 param_grid = {
                             'var_smoothing': [1e-9, 1e-8, 1e-7, 1e-6, 1e-5]  # Điều chỉnh biến nhỏ để tăng độ ổn định tính toán
                             }  
-            elif model == 'AdaBoostClassifier':
-                estimator = AdaBoostClassifier(random_state=42)
+            elif model == 'AB':
+                estimator = AB(random_state=42)
                 param_grid = {
                     'n_estimators': [50, 100, 200],  # Số lượng bộ phân loại cơ sở (number of weak learners)
                     'learning_rate': [0.01, 0.1, 1.0],  # Tốc độ học (learning rate)
                 }    
-            elif model == 'RandomForestClassifier':
-                estimator = RandomForestClassifier(random_state=42)
+            elif model == 'RF':
+                estimator = RF(random_state=42)
                 param_grid = {
                     'n_estimators': [100, 200, 300],  # Number of trees in the forest
                     'max_depth': [10, 20, 30],        # Maximum depth of the tree
                     'min_samples_split': [2, 5, 10],  # Minimum number of samples required to split a node
                     'min_samples_leaf': [1, 2, 4]     # Minimum number of samples required at each leaf node
                 }     
-            elif model == 'GradientBoostingClassifier':
-                estimator = GradientBoostingClassifier(random_state=42)
+            elif model == 'GB':
+                estimator = GB(random_state=42)
                 param_grid = {
                     'n_estimators': [100, 200, 300],  # Number of boosting stages to be run
                     'learning_rate': [0.01, 0.1, 0.2],  # Step size shrinkage
