@@ -43,6 +43,8 @@ class EnsembleModel():
         params[6] = {'num_leaves': 246, 'max_bin': 316,
                      'colsample_bytree': '0.670', 'learning_rate': '0.450',
                      'lambda_l2': 138, 'objective': 'binary'}
+        
+        self.best_params_ = params
 
         #y_hat_lg = np.zeros((X_test.shape[0],self.n_models))
         for i in range(self.n_models):
