@@ -142,7 +142,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
                 y_val_pred = estimator.predict(X_val_fold)
                 y_pred_prob = estimator.predict_proba(X_val_fold)
 
-            y_preds_val.append(y_pred)
+            y_preds_val.append(y_val_pred)
             accuracy = accuracy_score(y_val_fold, y_val_pred)
             accuracy_all.append(accuracy)
 
