@@ -127,7 +127,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
                     'gamma': [0, 0.1, 0.2]           # Minimum loss reduction required to make a further partition on a leaf node of the tree
                 }
             elif model == 'E7GB':
-                estimator = EnsembleModel(random_state=42)
+                estimator = EnsembleModel()
 
             if model != 'E7GB':
                 grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=GroupKFold(n_splits=3), scoring='accuracy', verbose=1)
