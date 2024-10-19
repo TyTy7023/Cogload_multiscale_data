@@ -9,16 +9,17 @@ class EDA:
     @staticmethod
     def draw_ROC(path, y_test, y_preds, model):
         plt.figure(figsize=(8, 8))
+
         for i, y_pred in enumerate(y_preds):
+            # Chuyển đổi y_test thành mảng 1D nếu cần
             if len(y_test.shape) > 1 and y_test.shape[1] > 1:
-                y_test = y_test.argmax(axis=1)
-                fpr, tpr, thresholds = roc_curve(y_test, y_pred)
-                roc_auc = auc(fpr, tpr)
-                plt.plot(fpr, tpr, lw=2, label=f'{model[i]} (AUC = {roc_auc:.2f})')
-            if isinstance(y_test, list) and len(y_test) == len(y_preds):
-                fpr, tpr, thresholds = roc_curve(y_test[i], y_pred)
-                roc_auc = auc(fpr, tpr)
-                plt.plot(fpr, tpr, lw=2, label=f'{model} fold({i})-(AUC = {roc_auc:.2f})')
+                y_test_i = y_test[i].argmax(axis=1)  # Chỉ lấy nhãn cho lớp tích cực
+            else:
+                y_test_i = y_test[i]
+
+            fpr, tpr, thresholds = roc_curve(y_test_i, y_pred)
+            roc_auc = auc(fpr, tpr)
+            plt.plot(fpr, tpr, lw=2, label=f'{model} fold({i})-(AUC = {roc_auc:.2f})')
 
         # Đường chéo tham chiếu với AUC = 0.5
         plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
