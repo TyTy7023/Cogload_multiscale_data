@@ -10,11 +10,14 @@ class EDA:
     def draw_ROC(path, y_test, y_preds, model):
         plt.figure(figsize=(8, 8))
         for i, y_pred in enumerate(y_preds):
-            fpr, tpr, thresholds = roc_curve(y_test, y_pred)
-            roc_auc = auc(fpr, tpr)
-
-            # Vẽ đường cong ROC cho từng mô hình
-            plt.plot(fpr, tpr, lw=2, label=f'{model[i]} (AUC = {roc_auc:.2f})')
+            if type(y_test) == list:
+                fpr, tpr, thresholds = roc_curve(y_test[i], y_pred)
+                roc_auc = auc(fpr, tpr)
+                plt.plot(fpr, tpr, lw=2, label=f'{model} fold({i})-(AUC = {roc_auc:.2f})')
+            else: 
+                fpr, tpr, thresholds = roc_curve(y_test, y_pred)
+                roc_auc = auc(fpr, tpr)
+                plt.plot(fpr, tpr, lw=2, label=f'{model[i]} (AUC = {roc_auc:.2f})')
 
         # Đường chéo tham chiếu với AUC = 0.5
         plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')

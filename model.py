@@ -37,8 +37,9 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
     log_loss_models = []
     f1_score_models_0 = []
     f1_score_models_1 = []
-    y_preds_val = []
-    y_preds_test = []
+    y_vals = []
+    y_pred_vals = []
+    y_pred_tests = []
 
     for model in models:
         print(f"\n\t\tMODEL: {model}")
@@ -54,6 +55,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
         for fold, (train_index, val_index) in enumerate(kf.split(X_train, y_train, groups = user_train)):
             X_train_fold, X_val_fold = X_train.iloc[train_index], X_train.iloc[val_index]
             y_train_fold, y_val_fold = y_train[train_index], y_train[val_index]
+            y_vals.append(y_val_fold)
             
             id_user = np.array(user_train)
             # Kiểm tra nhóm trong fold
@@ -142,7 +144,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
                 y_val_pred = estimator.predict(X_val_fold)
                 y_pred_prob = estimator.predict_proba(X_val_fold)
 
-            y_preds_val.append(y_val_pred)
+            y_pred_vals.append(y_pred_prob)
             accuracy = accuracy_score(y_val_fold, y_val_pred)
             accuracy_all.append(accuracy)
 
@@ -157,12 +159,12 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
                 best_model = estimator
 
         # ROC tâp validation K-Fold
-        EDA.draw_ROC(path, y_val_fold, y_preds_val, models)
+        EDA.draw_ROC(path, y_vals, y_pred_vals, model)
 
         # Dự đoán trên tập kiểm tra
         print(f"Best parameters found: {best_model.best_params_}\n" )
         y_pred = best_model.predict(X_test)
-        y_preds_test.append(y_pred)
+        y_pred_tests.append(y_pred)
         y_pred_proba = best_model.predict_proba(X_test)
 
         # Đánh giá mô hình trên tập kiểm tra
@@ -216,5 +218,5 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
     EDA.draw_ACC(path, models, log_loss_models, 'Log Loss')
     EDA.draw_ACC(path, models, f1_score_models_0, 'F1 Score 0')
     EDA.draw_ACC(path, models, f1_score_models_1, 'F1 Score 1')
-    EDA.draw_ROC(path, y_test, y_preds_test, models)
+    EDA.draw_ROC(path, y_test, y_pred_tests, models)
 
