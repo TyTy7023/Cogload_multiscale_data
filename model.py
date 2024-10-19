@@ -137,7 +137,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
                 grid_search.fit(X_train_fold, y_train_fold, groups = train_groups)
                 
                 y_val_pred = grid_search.predict(X_val_fold)
-                y_pred_prob = grid_search.predict_proba(X_val_fold)[:,0]
+                y_pred_prob = grid_search.predict_proba(X_val_fold)[:,1]
 
             else:
                 estimator.fit(X_train_fold, y_train_fold)
@@ -169,7 +169,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
         if model == 'E7GB':
             y_pred_tests.append(y_pred_proba)
         else: 
-            y_pred_tests.append(y_pred_proba[:, 0])
+            y_pred_tests.append(y_pred_proba[:, 1])
 
         # Đánh giá mô hình trên tập kiểm tra
         acc = accuracy_score(y_test, y_pred)
