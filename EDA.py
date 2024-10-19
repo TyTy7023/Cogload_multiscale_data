@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from sklearn.metrics import roc_curve, auc, roc_auc_score
-
+    
 class EDA:
     @staticmethod
     def draw_ROC(path, y_test, y_preds, model):
