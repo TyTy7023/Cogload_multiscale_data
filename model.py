@@ -18,6 +18,7 @@ from sklearn.naive_bayes import GaussianNB as GNB
 from sklearn.ensemble import RandomForestClassifier as RF
 from sklearn.ensemble import AdaBoostClassifier as AB
 from sklearn.ensemble import GradientBoostingClassifier as GB
+from xgboost import XGBClassifier
 from sklearn.svm import SVC
 
 import matplotlib.pyplot as plt
@@ -26,10 +27,11 @@ import seaborn as sns
 import sys
 sys.path.append('/kaggle/working/cogload/')
 from EDA import EDA
+from Model_Method1 import EnsembleModel
 
 def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
     np.random.seed(42)
-    models = ['LR', 'LDA', 'KNN', 'CART', 'GNB', 'RF', 'AB', 'GB', 'SVC']
+    models = ['E7GB', 'LR', 'LDA', 'KNN', 'RF', 'AB', 'GB', 'SVC', 'XGB']
     log_results = []
     accuracy_models = []
     log_loss_models = []
@@ -82,20 +84,6 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
                     'weights': ['uniform', 'distance'],     # Trọng số: uniform (các điểm đều quan trọng), distance (trọng số theo khoảng cách)
                     'metric': ['euclidean', 'manhattan', 'minkowski']  # Loại khoảng cách: Euclidean, Manhattan hoặc Minkowski
                 }                
-            elif model == 'CART':
-                estimator = CART(random_state=42)
-                param_grid = {
-                    'criterion': ['gini', 'entropy'],   # Chỉ số phân chia: Gini hoặc Entropy
-                    'max_depth': [None, 10, 20, 30, 40, 50],  # Chiều sâu tối đa của cây
-                    'min_samples_split': [2, 10, 20],  # Số mẫu tối thiểu để chia nút
-                    'min_samples_leaf': [1, 5, 10],    # Số mẫu tối thiểu tại mỗi nút lá
-                    'max_features': [None, 'auto', 'sqrt', 'log2']  # Số lượng đặc trưng được xem xét tại mỗi nút phân chia
-                }  
-            elif model == 'GNB':
-                estimator = GNB()
-                param_grid = {
-                            'var_smoothing': [1e-9, 1e-8, 1e-7, 1e-6, 1e-5]  # Điều chỉnh biến nhỏ để tăng độ ổn định tính toán
-                            }  
             elif model == 'AB':
                 estimator = AB(random_state=42)
                 param_grid = {
@@ -127,12 +115,31 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
                     'gamma': ['scale', 'auto', 0.001, 0.01, 0.1, 1],  # Tham số gamma cho RBF, poly kernels
                     'degree': [2, 3, 4]                    # Bậc của polynomial kernel (nếu dùng 'poly')
                 }
+            elif model == 'XGB':
+                estimator = XGBClassifier(random_state=42)
+                param_grid = {
+                    'n_estimators': [100, 200, 300],  # Number of boosting stages to be run
+                    'learning_rate': [0.01, 0.1, 0.2],  # Step size shrinkage
+                    'max_depth': [3, 5, 7],          # Maximum depth of the tree
+                    'min_child_weight': [1, 2, 4],   # Minimum sum of instance weight (hessian) needed in a child
+                    'subsample': [0.8, 1.0],         # Subsample ratio of the training instance
+                    'colsample_bytree': [0.8, 1.0],  # Subsample ratio of columns when constructing each tree
+                    'gamma': [0, 0.1, 0.2]           # Minimum loss reduction required to make a further partition on a leaf node of the tree
+                }
+            elif model == 'E7GB':
+                estimator = EnsembleModel(random_state=42)
 
-            grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=GroupKFold(n_splits=3), scoring='accuracy', verbose=1)
-            grid_search.fit(X_train_fold, y_train_fold, groups = train_groups)
-            
-            y_val_pred = grid_search.predict(X_val_fold)
-            y_pred_prob = grid_search.predict_proba(X_val_fold)
+            if model != 'E7GB':
+                grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=GroupKFold(n_splits=3), scoring='accuracy', verbose=1)
+                grid_search.fit(X_train_fold, y_train_fold, groups = train_groups)
+                
+                y_val_pred = grid_search.predict(X_val_fold)
+                y_pred_prob = grid_search.predict_proba(X_val_fold)
+
+            else:
+                estimator.fit(X_train_fold, y_train_fold)
+                y_val_pred = estimator.predict(X_val_fold)
+                y_pred_prob = estimator.predict_proba(X_val_fold)
 
             accuracy = accuracy_score(y_val_fold, y_val_pred)
             accuracy_all.append(accuracy)
@@ -140,9 +147,14 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
             logloss = log_loss(y_val_fold, y_pred_prob)
             logloss_all.append(logloss)
 
-            if accuracy > best_score:
+            if accuracy > best_score and model != 'E7GB':
                 best_score = accuracy
                 best_model = grid_search
+           
+                logloss_all.append(logloss)
+                
+            elif model == 'E7GB':
+                best_model = estimator
 
         # Dự đoán trên tập kiểm tra
         print(f"Best parameters found: {best_model.best_params_}\n" )
@@ -187,8 +199,8 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
         f1Score = ','.join(map(str, f1Score))
         log_results.append({
             "model": model,
-            "accuracy": f"{acc}+/-{accuracy_all.std()}",
-            "logloss": f"{logloss} +/- {logloss_all.std()}",
+            "accuracy": f"{acc} +- {accuracy_all.std()}",
+            "logloss": f"{logloss} +- {logloss_all.std()}",
             "best_model": best_model.best_params_,
             "f1_score": f1Score,
             "confusion_matrix": conf_matrix
@@ -203,3 +215,4 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
     EDA.draw_ACC(path, models, f1_score_models_0, 'F1 Score 0')
     EDA.draw_ACC(path, models, f1_score_models_1, 'F1 Score 1')
     EDA.draw_ROC(path, y_test, y_preds, models)
+
