@@ -151,12 +151,12 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
             logloss = log_loss(y_val_fold, y_pred_prob)
             logloss_all.append(logloss)
 
-            if accuracy > best_score and model != 'E7GB':
+            if accuracy > best_score:
                 best_score = accuracy
-                best_model = grid_search
-                
-            elif model == 'E7GB':
-                best_model = estimator
+                if model != 'E7GB':
+                    best_model = grid_search
+                else:
+                    best_model = estimator
 
         # ROC tâp validation K-Fold
         EDA.draw_ROC(path, y_vals, y_pred_vals, model)
@@ -165,7 +165,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
         print(f"Best parameters found: {best_model.best_params_}\n" )
         y_pred = best_model.predict(X_test)
         y_pred_proba = best_model.predict_proba(X_test)
-        
+
         if model == 'E7GB':
             y_pred_tests.append(y_pred_proba)
         else: 
