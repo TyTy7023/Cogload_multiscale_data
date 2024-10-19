@@ -15,6 +15,7 @@ class EDA:
                 roc_auc = auc(fpr, tpr)
                 plt.plot(fpr, tpr, lw=2, label=f'{model} fold({i})-(AUC = {roc_auc:.2f})')
             else: 
+                y_test = y_test.argmax(axis=1)
                 fpr, tpr, thresholds = roc_curve(y_test, y_pred)
                 roc_auc = auc(fpr, tpr)
                 plt.plot(fpr, tpr, lw=2, label=f'{model[i]} (AUC = {roc_auc:.2f})')
