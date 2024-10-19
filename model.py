@@ -37,8 +37,6 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
     log_loss_models = []
     f1_score_models_0 = []
     f1_score_models_1 = []
-    y_vals = []
-    y_pred_vals = []
     y_pred_tests = []
 
     for model in models:
@@ -50,6 +48,8 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
         best_score = 0
         accuracy_all = []
         logloss_all = []
+        y_vals = []
+        y_pred_vals = []
 
         # Lặp qua từng fold
         for fold, (train_index, val_index) in enumerate(kf.split(X_train, y_train, groups = user_train)):
