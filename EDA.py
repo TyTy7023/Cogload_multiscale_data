@@ -35,11 +35,11 @@ class EDA:
         plt.legend(loc="lower right")
 
         # Hiển thị biểu đồ
-        plt.show()
         path += '/EDA/'
         if not os.path.exists(path):
             os.makedirs(path)
         plt.savefig(os.path.join(path, f"ROC-{model}"))
+        plt.show()
     
     @staticmethod
     def draw_ACC(path, model, results, Type):
