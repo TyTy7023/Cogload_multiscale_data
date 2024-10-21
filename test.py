@@ -106,7 +106,7 @@ if not os.path.exists(directory_name):
     os.makedirs(directory_name)
 
 # create folder with timestamp
-timestamp = datetime.now().strftime('%Y/%m/%d')
+timestamp = datetime.now().strftime('%Y_%m_%d')
 sub_directory = directory_name + f"_{timestamp}"
 os.makedirs(sub_directory)
 
