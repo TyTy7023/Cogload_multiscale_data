@@ -68,7 +68,7 @@ class EDA:
                             ha='center', va='bottom', 
                             fontsize=12)
 
-        plt.show()
         plt.savefig(os.path.join(path, Type))
+        plt.show()
 
 
