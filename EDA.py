@@ -56,7 +56,7 @@ class EDA:
 
         # Vẽ biểu đồ barplot
         plt.figure(figsize=(10, 6))
-        barplot = sns.barplot(x='Model', y=Type, data=df, palette='viridis')
+        barplot = sns.barplot(x='Model', y=Type, data=df, palette='pastel')
         plt.title('Algorithm Comparison')
         plt.ylabel(f'{Type} (Test)')
 
@@ -85,7 +85,7 @@ class EDA:
 
         # Vẽ biểu đồ boxplot
         plt.figure(figsize=(10, 6))
-        boxplot = sns.boxplot(x='Model', y=Type, data=df, palette='viridis')
+        boxplot = sns.boxplot(x='Model', y=Type, data=df, palette='pastel')
         plt.title('Algorithm Comparison')
         plt.ylabel(f'{Type} (Test)')
         
