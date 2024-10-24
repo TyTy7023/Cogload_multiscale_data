@@ -59,7 +59,6 @@ class EDA:
         barplot = sns.barplot(x='Model', y=Type, data=df, palette='viridis')
         plt.title('Algorithm Comparison')
         plt.ylabel(f'{Type} (Test)')
-        plt.ylim(0, 1)  # Đặt giới hạn trục y từ 0 đến 1
 
         # Thêm thông số trên các cột
         for p in barplot.patches:
@@ -70,5 +69,28 @@ class EDA:
 
         plt.savefig(os.path.join(path, Type))
         plt.show()
+    
+    @staticmethod
+    def draw_BoxPlot(path, model, results, Type):
+        data = {
+            'Model': model,
+            Type: results 
+        }
+
+        # Tạo DataFrame từ dữ liệu
+        df = pd.DataFrame(data)
+
+        # Chuyển đổi cột 'Accuracy' thành kiểu số thực
+        df[Type] = df[Type].astype(float)
+
+        # Vẽ biểu đồ boxplot
+        plt.figure(figsize=(10, 6))
+        boxplot = sns.boxplot(x='Model', y=Type, data=df, palette='viridis')
+        plt.title('Algorithm Comparison')
+        plt.ylabel(f'{Type} (Test)')
+        
+        plt.savefig(os.path.join(path, Type))
+        plt.show()
+
 
 
