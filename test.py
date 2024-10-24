@@ -43,7 +43,7 @@ from sklearn.svm import SVC
 #argument parser
 parser = ArgumentParser()
 parser.add_argument("--data_folder_path", default = "/kaggle/input/cognitiveload/UBIcomp2020/last_30s_segments/", type = str, help = "Path to the data folder")
-parser.add_argument("--GroupKFold", default = 6, type = int, help = "Slip data into k group")
+parser.add_argument("--GroupKFold", default = 3, type = int, help = "Slip data into k group")
 parser.add_argument("--window_size", default = 1, type = int, help = "Window size for feature extraction SMA")
 parser.add_argument("--normalize", default = "Standard", type = str, help = "Normalization method, Standard or MinMax")
 parser.add_argument("--model_selected_feature", default = "None", type = str, help = "None, RFECV, SFS")
