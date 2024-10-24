@@ -3,6 +3,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 import random
+import itertools
 
 from sklearn.model_selection import GroupKFold
 from sklearn.model_selection import GridSearchCV
@@ -35,10 +36,9 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6 ,
     if debug:
         models = models[:2]
     log_results = []
-    accuracy_models = []
-    log_loss_models = []
-    f1_score_models_0 = []
-    f1_score_models_1 = []
+    test_accuracy_models = []
+    accuracies_all = []
+    f1_score_models = []
     y_pred_tests = []
 
     for model in models:
@@ -180,10 +180,9 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6 ,
         f1Score = f1_score(y_test, y_pred, average=None)
         logloss = log_loss(y_test, y_pred_proba)
 
-        accuracy_models.append(acc)
-        log_loss_models.append(logloss)
-        f1_score_models_0.append(f1Score[0])
-        f1_score_models_1.append(f1Score[1])
+        test_accuracy_models.append(acc)
+        accuracies_all.extend(accuracy_all)
+        f1_score_models.append(f1Score.mean())
 
         print("Report:" + class_report)
         print(f"ACCURACY: {acc}")
@@ -220,9 +219,9 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6 ,
     file_name = f'results_model.csv'  # Tên file tự động
     log_results.to_csv(os.path.join(path, file_name), index=False)
 
-    EDA.draw_ACC(path, models, accuracy_models, 'Accuracy')
-    EDA.draw_ACC(path, models, log_loss_models, 'Log Loss')
-    EDA.draw_ACC(path, models, f1_score_models_0, 'F1 Score 0')
-    EDA.draw_ACC(path, models, f1_score_models_1, 'F1 Score 1')
+    EDA.draw_Bar(path, models, test_accuracy_models, 'Accuracy Test')
+    EDA.draw_BoxPlot(path, list(itertools.chain.from_iterable([[i]*3 for i in models])), accuracies_all, 'Accuracy train')
+    EDA.draw_Bar(path, models, f1_score_models, 'F1 Score')
     EDA.draw_ROC(path, y_test, y_pred_tests, models)
+
 

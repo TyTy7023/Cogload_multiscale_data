@@ -42,7 +42,7 @@ class EDA:
         plt.show()
     
     @staticmethod
-    def draw_ACC(path, model, results, Type):
+    def draw_Bar(path, model, results, Type):
         data = {
             'Model': model,
             Type: results 
