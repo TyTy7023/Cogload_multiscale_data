@@ -134,7 +134,6 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6 ,
             elif model == 'MLP':
                 estimator = MLPClassifier(random_state=42)
                 param_grid = {
-                    'max_iter': [100, 200, 300],                              # Số lần lặp
                     'hidden_layer_sizes': [(100,), (50, 50), (100, 100)],  # Số lượng nơ-ron ẩn trong mỗi layer
                     'activation': ['relu', 'tanh', 'logistic'],              # Hàm kích hoạt
                     'solver': ['adam', 'sgd'],                                # Thuật toán tối ưu
