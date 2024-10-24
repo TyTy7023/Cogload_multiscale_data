@@ -50,7 +50,9 @@ parser.add_argument("--model_selected_feature", default = "None", type = str, he
 parser.add_argument("--k_features", default = 11, type = int, help = "k of feature selected of SFS")
 parser.add_argument("--forward", default = False, type = bool, help = "True to use backward, False to use forward")
 parser.add_argument("--floating", default = True, type = bool, help = "True to use sfs with floating, False with no floating")
-parser.add_argument("--features_to_remove", nargs='+', default=[], type=str, help="List of features to remove")
+parser.add_argument("--features_to_remove", nargs='+', default = [], type = str, help="List of features to remove")
+parser.add_argument("--debug", default = False, type = bool, help="debug mode")
+
 args = parser.parse_args()
 
 args_dict = vars(args)
@@ -114,6 +116,6 @@ os.makedirs(sub_directory)
 file_name = f'args_and_feature_selected.csv'  # Tên file tự động
 log.to_csv(os.path.join(sub_directory, file_name), index=False)
 
-train_model(X_train, y_train, X_test, y_test, user_train, n_splits=args.GroupKFold, path = sub_directory)
+train_model(X_train, y_train, X_test, y_test, user_train, n_splits=args.GroupKFold, path = sub_directory, debug = args.debug)
 
 

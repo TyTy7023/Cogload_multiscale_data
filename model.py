@@ -29,9 +29,11 @@ sys.path.append('/kaggle/working/cogload/')
 from EDA import EDA
 from Model_Method1 import EnsembleModel
 
-def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6):
+def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6 , debug = False):
     np.random.seed(42)
     models = ['E7GB', 'LR', 'LDA', 'KNN', 'RF', 'AB', 'GB', 'SVC', 'XGB']
+    if debug:
+        models = models[:2]
     log_results = []
     accuracy_models = []
     log_loss_models = []
