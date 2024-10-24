@@ -1,7 +1,7 @@
 import numpy as np
 import lightgbm as lg
 
-class EnsembleModel():
+class EnsembleModel_7GB():
     def __init__(self, n_models=7, num_boost_round=20):
         self.lg_models = {}
         self.n_models = n_models

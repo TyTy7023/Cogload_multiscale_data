@@ -2,7 +2,6 @@ import os
 from datetime import datetime
 import numpy as np
 import pandas as pd
-import random
 import itertools
 
 from sklearn.model_selection import GroupKFold
@@ -14,13 +13,12 @@ from sklearn.metrics import f1_score
 from sklearn.linear_model import LogisticRegression as LR
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.neighbors import KNeighborsClassifier as KNN
-from sklearn.tree import DecisionTreeClassifier as CART
-from sklearn.naive_bayes import GaussianNB as GNB
 from sklearn.ensemble import RandomForestClassifier as RF
 from sklearn.ensemble import AdaBoostClassifier as AB
 from sklearn.ensemble import GradientBoostingClassifier as GB
-from xgboost import XGBClassifier
 from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
+from xgboost import XGBClassifier
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -28,11 +26,11 @@ import seaborn as sns
 import sys
 sys.path.append('/kaggle/working/cogload/')
 from EDA import EDA
-from Model_Method1 import EnsembleModel
+from model_method_I import EnsembleModel_7GB
 
 def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6 , debug = False):
     np.random.seed(42)
-    models = ['E7GB', 'LR', 'LDA', 'KNN', 'RF', 'AB', 'GB', 'SVC', 'XGB']
+    models = ['E7GB', 'MLP', 'LR', 'LDA', 'KNN', 'RF', 'AB', 'GB', 'SVC', 'XGB']
     if debug:
         models = models[:2]
     log_results = []
@@ -132,7 +130,17 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=6 ,
                     'gamma': [0, 0.1, 0.2]           # Minimum loss reduction required to make a further partition on a leaf node of the tree
                 }
             elif model == 'E7GB':
-                estimator = EnsembleModel()
+                estimator = EnsembleModel_7GB()
+            elif model == 'MLP':
+                estimator = MLPClassifier(random_state=42)
+                param_grid = {
+                    'max_iter': [100, 200, 300],                              # Số lần lặp
+                    'hidden_layer_sizes': [(100,), (50, 50), (100, 100)],  # Số lượng nơ-ron ẩn trong mỗi layer
+                    'activation': ['relu', 'tanh', 'logistic'],              # Hàm kích hoạt
+                    'solver': ['adam', 'sgd'],                                # Thuật toán tối ưu
+                    'alpha': [0.0001, 0.001, 0.01],                           # L2 penalty (regularization term) parameter
+                    'learning_rate': ['constant', 'invscaling', 'adaptive']   # Phương pháp cập nhật learning rate
+                }
 
             if model != 'E7GB':
                 grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=GroupKFold(n_splits=3), scoring='accuracy', verbose=1)
