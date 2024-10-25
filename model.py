@@ -149,7 +149,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
             "model": model,
             "accuracy": f"{acc} +- {accuracy_all.std()}",
             "logloss": f"{logloss} +- {logloss_all.std()}",
-            "best_model": best_model.best_params_ if model != "ESVM" else param_grid,
+            "best_model": best_model.best_params_ if model != "ESVM" else  useModel(model)[1],
             "f1_score": f1Score,
             "confusion_matrix": conf_matrix
         })
