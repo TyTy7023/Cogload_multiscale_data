@@ -93,7 +93,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
 
             if accuracy > best_score:
                 best_score = accuracy
-                if model != 'E7GB':
+                if model != 'E7GB' and model != 'ESVM':
                     best_model = grid_search
                 else:
                     best_model = estimator
