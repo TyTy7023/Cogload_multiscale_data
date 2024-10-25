@@ -51,7 +51,7 @@ parser.add_argument("--k_features", default = 11, type = int, help = "k of featu
 parser.add_argument("--forward", default = False, type = bool, help = "True to use backward, False to use forward")
 parser.add_argument("--floating", default = True, type = bool, help = "True to use sfs with floating, False with no floating")
 parser.add_argument("--features_to_remove", nargs='+', default = [], type = str, help="List of features to remove")
-parser.add_argument("--debug", default = False, type = bool, help="debug mode")
+parser.add_argument("--debug", default = 0, type = int, help="debug mode 0: no debug, 1: debug")
 
 args = parser.parse_args()
 
