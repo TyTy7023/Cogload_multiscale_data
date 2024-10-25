@@ -43,13 +43,16 @@ from sklearn.svm import SVC
 #argument parser
 parser = ArgumentParser()
 parser.add_argument("--data_folder_path", default = "/kaggle/input/cognitiveload/UBIcomp2020/last_30s_segments/", type = str, help = "Path to the data folder")
-parser.add_argument("--GroupKFold", default = 6, type = int, help = "Slip data into k group")
+parser.add_argument("--GroupKFold", default = 3, type = int, help = "Slip data into k group")
 parser.add_argument("--window_size", default = 1, type = int, help = "Window size for feature extraction SMA")
 parser.add_argument("--normalize", default = "Standard", type = str, help = "Normalization method, Standard or MinMax")
 parser.add_argument("--model_selected_feature", default = "None", type = str, help = "None, RFECV, SFS")
 parser.add_argument("--k_features", default = 11, type = int, help = "k of feature selected of SFS")
 parser.add_argument("--forward", default = False, type = bool, help = "True to use backward, False to use forward")
 parser.add_argument("--floating", default = True, type = bool, help = "True to use sfs with floating, False with no floating")
+parser.add_argument("--features_to_remove", nargs='+', default = [], type = str, help="List of features to remove")
+parser.add_argument("--debug", default = False, type = bool, help="debug mode")
+
 args = parser.parse_args()
 
 args_dict = vars(args)
@@ -76,7 +79,7 @@ processing_data = Preprocessing(window_size = args.window_size,
                                 rr_df = rr_df,
                                 label_df = label_df,
                                 normalize=args.normalize)
-X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data()
+X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = args.features_to_remove)
 
 if(args.model_selected_feature == "RFECV"):
     X_train, X_test = Feature_Selection.selected_RFECV(X_train = X_train,
@@ -105,7 +108,7 @@ if not os.path.exists(directory_name):
     os.makedirs(directory_name)
 
 # create folder with timestamp
-timestamp = datetime.now().strftime('%Y/%m/%d_%H:%M:%S')
+timestamp = datetime.now().strftime('%Y_%m_%d')
 sub_directory = directory_name + f"_{timestamp}"
 os.makedirs(sub_directory)
 
@@ -113,12 +116,6 @@ os.makedirs(sub_directory)
 file_name = f'args_and_feature_selected.csv'  # Tên file tự động
 log.to_csv(os.path.join(sub_directory, file_name), index=False)
 
-# Train model
-log_results = []
-train_model(X_train, y_train, X_test, y_test, user_train, n_splits=args.GroupKFold, log_results = log_results)
-log_results = pd.DataFrame(log_results)
+train_model(X_train, y_train, X_test, y_test, user_train, n_splits=args.GroupKFold, path = sub_directory, debug = args.debug)
 
-# Save log_results
-file_name = f'results_model.csv'  # Tên file tự động
-log_results.to_csv(os.path.join(sub_directory, file_name), index=False)
 

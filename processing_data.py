@@ -54,6 +54,9 @@ class Preprocessing :
         rr_features = Preprocessing.extract_stat_features(self.rr_df,'rr')
         self.stat_feat_all = pd.concat([temp_features,hr_features,gsr_features,rr_features],axis=1)
 
+    def remove_features(self, feature_list):
+        self.stat_feat_all = self.stat_feat_all.drop(columns = feature_list, errors = 'ignore')
+
     def splits_train_test(self):
         test_ids = ['3caqi','6frz4','bd47a','f1gjp','iz3x1']
         train_ids = ['1mpau', '2nxs5', '5gpsc', '7swyk', '8a1ep', 'b7mrd',
@@ -112,10 +115,12 @@ class Preprocessing :
         elif self.normalize == "MinMax":
             return pd.DataFrame(minmax.fit_transform(X_train), columns = columns), pd.DataFrame(minmax.transform(X_test), columns = columns)
 
-    def get_data(self):
+    def get_data(self, features_to_remove):
         if(self.window_size > 1):
             self.SMA()
         self.extract_features()
+        if features_to_remove:
+            self.remove_features(features_to_remove)
         self.splits_train_test()
         self.X_train, self.X_test = self.normalize_data(self.X_train, self.X_test)
         return self.X_train, self.y_train, self.X_test, self.y_test, self.user_train, self.user_test
