@@ -66,7 +66,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
             print(f'User of train_fold({fold}) : {np.unique(train_groups)}')
             print(f'User of val_fold({fold}) :{np.unique(val_groups)}')    
 
-            if model == 'ESVM':
+            if model == 'E7GB':
                 estimator = useModel(model)
             else:
                 estimator, param_grid = useModel(model) 
@@ -104,10 +104,8 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
 
         # Dự đoán trên tập kiểm tra
         if model == 'ESVM':
-            _, best_param = useModel(model)
-            print(f"Best parameters found: {best_param}\n")
-        # Ngược lại, nếu best_model có best_params_, in giá trị của nó
-        elif hasattr(best_model, 'best_params_'):
+            print(f"Best parameters found: {useModel(model)[1]}\n")
+        else:
             print(f"Best parameters found: {best_model.best_params_}\n")
         y_pred = best_model.predict(X_test)
         y_pred_proba = best_model.predict_proba(X_test)
@@ -249,8 +247,8 @@ def useModel(model):
         estimator = AdaBoostClassifier(base_estimator=base_estimator, n_estimators=10, random_state=42)
         param_grid = estimator.get_params()
 
-    if model != 'E7GB':
-        return estimator, param_grid
-    else:
+    if model == 'E7GB':
         return estimator
+    else:
+        return estimator, param_grid
         
