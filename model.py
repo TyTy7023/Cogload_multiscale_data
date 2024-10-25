@@ -249,7 +249,7 @@ def useModel(model):
         estimator = AdaBoostClassifier(base_estimator=base_estimator, n_estimators=10, random_state=42)
         param_grid = estimator.get_params()
 
-    if model != 'ESVM':
+    if model != 'E7GB':
         return estimator, param_grid
     else:
         return estimator
