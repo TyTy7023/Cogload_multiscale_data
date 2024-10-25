@@ -103,7 +103,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
         EDA.draw_ROC(path, y_vals, y_pred_vals, model)
 
         # Dự đoán trên tập kiểm tra
-        print(f"Best parameters found: {best_model.best_params_ if model != "ESVM" else param_grid}\n" )
+        print(f"Best parameters found: {best_model.best_params_ if model != 'ESVM' else param_grid}\n" )
         y_pred = best_model.predict(X_test)
         y_pred_proba = best_model.predict_proba(X_test)
 
