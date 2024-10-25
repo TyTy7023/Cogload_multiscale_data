@@ -65,8 +65,10 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
             
             print(f'User of train_fold({fold}) : {np.unique(train_groups)}')
             print(f'User of val_fold({fold}) :{np.unique(val_groups)}')    
-
-            estimator, param_grid = useModel(model) 
+            if model == 'ESVM' or model == 'E7GB':
+                estimator = useModel(model)
+            else:
+                estimator, param_grid = useModel(model) 
             
             if model != 'E7GB' and model != 'ESVM':
                 grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=GroupKFold(n_splits=3), scoring='accuracy', verbose=1)
