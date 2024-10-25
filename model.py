@@ -68,7 +68,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
 
             estimator, param_grid = useModel(model) 
             
-            if model != 'E7GB':
+            if model != 'E7GB' and model != 'ESVM':
                 grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=GroupKFold(n_splits=3), scoring='accuracy', verbose=1)
                 grid_search.fit(X_train_fold, y_train_fold, groups = train_groups)
                 
@@ -79,6 +79,8 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
                 estimator.fit(X_train_fold, y_train_fold)
                 y_val_pred = estimator.predict(X_val_fold)
                 y_pred_prob = estimator.predict_proba(X_val_fold)
+                if model == 'ESVM':
+                    y_pred_prob = y_pred_prob[:,1]
 
             y_pred_vals.append(y_pred_prob)
             accuracy = accuracy_score(y_val_fold, y_val_pred)
@@ -236,15 +238,10 @@ def useModel(model):
         }
     elif model == 'ESVM':
         base_estimator = SVC(probability=True, random_state=42)
-        param_grid = {
-            'base_estimator__C': [0.1, 1, 5, 10],
-            'base_estimator__kernel': ['linear','rbf'],
-            'base_estimator__gamma': ['scale', 0.1],
-            'learning_rate': [0.1, 1.0],
-            'algorithm': ['SAMME', 'SAMME.R']
-        }
-
-        # Tạo mô hình AdaBoost với SVM
         estimator = AdaBoostClassifier(base_estimator=base_estimator, n_estimators=10, random_state=42)
 
-    return estimator, param_grid
+    if model != 'ESVM' and model != 'E7GB':
+        return estimator, param_grid
+    else:
+        return estimator
+        
