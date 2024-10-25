@@ -65,7 +65,8 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
             
             print(f'User of train_fold({fold}) : {np.unique(train_groups)}')
             print(f'User of val_fold({fold}) :{np.unique(val_groups)}')    
-            if model == 'ESVM' or model == 'E7GB':
+
+            if model == 'ESVM':
                 estimator = useModel(model)
             else:
                 estimator, param_grid = useModel(model) 
@@ -102,7 +103,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
         EDA.draw_ROC(path, y_vals, y_pred_vals, model)
 
         # Dự đoán trên tập kiểm tra
-        print(f"Best parameters found: {best_model.best_params_}\n" )
+        print(f"Best parameters found: {best_model.best_params_ if model != "ESVM" else param_grid}\n" )
         y_pred = best_model.predict(X_test)
         y_pred_proba = best_model.predict_proba(X_test)
 
@@ -148,7 +149,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
             "model": model,
             "accuracy": f"{acc} +- {accuracy_all.std()}",
             "logloss": f"{logloss} +- {logloss_all.std()}",
-            "best_model": best_model.best_params_,
+            "best_model": best_model.best_params_ if model != "ESVM" else param_grid,
             "f1_score": f1Score,
             "confusion_matrix": conf_matrix
         })
@@ -241,8 +242,9 @@ def useModel(model):
     elif model == 'ESVM':
         base_estimator = SVC(probability=True, random_state=42)
         estimator = AdaBoostClassifier(base_estimator=base_estimator, n_estimators=10, random_state=42)
+        param_grid = estimator.get_params()
 
-    if model != 'ESVM' and model != 'E7GB':
+    if model != 'ESVM':
         return estimator, param_grid
     else:
         return estimator
