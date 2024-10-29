@@ -67,7 +67,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
             grid_search.fit(X_train_fold, y_train_fold, groups = train_groups)
             
             y_val_pred = grid_search.predict(X_val_fold)
-            if model == 'LNB':
+            if model == 'LNR':
                 y_pred_prob = y_val_pred
                 y_val_pred = np.round(y_pred_prob)
             else:
@@ -89,7 +89,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
 
         print(f"Best parameters found: {best_model.best_params_}\n")
         y_pred = best_model.predict(X_test)
-        if model == 'LNB':
+        if model == 'LNR':
             y_pred_proba = y_pred
             y_pred = np.round(y_pred_proba)
             y_pred_tests.append(y_pred_proba)
