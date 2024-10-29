@@ -26,7 +26,7 @@ from EDA import EDA
 
 def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0):
     np.random.seed(42)
-    models = ['LR', 'LDA', 'KNN', 'SVC', 'CART', 'GNB', 'LNR', 'MLP']
+    models = ['LNR', 'LDA', 'KNN', 'SVC', 'CART', 'GNB', 'LR', 'MLP']
     if debug == 1:
         models = models[:2]
     log_results = []
@@ -67,7 +67,11 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
             grid_search.fit(X_train_fold, y_train_fold, groups = train_groups)
             
             y_val_pred = grid_search.predict(X_val_fold)
-            y_pred_prob = grid_search.predict_proba(X_val_fold)[:,1]
+            if model == 'LNB':
+                y_pred_prob = y_val_pred
+                y_val_pred = np.round(y_pred_prob)
+            else:
+                y_pred_prob = grid_search.predict_proba(X_val_fold)[:,1]
 
             y_pred_vals.append(y_pred_prob)
             accuracy = accuracy_score(y_val_fold, y_val_pred)
@@ -85,8 +89,13 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
 
         print(f"Best parameters found: {best_model.best_params_}\n")
         y_pred = best_model.predict(X_test)
-        y_pred_proba = best_model.predict_proba(X_test)
-        y_pred_tests.append(y_pred_proba[:, 1])
+        if model == 'LNB':
+            y_pred_proba = y_pred
+            y_pred = np.round(y_pred_proba)
+            y_pred_tests.append(y_pred_proba)
+        else:
+            y_pred_proba = best_model.predict_proba(X_test)
+            y_pred_tests.append(y_pred_proba[:, 1])
 
         # Đánh giá mô hình trên tập kiểm tra
         acc = accuracy_score(y_test, y_pred)
