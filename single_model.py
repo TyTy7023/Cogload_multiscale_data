@@ -207,8 +207,7 @@ def useModel(model):
             'solver': ['lbfgs', 'sgd', 'adam'],                          # Thuật toán tối ưu
             'alpha': [0.0001, 0.001, 0.01],                              # L2 penalty (regularization term) parameter
             'learning_rate': ['constant', 'invscaling', 'adaptive'],     # Tốc độ học
-            'learning_rate_init': [0.001, 0.01, 0.1],                    # Tốc độ học ban đầu
-            'max_iter': [200, 400, 600]                                   # Số lượng vòng lặp
+            'learning_rate_init': [0.001, 0.01, 0.1]
         }
     return estimator, param_grid
         

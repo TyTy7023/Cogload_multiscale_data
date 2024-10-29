@@ -6,7 +6,6 @@ import itertools
 
 from sklearn.model_selection import GroupKFold
 from sklearn.model_selection import GridSearchCV
-from sklearn.ensemble import AdaBoostClassifier
 from sklearn.metrics import classification_report, accuracy_score, log_loss
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
