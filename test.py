@@ -12,7 +12,7 @@ import sys
 sys.path.append('/kaggle/working/cogload/')
 from processing_data import Preprocessing
 from selection_feature import Feature_Selection
-from single_model import train_model
+from best_model import train_model
 
 from sklearn.svm import SVC
 
