@@ -105,7 +105,7 @@ class EDA:
         df[Type] = df[Type].astype(float)
 
         # Vẽ biểu đồ boxplot
-        plt.figure(figsize=(40, 20))
+        plt.figure(figsize=(25, 10))
         line = sns.lineplot(x='Feature', y=Type, data=df, palette='pastel')
         
         # Thêm thông số trên các cột
@@ -117,6 +117,7 @@ class EDA:
         plt.plot(df['Feature'], df[Type], marker='o')  # marker='o' thêm chấm tròn tại mỗi điểm    
         plt.title('Algorithm Comparison')
         plt.ylabel(f'{Type} (Test)')
+        plt.xticks(rotation=90)
         
         plt.savefig(os.path.join(path, Type))
         plt.show()
