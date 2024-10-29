@@ -187,8 +187,7 @@ def useModel(model):
     elif model == 'LNR':
         estimator = LNR()
         param_grid = {
-            'fit_intercept': [True, False],        # Có học tham số chệch hay không
-            'normalize': [True, False],            # Có chuẩn hóa dữ liệu không
+            'fit_intercept': [True, False],
             'copy_X': [True, False]                 # Có sao chép dữ liệu không
         }
     elif model == 'MLP':
