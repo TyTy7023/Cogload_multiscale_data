@@ -1,7 +1,5 @@
-import os
 import numpy as np
 import pandas as pd
-import itertools
 
 from sklearn.model_selection import GroupKFold
 from sklearn.model_selection import GridSearchCV
@@ -17,17 +15,15 @@ import sys
 sys.path.append('/kaggle/working/cogload/')
 from EDA import EDA
 
-def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0):
+def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remove, n_splits=3 , debug = 0):
         # K-Fold Cross-Validation với 6 folds
     kf = GroupKFold(n_splits=n_splits)
 
     best_model = None
     best_score = 0
     accuracy_all = []
-    logloss_all = []
     y_vals = []
     y_pred_vals = []
-    log_results = []
 
 
     # Lặp qua từng fold
@@ -48,36 +44,27 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
         estimator.fit(X_train_fold, y_train_fold)
         
         y_val_pred = estimator.predict(X_val_fold)
-        y_pred_prob = estimator.predict_proba(X_val_fold)[:,1]
 
-        y_pred_vals.append(y_pred_prob)
         accuracy = accuracy_score(y_val_fold, y_val_pred)
         accuracy_all.append(accuracy)
-
-        logloss = log_loss(y_val_fold, y_pred_prob)
-        logloss_all.append(logloss)
 
         if accuracy > best_score:
             best_score = accuracy
             best_model = estimator
 
     # ROC tâp validation K-Fold
-    EDA.draw_ROC(path, y_vals, y_pred_vals, 'LDA')
+    EDA.draw_ROC(path, y_vals, y_pred_vals, f'LDA_{feature_remove}')
 
     print(f"Best parameters found: {best_model.get_params()}\n")
     y_pred = best_model.predict(X_test)
-    y_pred_proba = best_model.predict_proba(X_test)
 
     # Đánh giá mô hình trên tập kiểm tra
     acc = accuracy_score(y_test, y_pred)
     conf_matrix = confusion_matrix(y_test, y_pred)
     class_report = classification_report(y_test, y_pred)
-    f1Score = f1_score(y_test, y_pred, average=None)
-    logloss = log_loss(y_test, y_pred_proba)
 
     print("Report:" + class_report)
     print(f"ACCURACY: {acc}")
-    print(f"LOGLOSS: {logloss}")
 
 
     # Xác định các lớp để hiển thị trong ma trận nhầm lẫn
@@ -92,17 +79,17 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
     plt.show()
 
     accuracy_all = np.array(accuracy_all)
-    logloss_all = np.array(logloss_all)
-    print(f"Accucracy all fold: {accuracy_all}\nMean: {accuracy_all.mean()} ---- Std: {accuracy_all.std()}")
-    print(f"LogLoss all fold: {logloss_all}\nMean: {logloss_all.mean()} ---- Std: {logloss_all.std()}")
+    print(f"Accuracy all fold: {accuracy_all}\nMean: {accuracy_all.mean()} ---- Std: {accuracy_all.std()}")
+    
+    # Đọc file CSV gốc để lấy danh sách cột
+    df_existing = pd.read_csv(path)
+    df_to_append = pd.DataFrame({
+        'Features_removing': [feature_remove],
+        'Accuracy': [acc], 
 
-    f1Score = ','.join(map(str, f1Score))
-    log_results.append({
-        "model": "LDA",
-        "accuracy": f"{acc} +- {accuracy_all.std()}",
-        "logloss": f"{logloss} +- {logloss_all.std()}",
-        "best_model": best_model.get_params(),
-        "f1_score": f1Score,
-        "confusion_matrix": conf_matrix
-    })
+    }, columns=df_existing.columns)
+    # Ghi thêm vào file CSV
+    df_to_append.to_csv(path, mode='a', header=False, index=False)
+
+
 
