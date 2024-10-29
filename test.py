@@ -12,6 +12,7 @@ import sys
 sys.path.append('/kaggle/working/cogload/')
 from processing_data import Preprocessing
 from selection_feature import Feature_Selection
+from EDA import EDA
 from best_model import train_model
 
 from sklearn.svm import SVC
@@ -85,5 +86,6 @@ for feature in features:
                 n_splits=args.GroupKFold, 
                 path = directory_name, 
                 debug = args.debug)
-
-
+    
+df = pd.read_csv(directory_name)
+EDA.draw_LinePlot(os.path.dirname(directory_name), df.iloc[:,0].tolist(),  df.iloc[:,1].tolist(), "ACCURACY")

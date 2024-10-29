@@ -91,5 +91,33 @@ class EDA:
         plt.savefig(os.path.join(path, Type))
         plt.show()
 
+    @staticmethod
+    def draw_LinePlot(path, model, results, Type):
+        data = {
+            'Model': model,
+            Type: results 
+        }
 
+        # Tạo DataFrame từ dữ liệu
+        df = pd.DataFrame(data)
+
+        # Chuyển đổi cột 'Accuracy' thành kiểu số thực
+        df[Type] = df[Type].astype(float)
+
+        # Vẽ biểu đồ boxplot
+        plt.figure(figsize=(10, 6))
+        line = sns.lineplot(x='Model', y=Type, data=df, palette='pastel')
+        
+        # Thêm thông số trên các cột
+        for p in line.patches:
+            line.annotate(f'{p.get_height():.2f}', 
+                            (p.get_x() + p.get_width() / 2., p.get_height()), 
+                            ha='center', va='bottom', 
+                            fontsize=12)
+            
+        plt.title('Algorithm Comparison')
+        plt.ylabel(f'{Type} (Test)')
+        
+        plt.savefig(os.path.join(path, Type))
+        plt.show()
 
