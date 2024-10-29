@@ -103,7 +103,7 @@ class EDA:
 
         # Chuyển đổi cột 'Accuracy' thành kiểu số thực
         df[Type] = df[Type].astype(float)
-
+        df['Feature'] = df['Feature'].astype(str)
         # Vẽ biểu đồ boxplot
         plt.figure(figsize=(15, 6))
         line = sns.lineplot(x='Feature', y=Type, data=df, palette='pastel')
