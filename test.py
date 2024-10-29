@@ -71,7 +71,7 @@ X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_da
 
 print(X_train.shape,end="\n\n")
 features = X_train.columns.tolist() 
-features.append('')
+features.append('None')
 
 for feature in features:
     if feature != '':

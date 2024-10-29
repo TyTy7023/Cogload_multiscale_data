@@ -55,7 +55,7 @@ class Preprocessing :
         self.stat_feat_all = pd.concat([temp_features,hr_features,gsr_features,rr_features],axis=1)
 
     def remove_features(self, feature_list):
-        if feature_list != '':
+        if feature_list != 'None':
             self.stat_feat_after = self.stat_feat_all.drop(columns = feature_list, errors = 'ignore')
         else:
             self.stat_feat_after = self.stat_feat_all
