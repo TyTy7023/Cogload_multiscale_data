@@ -53,7 +53,8 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             best_model = estimator
 
     # ROC tâp validation K-Fold
-    EDA.draw_ROC(path, y_vals, y_pred_vals, f'LDA_{feature_remove}')
+    path_eda = path + '/EDA/'
+    EDA.draw_ROC(path_eda, y_vals, y_pred_vals, f'LDA_{feature_remove}')
 
     print(f"Best parameters found: {best_model.get_params()}\n")
     y_pred = best_model.predict(X_test)

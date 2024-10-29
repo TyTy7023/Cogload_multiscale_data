@@ -35,7 +35,6 @@ class EDA:
         plt.legend(loc="lower right")
 
         # Hiển thị biểu đồ
-        path += '/EDA/'
         if not os.path.exists(path):
             os.makedirs(path)
         plt.savefig(os.path.join(path, f"ROC-{model}"))
