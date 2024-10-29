@@ -76,6 +76,14 @@ for feature in features:
     if feature != '':
         X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = feature)
 
-    train_model(X_train, y_train, X_test, y_test, user_train, n_splits=args.GroupKFold, path = directory_name, debug = args.debug)
+    train_model(X_train, 
+                y_train, 
+                X_test, 
+                y_test, 
+                user_train,
+                feature_remove=feature, 
+                n_splits=args.GroupKFold, 
+                path = directory_name, 
+                debug = args.debug)
 
 
