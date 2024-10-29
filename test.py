@@ -3,14 +3,7 @@ import os
 from datetime import datetime
 #data analysis and manipulation library
 import pandas as pd
-#math operations for multi-dimensional arrays and matrices
-import numpy as np
-#machine learning library
 from argparse import ArgumentParser
-#visualization libraries
-import matplotlib.pyplot as plt
-import seaborn as sns
-sns.set() #use a specific color theme
 
 import warnings
 warnings.simplefilter("ignore")#ignore warnings during executiona
@@ -19,25 +12,8 @@ import sys
 sys.path.append('/kaggle/working/cogload/')
 from processing_data import Preprocessing
 from selection_feature import Feature_Selection
-from model import train_model
+from single_model import train_model
 
-#Using model
-from sklearn.model_selection import StratifiedKFold
-from sklearn.model_selection import GroupKFold
-from sklearn.feature_selection import RFECV
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import classification_report, accuracy_score,log_loss
-from sklearn.metrics import confusion_matrix
-
-from xgboost import XGBClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.svm import SVC
 
 #argument parser
@@ -108,7 +84,7 @@ if not os.path.exists(directory_name):
     os.makedirs(directory_name)
 
 # create folder with timestamp
-timestamp = datetime.now().strftime('%Y_%m_%d')
+timestamp = datetime.now().strftime('%H_%M_%S')
 sub_directory = directory_name + f"_{timestamp}"
 os.makedirs(sub_directory)
 
