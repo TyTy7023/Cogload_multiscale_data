@@ -57,6 +57,8 @@ class Preprocessing :
     def remove_features(self, feature_list):
         if feature_list != '':
             self.stat_feat_after = self.stat_feat_all.drop(columns = feature_list, errors = 'ignore')
+        else:
+            self.stat_feat_after = self.stat_feat_all
 
     def splits_train_test(self):
         test_ids = ['3caqi','6frz4','bd47a','f1gjp','iz3x1']
