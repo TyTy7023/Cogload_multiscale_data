@@ -94,7 +94,7 @@ class EDA:
     @staticmethod
     def draw_LinePlot(path, model, results, Type):
         data = {
-            'Model': model,
+            'Feature': model,
             Type: results 
         }
 
@@ -105,8 +105,8 @@ class EDA:
         df[Type] = df[Type].astype(float)
 
         # Vẽ biểu đồ boxplot
-        plt.figure(figsize=(25, 6))
-        line = sns.lineplot(x='Model', y=Type, data=df, palette='pastel')
+        plt.figure(figsize=(40, 20))
+        line = sns.lineplot(x='Feature', y=Type, data=df, palette='pastel')
         
         # Thêm thông số trên các cột
         for p in line.patches:
@@ -114,7 +114,7 @@ class EDA:
                             (p.get_x() + p.get_width() / 2., p.get_height()), 
                             ha='center', va='bottom', 
                             fontsize=12)
-            
+        plt.plot(df['Feature'], df[Type], marker='o')  # marker='o' thêm chấm tròn tại mỗi điểm    
         plt.title('Algorithm Comparison')
         plt.ylabel(f'{Type} (Test)')
         
