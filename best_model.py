@@ -45,7 +45,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
         print(f'User of val_fold({fold}) :{np.unique(val_groups)}')    
 
         estimator = LDA(shrinkage = 0.5, solver = 'lsqr')     
-        estimator.fit(X_train_fold, y_train_fold, groups = train_groups)
+        estimator.fit(X_train_fold, y_train_fold)
         
         y_val_pred = estimator.predict(X_val_fold)
         y_pred_prob = estimator.predict_proba(X_val_fold)[:,1]
