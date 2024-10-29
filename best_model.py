@@ -45,7 +45,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
         estimator.fit(X_train_fold, y_train_fold)
         
         y_val_pred = estimator.predict(X_val_fold)
-        y_pred_prob = estimator.predict_proba(X_val_fold)
+        y_pred_prob = estimator.predict_proba(X_val_fold)[:,1]
         y_pred_vals.append(y_pred_prob)
 
         accuracy = accuracy_score(y_val_fold, y_val_pred)
