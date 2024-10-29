@@ -74,9 +74,7 @@ features = X_train.columns.tolist()
 features.append("None")
 
 for feature in features:
-    if feature != "None":
-        X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = feature)
-    print(processing_data.stat_feat_after)
+    X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = feature)
 
     train_model(X_train, 
                 y_train, 
