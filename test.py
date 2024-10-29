@@ -67,14 +67,14 @@ processing_data = Preprocessing(window_size = args.window_size,
                                 rr_df = rr_df,
                                 label_df = label_df,
                                 normalize=args.normalize)
-X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = "")
+X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = "None")
 
 print(X_train.shape,end="\n\n")
 features = X_train.columns.tolist() 
 features.append('None')
 
 for feature in features:
-    if feature != '':
+    if feature != 'None':
         X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = feature)
     print(processing_data.stat_feat_after)
 
