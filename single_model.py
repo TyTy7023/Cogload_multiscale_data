@@ -10,15 +10,13 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
 
 from sklearn.linear_model import LogisticRegression as LR
+from sklearn.linear_model import LinearRegression as LNR
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.neighbors import KNeighborsClassifier as KNN
-from sklearn.ensemble import RandomForestClassifier as RF
-from sklearn.ensemble import AdaBoostClassifier as AB
-from sklearn.ensemble import GradientBoostingClassifier as GB
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
-
+from sklearn.neural_network import MLPClassifier
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -28,7 +26,7 @@ from EDA import EDA
 
 def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0):
     np.random.seed(42)
-    models = ['CART', 'GNB', 'LR', 'LDA', 'KNN', 'RF', 'AB', 'GB', 'SVC']
+    models = ['LR', 'LDA', 'KNN', 'SVC', 'CART', 'GNB', 'LNR', 'MLP']
     if debug == 1:
         models = models[:2]
     log_results = []
@@ -163,30 +161,7 @@ def useModel(model):
             'n_neighbors': [3, 5, 7, 9, 11],        # Số lượng láng giềng k
             'weights': ['uniform', 'distance'],     # Trọng số: uniform (các điểm đều quan trọng), distance (trọng số theo khoảng cách)
             'metric': ['euclidean', 'manhattan', 'minkowski']  # Loại khoảng cách: Euclidean, Manhattan hoặc Minkowski
-        }                
-    elif model == 'AB':
-        estimator = AB(random_state=42)
-        param_grid = {
-            'n_estimators': [50, 100, 200],  # Số lượng bộ phân loại cơ sở (number of weak learners)
-            'learning_rate': [0.01, 0.1, 1.0],  # Tốc độ học (learning rate)
-        }    
-    elif model == 'RF':
-        estimator = RF(random_state=42)
-        param_grid = {
-            'n_estimators': [100, 200, 300],  # Number of trees in the forest
-            'max_depth': [10, 20, 30],        # Maximum depth of the tree
-            'min_samples_split': [2, 5, 10],  # Minimum number of samples required to split a node
-            'min_samples_leaf': [1, 2, 4]     # Minimum number of samples required at each leaf node
         }     
-    elif model == 'GB':
-        estimator = GB(random_state=42)
-        param_grid = {
-            'n_estimators': [100, 200, 300],  # Number of boosting stages to be run
-            'learning_rate': [0.01, 0.1, 0.2],  # Step size shrinkage
-            'max_depth': [3, 5, 7],          # Maximum depth of the tree
-            'min_samples_split': [2, 5, 10], # Minimum number of samples required to split a node
-            'min_samples_leaf': [1, 2, 4]    # Minimum number of samples required at each leaf node
-        }   
     elif model == 'SVC':
         estimator = SVC(probability=True, random_state=42)
         param_grid = {
@@ -208,6 +183,24 @@ def useModel(model):
         estimator = GaussianNB()
         param_grid = {
             'var_smoothing': [ 1e-11, 1e-10, 1e-9, 1e-8, 1e-7, 1e-6 ]
+        }
+    elif model == 'LNR':
+        estimator = LNR()
+        param_grid = {
+            'fit_intercept': [True, False],        # Có học tham số chệch hay không
+            'normalize': [True, False],            # Có chuẩn hóa dữ liệu không
+            'copy_X': [True, False]                 # Có sao chép dữ liệu không
+        }
+    elif model == 'MLP':
+        estimator = MLPClassifier(random_state=42)
+        param_grid = {
+            'hidden_layer_sizes': [(100,), (50, 50), (100, 50, 100)],  # Số lượng nơ-ron ẩn ở mỗi layer
+            'activation': ['identity', 'logistic', 'tanh', 'relu'],      # Hàm kích hoạt
+            'solver': ['lbfgs', 'sgd', 'adam'],                          # Thuật toán tối ưu
+            'alpha': [0.0001, 0.001, 0.01],                              # L2 penalty (regularization term) parameter
+            'learning_rate': ['constant', 'invscaling', 'adaptive'],     # Tốc độ học
+            'learning_rate_init': [0.001, 0.01, 0.1],                    # Tốc độ học ban đầu
+            'max_iter': [200, 400, 600]                                   # Số lượng vòng lặp
         }
     return estimator, param_grid
         
