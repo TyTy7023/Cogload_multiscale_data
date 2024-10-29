@@ -68,7 +68,7 @@ processing_data = Preprocessing(window_size = args.window_size,
                                 label_df = label_df,
                                 normalize=args.normalize)
 X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = "")
-print(processing_data.extract_stat_features.head())
+print(processing_data.extract_stat_features)
 
 print(X_train.shape,end="\n\n")
 features = X_train.columns.tolist() 
