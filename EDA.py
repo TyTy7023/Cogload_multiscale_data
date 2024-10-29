@@ -105,7 +105,7 @@ class EDA:
         df[Type] = df[Type].astype(float)
 
         # Vẽ biểu đồ boxplot
-        plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(25, 6))
         line = sns.lineplot(x='Model', y=Type, data=df, palette='pastel')
         
         # Thêm thông số trên các cột
