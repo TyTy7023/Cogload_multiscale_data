@@ -77,7 +77,7 @@ features.append('')
 for feature in features:
     if feature != '':
         X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = feature)
-    print(processing_data.extract_stat_features.head())
+    print(processing_data.extract_stat_features)
     train_model(X_train, 
                 y_train, 
                 X_test, 
