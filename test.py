@@ -68,6 +68,8 @@ processing_data = Preprocessing(window_size = args.window_size,
                                 label_df = label_df,
                                 normalize=args.normalize)
 X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = "")
+print(processing_data.extract_stat_features.head())
+
 print(X_train.shape,end="\n\n")
 features = X_train.columns.tolist() 
 features.append('')
@@ -75,7 +77,7 @@ features.append('')
 for feature in features:
     if feature != '':
         X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = feature)
-
+    print(processing_data.extract_stat_features.head())
     train_model(X_train, 
                 y_train, 
                 X_test, 
