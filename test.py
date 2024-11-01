@@ -64,7 +64,7 @@ processing_data = Preprocessing(window_size = args.window_size,
 X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = "None")
 
 print(X_train.shape,end="\n\n")
-features = X_train.columns.tolist() 
+features = X_train.columns.tolist()  
 features.append("None")
 
 remove_features = []
@@ -76,6 +76,7 @@ for i in range(1, 4):
     })
     directory_name = f'/kaggle/working/log/remove_{i}_feature.csv'
     df.to_csv(directory_name, index=False)
+    features = [feature for feature in features if feature not in remove_features]
 
     for feature in features:
         X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = [feature, *remove_features])
