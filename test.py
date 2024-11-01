@@ -69,7 +69,7 @@ features.append("None")
 
 remove_features = []
 temp = []
-for i in range(1,3):
+for i in range(1, 4):
     df = pd.DataFrame({
         'Features_removing': [],
         'Accuracy': [],
@@ -85,15 +85,15 @@ for i in range(1,3):
                     X_test, 
                     y_test, 
                     user_train,
-                    feature_remove=feature, 
+                    feature_remove=[feature, *remove_features], 
                     n_splits=args.GroupKFold, 
                     path = directory_name, 
                     debug = args.debug)
         
     df = pd.read_csv(directory_name)
-    EDA.draw_LinePlot(os.path.dirname(directory_name), df.iloc[:,0].tolist(),  df.iloc[:,1].tolist(), "ACCURACY")
+    EDA.draw_LinePlot(os.path.dirname(directory_name), df.iloc[:,0].tolist(),  df.iloc[:,1].tolist(), f"ACCURACY_{i}")
 
     # max_number = df['Accuracy'].max()
     # name_max_number = df.loc[df['Accuracy'] == max_number, 'Features_removing']
-    name_max_number = df.loc[df['Accuracy'].idxmax(), 'Features_removing']
+    name_max_number = df.loc[df['Accuracy_'].idxmax(), 'Features_removing']
     remove_features.append(name_max_number)
