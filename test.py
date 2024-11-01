@@ -97,4 +97,4 @@ for i in range(1, 4):
     # max_number = df['Accuracy'].max()
     # name_max_number = df.loc[df['Accuracy'] == max_number, 'Features_removing']
     name_max_number = df.loc[df['Accuracy'].idxmax(), 'Features_removing']
-    remove_features.append(name_max_number)
+    remove_features = name_max_number
