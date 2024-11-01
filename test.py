@@ -1,5 +1,6 @@
 #to access files and folders
 import os
+import ast
 from datetime import datetime
 #data analysis and manipulation library
 import pandas as pd
@@ -98,4 +99,4 @@ for i in range(1, 4):
     # max_number = df['Accuracy'].max()
     # name_max_number = df.loc[df['Accuracy'] == max_number, 'Features_removing']
     name_max_number = df.loc[df['Accuracy'].idxmax(), 'Features_removing']
-    remove_features = name_max_number
+    remove_features = ast.literal_eval(name_max_number)
