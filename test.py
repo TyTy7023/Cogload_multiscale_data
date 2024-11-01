@@ -79,14 +79,15 @@ for i in range(1, 4):
     features = [feature for feature in features if feature not in remove_features]
     print(remove_features)
     for feature in features:
-        X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = [feature, *remove_features])
+        features_to_remove = [feature, *remove_features]
+        X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = features_to_remove)
 
         train_model(X_train, 
                     y_train, 
                     X_test, 
                     y_test, 
                     user_train,
-                    feature_remove=[feature, *remove_features], 
+                    feature_remove=features_to_remove, 
                     n_splits=args.GroupKFold, 
                     path = directory_name, 
                     debug = args.debug)
