@@ -77,24 +77,24 @@ for i in range(1, 4):
     directory_name = f'/kaggle/working/log/remove_{i}_feature.csv'
     df.to_csv(directory_name, index=False)
     features = [feature for feature in features if feature not in remove_features]
+    print(features)
+    # for feature in features:
+    #     X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = [feature, *remove_features])
 
-    for feature in features:
-        X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = [feature, *remove_features])
-
-        train_model(X_train, 
-                    y_train, 
-                    X_test, 
-                    y_test, 
-                    user_train,
-                    feature_remove=[feature, *remove_features], 
-                    n_splits=args.GroupKFold, 
-                    path = directory_name, 
-                    debug = args.debug)
+    #     train_model(X_train, 
+    #                 y_train, 
+    #                 X_test, 
+    #                 y_test, 
+    #                 user_train,
+    #                 feature_remove=[feature, *remove_features], 
+    #                 n_splits=args.GroupKFold, 
+    #                 path = directory_name, 
+    #                 debug = args.debug)
         
-    df = pd.read_csv(directory_name)
-    EDA.draw_LinePlot(os.path.dirname(directory_name), df.iloc[:,0].tolist(),  df.iloc[:,1].tolist(), f"ACCURACY_{i}")
+    # df = pd.read_csv(directory_name)
+    # EDA.draw_LinePlot(os.path.dirname(directory_name), df.iloc[:,0].tolist(),  df.iloc[:,1].tolist(), f"ACCURACY_{i}")
 
-    # max_number = df['Accuracy'].max()
-    # name_max_number = df.loc[df['Accuracy'] == max_number, 'Features_removing']
-    name_max_number = df.loc[df['Accuracy'].idxmax(), 'Features_removing']
-    remove_features = name_max_number
+    # # max_number = df['Accuracy'].max()
+    # # name_max_number = df.loc[df['Accuracy'] == max_number, 'Features_removing']
+    # name_max_number = df.loc[df['Accuracy'].idxmax(), 'Features_removing']
+    # remove_features = name_max_number
