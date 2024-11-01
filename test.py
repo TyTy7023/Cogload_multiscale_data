@@ -53,13 +53,6 @@ print('Heart Rate',hr_df.shape)
 print('GSR',gsr_df.shape)
 print('RR',rr_df.shape)
 
-df = pd.DataFrame({
-    'Features_removing': [],
-    'Accuracy': [],
-})
-directory_name = '/kaggle/working/log/remove_feature_with_acc.csv'
-df.to_csv(directory_name, index=False)
-
 # Khởi tạo đối tượng Preprocessing
 processing_data = Preprocessing(window_size = args.window_size, 
                                 temp_df = temp_df, 
@@ -74,18 +67,33 @@ print(X_train.shape,end="\n\n")
 features = X_train.columns.tolist() 
 features.append("None")
 
-for feature in features:
-    X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = feature)
+remove_features = []
+temp = []
+for i in range(1,3):
+    df = pd.DataFrame({
+        'Features_removing': [],
+        'Accuracy': [],
+    })
+    directory_name = f'/kaggle/working/log/remove_{i}_feature.csv'
+    df.to_csv(directory_name, index=False)
 
-    train_model(X_train, 
-                y_train, 
-                X_test, 
-                y_test, 
-                user_train,
-                feature_remove=feature, 
-                n_splits=args.GroupKFold, 
-                path = directory_name, 
-                debug = args.debug)
-    
-df = pd.read_csv(directory_name)
-EDA.draw_LinePlot(os.path.dirname(directory_name), df.iloc[:,0].tolist(),  df.iloc[:,1].tolist(), "ACCURACY")
+    for feature in features:
+        X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = [feature, *remove_features])
+
+        train_model(X_train, 
+                    y_train, 
+                    X_test, 
+                    y_test, 
+                    user_train,
+                    feature_remove=feature, 
+                    n_splits=args.GroupKFold, 
+                    path = directory_name, 
+                    debug = args.debug)
+        
+    df = pd.read_csv(directory_name)
+    EDA.draw_LinePlot(os.path.dirname(directory_name), df.iloc[:,0].tolist(),  df.iloc[:,1].tolist(), "ACCURACY")
+
+    # max_number = df['Accuracy'].max()
+    # name_max_number = df.loc[df['Accuracy'] == max_number, 'Features_removing']
+    name_max_number = df.loc[df['Accuracy'].idxmax(), 'Features_removing']
+    remove_features.append(name_max_number)
