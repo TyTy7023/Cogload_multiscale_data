@@ -71,7 +71,7 @@ features.append("None")
 remove_features = []
 name_max_number = []
 
-for i in range(1, 6):
+for i in range(1, 39):
     df = pd.DataFrame({
         'Features_removing': [],
         'Accuracy': [],
