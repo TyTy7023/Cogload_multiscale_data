@@ -69,34 +69,56 @@ features = X_train.columns.tolist()
 features.append("None")
 
 remove_features = []
-temp = []
-for i in range(1, 4):
+name_max_number = []
+
+for i in range(1, 6):
     df = pd.DataFrame({
         'Features_removing': [],
         'Accuracy': [],
     })
     directory_name = f'/kaggle/working/log/remove_{i}_feature.csv'
     df.to_csv(directory_name, index=False)
-    features = [feature for feature in features if feature not in remove_features]
-    print(remove_features)
-    for feature in features:
-        features_to_remove = [feature, *remove_features]
-        X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = features_to_remove)
+    
+    if len(name_max_number) <= 1:
+        if len(name_max_number) == 1:
+            remove_features = name_max_number[0].copy()
+            name_max_number.pop(0)
+        for feature in features:
+            features_to_remove = [feature, *remove_features]
+            X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove=features_to_remove)
 
-        train_model(X_train, 
-                    y_train, 
-                    X_test, 
-                    y_test, 
-                    user_train,
-                    feature_remove=features_to_remove, 
-                    n_splits=args.GroupKFold, 
-                    path = directory_name, 
-                    debug = args.debug)
+            train_model(X_train, 
+                        y_train, 
+                        X_test, 
+                        y_test, 
+                        user_train,
+                        feature_remove=features_to_remove, 
+                        n_splits=args.GroupKFold, 
+                        path = directory_name, 
+                        debug = args.debug)
+    else:
+        while len(name_max_number) > 0:
+            remove_features = name_max_number[0].copy()
+            name_max_number.pop(0)
+            for feature in features:
+                features_to_remove = [feature, *remove_features]
+                X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove=features_to_remove)
+
+                train_model(X_train, 
+                            y_train, 
+                            X_test, 
+                            y_test, 
+                            user_train,
+                            feature_remove=features_to_remove, 
+                            n_splits=3, 
+                            path=directory_name, 
+                            debug=0)
         
     df = pd.read_csv(directory_name)
-    EDA.draw_LinePlot(os.path.dirname(directory_name), df.iloc[:,0].tolist(),  df.iloc[:,1].tolist(), f"ACCURACY_{i}")
-
-    # max_number = df['Accuracy'].max()
-    # name_max_number = df.loc[df['Accuracy'] == max_number, 'Features_removing']
-    name_max_number = df.loc[df['Accuracy'].idxmax(), 'Features_removing']
-    remove_features = ast.literal_eval(name_max_number)
+    EDA.draw_LinePlot(os.path.dirname(directory_name), df.iloc[:, 0].tolist(), df.iloc[:, 1].tolist(), f"ACCURACY_{i}")
+    max_number = df['Accuracy'].max()
+    temp = df.loc[df['Accuracy'] == max_number, 'Features_removing']
+    temp = [ast.literal_eval(item) for item in temp]
+    temp = [list(x) for x in set(tuple(item) for item in temp)]
+    name_max_number.extend(temp)
+    print(f"\nread {directory_name} \n name_max_number: {name_max_number}\n")
