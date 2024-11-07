@@ -79,10 +79,10 @@ for i in range(1, 39):
     directory_name = f'/kaggle/working/log/remove_{i}_feature.csv'
     df.to_csv(directory_name, index=False)
     
-    if len(name_max_number) <= 1:
-        if len(name_max_number) == 1:
+    if len(name_max_number) <= 1 or len(name_max_number) >= 100:
+        if len(name_max_number) == 1 or len(name_max_number) >= 100:
             remove_features = name_max_number[0].copy()
-            name_max_number.pop(0)
+            name_max_number.clear()
         for feature in features:
             features_to_remove = [feature, *remove_features]
             X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove=features_to_remove)
