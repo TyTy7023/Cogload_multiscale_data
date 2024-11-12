@@ -25,7 +25,7 @@ class split_data () :
             self.hr.append(self.hr_df.iloc[:,i::split])
             self.gsr.append(self.gsr_df.iloc[:,i::split])
             self.rr.append(self.rr_df.iloc[:,i::split])
-    
+
     def get_data(self):
         self.all_data_train = pd.DataFrame()
         self.all_data_test = pd.DataFrame()

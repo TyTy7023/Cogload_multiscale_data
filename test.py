@@ -62,7 +62,7 @@ processing_data = split_data(window_size = args.window_size,
                             label_df = label_df,
                             normalize = args.normalize)
 processing_data.split_data(split = 2)
-X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data(features_to_remove = "None")
+X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data()
 
 print(X_train.shape,end="\n\n")
 features = X_train.columns.tolist() 
