@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 class Preprocessing :
-    def __init__(self, temp_df, hr_df, gsr_df, rr_df, label_df, window_size = 1, normalize = "Standard"):
+    def __init__(self, temp_df, hr_df, gsr_df, rr_df, label_df, window_size = 1, normalize = "Standard", data_type=''):
         if(window_size > len(temp_df.columns)):
             raise ValueError("Window size is greater than the number of samples. Please choose a smaller window size.")
         self.window_size = window_size
@@ -16,6 +16,7 @@ class Preprocessing :
         self.rr_df = rr_df
         self.label_df = label_df
         self.stat_feat_all = None
+        self.data_type = data_type
 
     def SMA(self):
         self.temp_df = self.temp_df.rolling(self.window_size,axis=1).mean()
@@ -41,10 +42,10 @@ class Preprocessing :
         return pd.DataFrame(values,columns = final_names) 
     
     def extract_features(self):
-        temp_features = Preprocessing.extract_stat_features(self.temp_df,'temp')
-        hr_features = Preprocessing.extract_stat_features(self.hr_df,'hr')
-        gsr_features = Preprocessing.extract_stat_features(self.gsr_df,'gsr')
-        rr_features = Preprocessing.extract_stat_features(self.rr_df,'rr')
+        temp_features = Preprocessing.extract_stat_features(self.temp_df,'temp'+self.data_type) 
+        hr_features = Preprocessing.extract_stat_features(self.hr_df,'hr'+self.data_type)
+        gsr_features = Preprocessing.extract_stat_features(self.gsr_df,'gsr'+self.data_type)
+        rr_features = Preprocessing.extract_stat_features(self.rr_df,'rr'+self.data_type)
         self.stat_feat_all = pd.concat([temp_features,hr_features,gsr_features,rr_features],axis=1)
 
     def remove_features(self, feature_list):

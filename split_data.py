@@ -36,7 +36,8 @@ class split_data () :
                                 gsr_df = self.gsr[i], 
                                 rr_df = self.rr[i],
                                 label_df = self.label_df,
-                                normalize=self.normalize)
+                                normalize=self.normalize,
+                                data_type= f"_{i}_")
             X_train, self.y_train, X_test, self.y_test, self.user_train, self.user_test = processing_data.get_data(features_to_remove = "None")
 
             self.all_data_train = pd.concat([self.all_data_train, X_train], axis=1)
