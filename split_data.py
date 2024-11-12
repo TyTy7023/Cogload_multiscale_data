@@ -15,9 +15,13 @@ class split_data () :
         self.normalize = normalize
         
         self.temp = []
+        self.temp.append(self.temp_df)
         self.hr = []
+        self.hr.append(self.hr_df)
         self.gsr = []
+        self.gsr.append(self.gsr_df)
         self.rr = []
+        self.rr.append(self.rr_df)
 
     def split_data(self, split = 2):
         for i in range(split):
