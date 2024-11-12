@@ -23,13 +23,6 @@ class Preprocessing :
         self.gsr_df = self.gsr_df.rolling(self.window_size,axis=1).mean()
         self.rr_df = self.rr_df.rolling(self.window_size,axis=1).mean()
 
-    def extract_features(self):
-        temp_features = self.extract_stat_features(self.temp_df,'temp')
-        hr_features = self.extract_stat_features(self.hr_df,'hr')
-        gsr_features = self.extract_stat_features(self.gsr_df,'gsr')
-        rr_features = self.extract_stat_features(self.rr_df,'rr')
-        return pd.concat([temp_features,hr_features,gsr_features,rr_features],axis=1)
-
     @staticmethod
     def extract_stat_features(df,data_type=''):
         stat_features_names = ['mean','std','skew','kurtosis','diff','diff2','q25','q75','qdev','max-min']
