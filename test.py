@@ -28,7 +28,7 @@ parser.add_argument("--model_selected_feature", default = "None", type = str, he
 parser.add_argument("--k_features", default = 11, type = int, help = "k of feature selected of SFS")
 parser.add_argument("--forward", default = False, type = bool, help = "True to use backward, False to use forward")
 parser.add_argument("--floating", default = True, type = bool, help = "True to use sfs with floating, False with no floating")
-parser.add_argument("--slipt", nargs='+', default=[] , type=int, help="the split of data example 2 6 to split data into 2 and 6")
+parser.add_argument("--split", nargs='+', default=[] , type=int, help="the split of data example 2 6 to split data into 2 and 6")
 parser.add_argument("--debug", default = 0, type = int, help="debug mode 0: no debug, 1: debug")
 
 args = parser.parse_args()
