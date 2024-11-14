@@ -15,7 +15,7 @@ from split_data import split_data
 from selection_feature import Feature_Selection
 from EDA import EDA
 sys.path.append('/kaggle/working/cogload/model/')
-from best_model import train_model
+from model import train_model
 
 
 #argument parser
@@ -71,3 +71,10 @@ print(X_train.shape,end="\n\n")
 X_train.to_csv('/kaggle/working/X_train.csv', index=False)
 
 print(f"Start training model\n{args.models}")
+train_model(X_train, y_train,
+             X_test, y_test,
+             user_train, args.data_folder_path,
+             feature_remove = "None",
+             n_splits = args.GroupKFold,
+             debug = args.debug,
+             models = args.models)
