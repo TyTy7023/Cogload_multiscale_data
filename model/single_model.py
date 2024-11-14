@@ -24,9 +24,8 @@ import sys
 sys.path.append('/kaggle/working/cogload/')
 from EDA import EDA
 
-def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0):
+def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0, models = ['LNR', 'LDA', 'KNN', 'SVC', 'CART', 'GNB', 'LR', 'MLP']):
     np.random.seed(42)
-    models = ['LNR', 'LDA', 'KNN', 'SVC', 'CART', 'GNB', 'LR', 'MLP']
     if debug == 1:
         models = models[:2]
     log_results = []
