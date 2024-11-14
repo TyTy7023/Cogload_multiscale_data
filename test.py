@@ -74,7 +74,7 @@ print(f"Start training model\n{args.models}")
 train_model(X_train, y_train,
              X_test, y_test,
              user_train, 
-             os.path.join(args.data_folder_path),
+             os.path.join(directory_name),
             #  feature_remove = "None",
              n_splits = args.GroupKFold,
              debug = args.debug,
