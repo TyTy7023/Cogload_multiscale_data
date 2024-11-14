@@ -62,7 +62,7 @@ processing_data = split_data(window_size = args.window_size,
                             rr_df = rr_df,
                             label_df = label_df,
                             normalize = args.normalize)
-for i in range(len(args.slipt)):
+for i in range(len(args.split)):
     processing_data.split_data(split = args.split [i])
 X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data()
 
