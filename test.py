@@ -10,13 +10,13 @@ import warnings
 warnings.simplefilter("ignore")#ignore warnings during executiona
 
 import sys
-sys.path.append('/kaggle/working/cogload/')
+sys.path.append('/kaggle/working/cogload/processData/')
 from split_data import split_data
 from selection_feature import Feature_Selection
 from EDA import EDA
+sys.path.append('/kaggle/working/cogload/model/')
 from best_model import train_model
 
-from sklearn.svm import SVC
 
 #argument parser
 parser = ArgumentParser()
