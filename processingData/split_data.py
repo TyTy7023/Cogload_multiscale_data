@@ -1,7 +1,7 @@
 import pandas as pd
 
 import sys
-sys.path.append('/kaggle/working/cogload/')
+sys.path.append('/kaggle/working/cogload/model/')
 from processing_data import Preprocessing
 
 class split_data () :
