@@ -73,7 +73,8 @@ X_train.to_csv('/kaggle/working/X_train.csv', index=False)
 print(f"Start training model\n{args.models}")
 train_model(X_train, y_train,
              X_test, y_test,
-             user_train, args.data_folder_path,
+             user_train, 
+             os.path.join(args.data_folder_path),
             #  feature_remove = "None",
              n_splits = args.GroupKFold,
              debug = args.debug,
