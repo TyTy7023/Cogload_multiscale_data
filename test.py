@@ -9,13 +9,18 @@ from argparse import ArgumentParser
 import warnings
 warnings.simplefilter("ignore")#ignore warnings during executiona
 
+import XGBClassifier as XGB
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+from sklearn.ensemble import RandomForestClassifier as RF
+from sklearn.svm import SVC
+
 import sys
 sys.path.append('/kaggle/working/cogload/processData/')
 from split_data import split_data
 from selection_feature import Feature_Selection
 from EDA import EDA
 sys.path.append('/kaggle/working/cogload/model/')
-from model import train_model
+from best_model import train_model
 
 
 #argument parser
@@ -29,7 +34,7 @@ parser.add_argument("--k_features", default = 11, type = int, help = "k of featu
 parser.add_argument("--forward", default = False, type = bool, help = "True to use backward, False to use forward")
 parser.add_argument("--floating", default = True, type = bool, help = "True to use sfs with floating, False with no floating")
 parser.add_argument("--split", nargs='+', default=[] , type=int, help="the split of data example 2 6 to split data into 2 and 6 to extract feature")
-parser.add_argument("--models", nargs='+', default=[] , type=str, help="array of models to train")
+parser.add_argument("--estimator_RFECV", default='SVM', type=str, help="model for RFECV")
 parser.add_argument("--debug", default = 0, type = int, help="debug mode 0: no debug, 1: debug")
 
 args = parser.parse_args()
@@ -70,12 +75,24 @@ X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_da
 print(X_train.shape,end="\n\n")
 X_train.to_csv('/kaggle/working/X_train.csv', index=False)
 
-print(f"Start training model\n{args.models}")
-train_model(X_train, y_train,
-             X_test, y_test,
-             user_train, 
-             os.path.join(directory_name),
-            #  feature_remove = "None",
-             n_splits = args.GroupKFold,
-             debug = args.debug,
-             models = args.models)
+if args.model_selected_feature == 'RFECV':
+    if args.estimator_RFECV == 'LDA':
+        estimator = LDA()
+    elif args.estimator_RFECV == 'SVM':
+        estimator = SVC(probability=True, random_state=42)
+    elif args.estimator_RFECV == 'RF':
+        estimator = RF(random_state = 42)
+    X_train, X_test = Feature_Selection.selected_RFECV(X_train,
+                                                    X_test, 
+                                                    y_train, 
+                                                    user_train, 
+                                                    estimator = estimator)
+
+train_model(X_train, 
+            y_train, 
+            X_test, 
+            y_test, 
+            user_train,
+            n_splits=args.GroupKFold, 
+            path = directory_name, 
+            debug = args.debug)

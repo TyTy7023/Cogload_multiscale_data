@@ -20,10 +20,14 @@
 - %run /kaggle/working/cogload/test.py
 - Các thông số truyền vào có thể thay đổi
 	+ --data_folder_path, default = "/kaggle/input/cognitiveload/UBIcomp2020/last_30s_segments/" 
-	+ --window_size, default = 1, help ="3, 5, 10,..."
+	+ --GroupKFold, default = 3, type = int, help = "Slip data into k group for training model"
+	+ --window_size, default = 1, help ="Window size for feature extraction SMA"
 	+ --normalize, default = "Standard", help = "Normalization method, Standard or MinMax")
 	+ --k_features, default = 11, help = "k of feature selected of SFS")
-	+ --forward", default = False, type = bool, help = "True to use backward, False to use forward")
-	+ --floating", default = True, type = int, help = "True to use sfs with floating, False with no floating")
-	+ --model_selected_feature", default = "None", help = "None, RFECV, SFS")
+	+ --forward, default = False, type = bool, help = "True to use backward, False to use forward"
+	+ --floating, default = True, type = int, help = "True to use sfs with floating, False with no floating"
+	+ --model_selected_feature", default = "None", help = "None, RFECV, SFS"
+	+ --split, default=[], type = int, help = "split the segment to extract"
+	+ --estimator_RFECV, default='SVM', type=str, help="model for RFECV"
+	+ --debug, default = 0, type = int, help="debug mode 0: no debug, 1: debug"
 - Kết quả sẽ được lưu vào kaggle/ouput/log/
