@@ -9,7 +9,6 @@ from argparse import ArgumentParser
 import warnings
 warnings.simplefilter("ignore")#ignore warnings during executiona
 
-import XGBClassifier as XGB
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.ensemble import RandomForestClassifier as RF
 from sklearn.svm import SVC
