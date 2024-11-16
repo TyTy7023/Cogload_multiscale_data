@@ -86,7 +86,7 @@ if args.model_selected_feature == 'RFECV':
     if args.estimator_RFECV == 'LDA':
         estimator = LDA()
     elif args.estimator_RFECV == 'SVM':
-        estimator = SVC(probability=True, random_state=42)
+        estimator = SVC(probability=True, random_state=42, kernel="linear")
     elif args.estimator_RFECV == 'RF':
         estimator = RF(random_state = 42)
 
