@@ -79,7 +79,7 @@ for i in range(len(args.split)):
     processing_data.split_data(split = args.split [i])
 X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data()
 
-print(X_train.shape,end="\n\n")
+print(f'X_train : {X_train.shape}\n\n')
 X_train.to_csv('/kaggle/working/X_train.csv', index=False)
 
 if args.model_selected_feature == 'RFECV':
@@ -89,6 +89,7 @@ if args.model_selected_feature == 'RFECV':
         estimator = SVC(probability=True, random_state=42)
     elif args.estimator_RFECV == 'RF':
         estimator = RF(random_state = 42)
+
     X_train, X_test = Feature_Selection.selected_RFECV(X_train,
                                                     X_test, 
                                                     y_train, 
@@ -96,7 +97,7 @@ if args.model_selected_feature == 'RFECV':
                                                     estimator = estimator)
 
 
-print(X_train.shape,end="\n\n")
+print(f'X_train after RFECV: {X_train.shape}\n\n')
 X_train.to_csv('/kaggle/working/X_train_RFECV.csv', index=False)
 
 train_model(X_train, 
