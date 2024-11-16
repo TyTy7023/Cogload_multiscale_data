@@ -97,7 +97,7 @@ for i in range(1, 39):
                         n_splits=args.GroupKFold, 
                         path = directory_name, 
                         debug = args.debug,
-                        models = 'LDA')
+                        models = ['LDA'])
     else:
         while len(name_max_number) > 0:
             remove_features = name_max_number[0].copy()
@@ -115,7 +115,7 @@ for i in range(1, 39):
                             n_splits=3, 
                             path=directory_name, 
                             debug=0,
-                            models = 'LDA')
+                            models = ['LDA'])
         
     df = pd.read_csv(directory_name)
     EDA.draw_LinePlot(os.path.dirname(directory_name), df.iloc[:, 0].tolist(), df.iloc[:, 1].tolist(), f"ACCURACY_{i}")
