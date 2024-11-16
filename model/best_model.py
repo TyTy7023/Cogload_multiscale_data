@@ -22,13 +22,12 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
         # K-Fold Cross-Validation với 6 folds
     kf = GroupKFold(n_splits=n_splits)
 
-    best_model = None
-    best_score = 0
-    accuracy_all = []
-    y_vals = []
-    y_pred_vals = []
-
     for model in models:
+        best_model = None
+        best_score = 0
+        accuracy_all = []
+        y_vals = []
+        y_pred_vals = []
         # Lặp qua từng fold
         for fold, (train_index, val_index) in enumerate(kf.split(X_train, y_train, groups = user_train)):
             X_train_fold, X_val_fold = X_train.iloc[train_index], X_train.iloc[val_index]
