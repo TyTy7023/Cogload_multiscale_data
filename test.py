@@ -95,6 +95,10 @@ if args.model_selected_feature == 'RFECV':
                                                     user_train, 
                                                     estimator = estimator)
 
+
+print(X_train.shape,end="\n\n")
+X_train.to_csv('/kaggle/working/X_train_RFECV.csv', index=False)
+
 train_model(X_train, 
             y_train, 
             X_test, 

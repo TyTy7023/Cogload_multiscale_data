@@ -105,5 +105,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
         # Ghi thêm vào file CSV
         df_to_append.to_csv(path, mode='a', header=False, index=False)
 
+        print('------------------------------------------------------------------------------------------------------------------\n')
+
 
 
