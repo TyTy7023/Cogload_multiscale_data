@@ -18,7 +18,7 @@ import sys
 sys.path.append('/kaggle/working/cogload/')
 from EDA import EDA
 
-def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remove, n_splits=3 , debug = 0, models = ['LDA', 'SVM', 'RF']):
+def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remove = ['None'], n_splits=3 , debug = 0, models = ['LDA', 'SVM', 'RF']):
         # K-Fold Cross-Validation với 6 folds
     kf = GroupKFold(n_splits=n_splits)
 
@@ -67,7 +67,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
 
         # ROC tâp validation K-Fold
         path_eda = os.path.dirname(path) + '/EDA/'
-        EDA.draw_ROC(path_eda, y_vals, y_pred_vals, f'LDA_{feature_remove}')
+        EDA.draw_ROC(path_eda, y_vals, y_pred_vals, f'{model}_{feature_remove}')
 
         print(f"Best parameters found: {best_model.get_params()}\n")
         y_pred = best_model.predict(X_test)
@@ -98,6 +98,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
         # Đọc file CSV gốc để lấy danh sách cột
         df_existing = pd.read_csv(path)
         df_to_append = pd.DataFrame({
+            'Model': [model],
             'Features_removing': [feature_remove],
             'Accuracy': [acc], 
 
