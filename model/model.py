@@ -31,6 +31,8 @@ from model_method_I import EnsembleModel_7GB
 def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0, models = ['ESVM','E7GB', 'MLP', 'LR', 'LDA', 'KNN', 'RF', 'AB', 'GB', 'SVM', 'XGB']):
     np.random.seed(42)
     path = os.path.dirname(path)
+    path_EDA = path + '/EDA/'
+
     if debug == 1:
         models = models[:2]
     log_results = []
@@ -99,7 +101,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
                     best_model = estimator
 
         # ROC tâp validation K-Fold
-        EDA.draw_ROC(path, y_vals, y_pred_vals, model)
+        EDA.draw_ROC(path_EDA + "/models/", y_vals, y_pred_vals, model)
 
         # Dự đoán trên tập kiểm tra
         if model == 'ESVM':
@@ -146,10 +148,10 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
     file_name = f'results_model.csv'  # Tên file tự động
     log_results.to_csv(os.path.join(path, file_name), index=False)
 
-    EDA.draw_Bar(path, models, test_accuracy_models, 'Accuracy Test')
-    EDA.draw_BoxPlot(path, list(itertools.chain.from_iterable([[i]*3 for i in models])), accuracies_all, 'Accuracy train')
-    EDA.draw_Bar(path, models, f1_score_models, 'F1 Score')
-    EDA.draw_ROC(path, y_test, y_pred_tests, models)
+    EDA.draw_Bar(path_EDA, models, test_accuracy_models, 'Accuracy Test')
+    EDA.draw_BoxPlot(path_EDA, list(itertools.chain.from_iterable([[i]*3 for i in models])), accuracies_all, 'Accuracy train')
+    EDA.draw_Bar(path_EDA, models, f1_score_models, 'F1 Score')
+    EDA.draw_ROC(path_EDA, y_test, y_pred_tests, models)
 
 def useModel(model):
 # Train model
