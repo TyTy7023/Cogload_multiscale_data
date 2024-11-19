@@ -28,7 +28,7 @@ sys.path.append('/kaggle/working/cogload/')
 from EDA import EDA
 from model_method_I import EnsembleModel_7GB
 
-def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0, models = ['ESVM','E7GB', 'MLP', 'LR', 'LDA', 'KNN', 'RF', 'AB', 'GB', 'SVC', 'XGB']):
+def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0, models = ['ESVM','E7GB', 'MLP', 'LR', 'LDA', 'KNN', 'RF', 'AB', 'GB', 'SVM', 'XGB']):
     np.random.seed(42)
     path = os.path.dirname(path)
     if debug == 1:
@@ -197,7 +197,7 @@ def useModel(model):
             'min_samples_split': [2, 5, 10], # Minimum number of samples required to split a node
             'min_samples_leaf': [1, 2, 4]    # Minimum number of samples required at each leaf node
         }   
-    elif model == 'SVC':
+    elif model == 'SVM':
         estimator = SVC(probability=True, random_state=42)
         param_grid = {
             'C': [0.1, 1, 10, 100],                # Điều chỉnh độ phạt sai số
