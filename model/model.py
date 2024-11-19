@@ -118,7 +118,6 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
         conf_matrix = confusion_matrix(y_test, y_pred)
         class_report = classification_report(y_test, y_pred)
         f1Score = f1_score(y_test, y_pred, average=None)
-        logloss = log_loss(y_test, y_pred_proba)
 
         test_accuracy_models.append(acc)
         accuracies_all.extend(accuracy_all)
@@ -126,19 +125,6 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
 
         print("Report:" + class_report)
         print(f"ACCURACY: {acc}")
-        print(f"LOGLOSS: {logloss}")
-
-
-        # Xác định các lớp để hiển thị trong ma trận nhầm lẫn
-        unique_labels = np.unique(np.concatenate((y_test, y_pred)))
-        plt.figure(figsize=(6, 4))
-        sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False, 
-                    xticklabels=unique_labels.tolist(), 
-                    yticklabels=unique_labels.tolist())
-        plt.xlabel('Predicted')
-        plt.ylabel('Actual')
-        plt.title('Confusion Matrix')
-        plt.show()
 
         accuracy_all = np.array(accuracy_all)
         logloss_all = np.array(logloss_all)
@@ -149,7 +135,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
         log_results.append({
             "model": model,
             "accuracy": f"{acc} +- {accuracy_all.std()}",
-            "logloss": f"{logloss} +- {logloss_all.std()}",
+            # "logloss": f"{logloss} +- {logloss_all.std()}",
             "best_model": best_model.best_params_ if model != "ESVM" else  useModel(model)[1],
             "f1_score": f1Score,
             "confusion_matrix": conf_matrix

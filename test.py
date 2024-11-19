@@ -19,7 +19,7 @@ from split_data import split_data
 from selection_feature import Feature_Selection
 from EDA import EDA
 sys.path.append('/kaggle/working/cogload/model/')
-from best_model import train_model
+from model import train_model
 
 
 #argument parser
@@ -35,6 +35,8 @@ parser.add_argument("--floating", default = True, type = bool, help = "True to u
 parser.add_argument("--split", nargs='+', default=[] , type=int, help="the split of data example 2 6 to split data into 2 and 6 to extract feature")
 parser.add_argument("--estimator_RFECV", default='SVM', type=str, help="model for RFECV")
 parser.add_argument("--debug", default = 0, type = int, help="debug mode 0: no debug, 1: debug")
+parser.add_argument("--models", nargs='+', default=['LDA', 'SVM', 'RF','XGB'] , type=str, help="models to train")
+
 
 args = parser.parse_args()
 
@@ -100,6 +102,8 @@ if args.model_selected_feature == 'RFECV':
 print(f'X_train after RFECV: {X_train.shape}\n\n')
 X_train.to_csv('/kaggle/working/X_train_RFECV.csv', index=False)
 
+if args.models == []:
+    sys.exit()
 train_model(X_train, 
             y_train, 
             X_test, 
@@ -107,4 +111,7 @@ train_model(X_train,
             user_train,
             n_splits=args.GroupKFold, 
             path = directory_name, 
-            debug = args.debug)
+            debug = args.debug,
+            models= args.models)
+
+
