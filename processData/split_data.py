@@ -49,15 +49,9 @@ class split_data () :
                                 gsr_df = self.gsr[i], 
                                 rr_df = self.rr[i],
                                 label_df = self.label_df,
-                                normalize=self.normalize,
-                                data_type= f"_{i}_")
+                                normalize=self.normalize)
             X_train, self.y_train, X_test, self.y_test, self.user_train, self.user_test = processing_data.get_data(features_to_remove = "None")
 
             self.all_data_train.append(X_train)
             self.all_data_test.append( X_test)
         return sum(self.all_data_train), self.y_train, sum(self.all_data_test), self.y_test, self.user_train, self.user_test
-            
-
-    
-
-    
