@@ -40,8 +40,8 @@ class split_data () :
         self.rr = self.rr_df.rolling(self.window_size,axis=1).mean()
 
     def get_data(self):
-        self.all_data_train = pd.DataFrame()
-        self.all_data_test = pd.DataFrame()
+        self.all_data_train = []
+        self.all_data_test = []
         for i in range(len(self.temp)):
             processing_data = Preprocessing( 
                                 temp_df = self.temp[i], 
@@ -53,9 +53,9 @@ class split_data () :
                                 data_type= f"_{i}_")
             X_train, self.y_train, X_test, self.y_test, self.user_train, self.user_test = processing_data.get_data(features_to_remove = "None")
 
-            self.all_data_train = pd.concat([self.all_data_train, X_train], axis=1)
-            self.all_data_test = pd.concat([self.all_data_test, X_test], axis=1)
-        return self.all_data_train, self.y_train, self.all_data_test, self.y_test, self.user_train, self.user_test
+            self.all_data_train.append(X_train)
+            self.all_data_test.append( X_test)
+        return sum(self.all_data_train), self.y_train, sum(self.all_data_test), self.y_test, self.user_train, self.user_test
             
 
     
