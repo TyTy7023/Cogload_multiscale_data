@@ -23,12 +23,21 @@ class split_data () :
         self.rr = []
         self.rr.append(self.rr_df)
 
+        if self.window_size > 1:
+            self.SMA()
+
     def split_data(self, split = 2):
         for i in range(split):
             self.temp.append(self.temp_df.iloc[:,i::split])
             self.hr.append(self.hr_df.iloc[:,i::split])
             self.gsr.append(self.gsr_df.iloc[:,i::split])
             self.rr.append(self.rr_df.iloc[:,i::split])
+
+    def SMA(self):
+        self.temp = self.temp_df.rolling(self.window_size,axis=1).mean()
+        self.hr = self.hr_df.rolling(self.window_size,axis=1).mean()
+        self.gsr = self.gsr_df.rolling(self.window_size,axis=1).mean()
+        self.rr = self.rr_df.rolling(self.window_size,axis=1).mean()
 
     def get_data(self):
         self.all_data_train = pd.DataFrame()

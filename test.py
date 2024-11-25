@@ -80,6 +80,7 @@ processing_data = split_data(window_size = args.window_size,
 for i in range(len(args.split)):
     processing_data.split_data(split = args.split [i])
 X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data()
+print(f'X_test : {X_test.shape}\n\n')
 
 print(f'X_train : {X_train.shape}\n\n')
 X_train.to_csv('/kaggle/working/X_train.csv', index=False)
