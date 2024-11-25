@@ -43,7 +43,7 @@ class split_data () :
         self.all_data_train = pd.DataFrame()
         self.all_data_test = pd.DataFrame()
         for i in range(len(self.temp)):
-            processing_data = Preprocessing(window_size = self.window_size, 
+            processing_data = Preprocessing( 
                                 temp_df = self.temp[i], 
                                 hr_df = self.hr[i], 
                                 gsr_df = self.gsr[i], 
