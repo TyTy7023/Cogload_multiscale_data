@@ -17,6 +17,7 @@ class Preprocessing :
         self.label_df = label_df
         self.stat_feat_all = None
         self.data_type = data_type
+        self.stat_feat_after = pd.concat([temp_df, hr_df, gsr_df, rr_df],axis=1)
 
     def SMA(self):
         self.temp_df = self.temp_df.rolling(self.window_size,axis=1).mean()
@@ -42,17 +43,16 @@ class Preprocessing :
         return pd.DataFrame(values,columns = final_names) 
     
     def extract_features(self):
-        temp_features = Preprocessing.extract_stat_features(self.temp_df,'temp'+self.data_type) 
-        hr_features = Preprocessing.extract_stat_features(self.hr_df,'hr'+self.data_type)
-        gsr_features = Preprocessing.extract_stat_features(self.gsr_df,'gsr'+self.data_type)
-        rr_features = Preprocessing.extract_stat_features(self.rr_df,'rr'+self.data_type)
-        self.stat_feat_all = pd.concat([temp_features,hr_features,gsr_features,rr_features],axis=1)
+        self.temp_stat_features = Preprocessing.extract_stat_features(self.temp_df,'temp'+self.data_type) 
+        self.hr_stat_features = Preprocessing.extract_stat_features(self.hr_df,'hr'+self.data_type)
+        self.gsr_stat_features = Preprocessing.extract_stat_features(self.gsr_df,'gsr'+self.data_type)
+        self.rr_stat_features = Preprocessing.extract_stat_features(self.rr_df,'rr'+self.data_type)
+        self.stat_feat_all = pd.concat([self.temp_stat_features, self.hr_stat_features, self.gsr_stat_features, self.rr_stat_features],axis=1)
+        self.stat_feat_after = self.stat_feat_all
 
     def remove_features(self, feature_list):
         if feature_list != "None":
-            self.stat_feat_after = self.stat_feat_all.drop(columns = feature_list, errors = 'ignore')
-        else:
-            self.stat_feat_after = self.stat_feat_all
+            self.stat_feat_after = self.stat_feat_all.drop(columns = feature_list, errors = 'ignore')            
 
     def splits_train_test(self):
         test_ids = ['3caqi','6frz4','bd47a','f1gjp','iz3x1']
@@ -121,4 +121,5 @@ class Preprocessing :
         self.splits_train_test()
         self.X_train, self.X_test = self.normalize_data(self.X_train, self.X_test)
         return self.X_train, self.y_train, self.X_test, self.y_test, self.user_train, self.user_test
+    
 

@@ -5,7 +5,7 @@ sys.path.append('/kaggle/working/cogload/model/')
 from processing_data import Preprocessing
 
 class split_data () :
-    def __init__(self, window_size, temp_df, hr_df, gsr_df, rr_df, label_df, normalize):
+    def __init__(self, window_size, temp_df, hr_df, gsr_df, rr_df, label_df, normalize, split = 2):
         self.window_size = window_size
         self.temp_df = temp_df
         self.hr_df = hr_df
@@ -13,31 +13,28 @@ class split_data () :
         self.rr_df = rr_df
         self.label_df = label_df
         self.normalize = normalize
+        self.split = split
         
         self.temp = []
-        self.temp.append(self.temp_df)
         self.hr = []
-        self.hr.append(self.hr_df)
         self.gsr = []
-        self.gsr.append(self.gsr_df)
         self.rr = []
-        self.rr.append(self.rr_df)
+
+        processing_data = Preprocessing( 
+                                    temp_df = self.temp_df, 
+                                    hr_df = self.hr_df, 
+                                    gsr_df = self.gsr_df, 
+                                    rr_df = self.rr_df,
+                                    label_df = self.label_df,
+                                    normalize=self.normalize)
+        processing_data.extract_features()
+        self.temp.append(processing_data.temp_stat_features)
+        self.hr.append(processing_data.hr_stat_features)
+        self.gsr.append(processing_data.gsr_stat_features)
+        self.rr.append(processing_data.rr_stat_features)
 
         if self.window_size > 1:
             self.SMA()
-
-    def split_data(self, split = 2):
-        for i in range(split):
-            self.temp.append(self.temp_df.iloc[:,i::split])
-            self.hr.append(self.hr_df.iloc[:,i::split])
-            self.gsr.append(self.gsr_df.iloc[:,i::split])
-            self.rr.append(self.rr_df.iloc[:,i::split])
-
-    def SMA(self):
-        self.temp = self.temp_df.rolling(self.window_size,axis=1).mean()
-        self.hr = self.hr_df.rolling(self.window_size,axis=1).mean()
-        self.gsr = self.gsr_df.rolling(self.window_size,axis=1).mean()
-        self.rr = self.rr_df.rolling(self.window_size,axis=1).mean()
 
     def get_data(self):
         self.all_data_train = []
@@ -50,8 +47,38 @@ class split_data () :
                                 rr_df = self.rr[i],
                                 label_df = self.label_df,
                                 normalize=self.normalize)
-            X_train, self.y_train, X_test, self.y_test, self.user_train, self.user_test = processing_data.get_data(features_to_remove = "None")
+            processing_data.splits_train_test()
+            processing_data.X_train, processing_data.X_test = processing_data.normalize_data(processing_data.X_train, processing_data.X_test)
+            
+        
+            self.all_data_train.append(processing_data.X_train)
+            self.all_data_test.append(processing_data.X_test)
+        
+        return sum(self.all_data_train), processing_data.y_train, sum(self.all_data_test), processing_data.y_test, processing_data.user_train, processing_data.user_test
+    
+    def split_data(self, split = 2):
+        temp_split = []
+        hr_split = []
+        gsr_split = []
+        rr_split = []
+        
+        for i in range(split):              
+            processing_data = Preprocessing( 
+                                    temp_df = self.temp_df.iloc[:,i::split], 
+                                    hr_df = self.hr_df.iloc[:,i::split], 
+                                    gsr_df = self.gsr_df.iloc[:,i::split], 
+                                    rr_df = self.rr_df.iloc[:,i::split],
+                                    label_df = self.label_df,
+                                    normalize=self.normalize)
+            processing_data.extract_features()
 
-            self.all_data_train.append(X_train)
-            self.all_data_test.append( X_test)
-        return sum(self.all_data_train), self.y_train, sum(self.all_data_test), self.y_test, self.user_train, self.user_test
+            temp_split.append(processing_data.temp_stat_features)
+            hr_split.append(processing_data.hr_stat_features)
+            gsr_split.append(processing_data.gsr_stat_features)
+            rr_split.append(processing_data.rr_stat_features)
+        
+        self.temp.append(sum(temp_split)/len(temp_split))
+        self.hr.append(sum(hr_split)/len(hr_split))
+        self.gsr.append(sum(gsr_split)/len(gsr_split))
+        self.rr.append(sum(rr_split)/len(rr_split))
+            
