@@ -35,6 +35,12 @@ class split_data () :
 
         if self.window_size > 1:
             self.SMA()
+    
+    def SMA(self):
+        self.temp_df = self.temp_df.rolling(self.window_size,axis=1).mean()
+        self.hr_df = self.hr_df.rolling(self.window_size,axis=1).mean()
+        self.gsr_df = self.gsr_df.rolling(self.window_size,axis=1).mean()
+        self.rr_df = self.rr_df.rolling(self.window_size,axis=1).mean()
 
     def get_data(self):
         self.all_data_train = []
