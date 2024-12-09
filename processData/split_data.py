@@ -54,9 +54,10 @@ class split_data () :
         hr_split = []
         gsr_split = []
         rr_split = []
+        step = len(self.temp_df.columns) // split 
         for i in range(split):  
-            start_col = i * split
-            end_col = start_col + split if i < split - 1 else len(self.temp_df.columns)            
+            start_col = i * step
+            end_col = start_col + step if i < step - 1 else len(self.temp_df.columns)            
             processing_data = Preprocessing( 
                                     temp_df = self.temp_df.iloc[:,start_col :end_col], 
                                     hr_df = self.hr_df.iloc[:,start_col :end_col], 
