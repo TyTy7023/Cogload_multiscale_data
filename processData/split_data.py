@@ -54,13 +54,14 @@ class split_data () :
         hr_split = []
         gsr_split = []
         rr_split = []
-        
-        for i in range(split):              
+        for i in range(split):  
+            start_col = i * split
+            end_col = start_col + split if i < split - 1 else len(self.temp_df.columns)            
             processing_data = Preprocessing( 
-                                    temp_df = self.temp_df.iloc[:,i::split], 
-                                    hr_df = self.hr_df.iloc[:,i::split], 
-                                    gsr_df = self.gsr_df.iloc[:,i::split], 
-                                    rr_df = self.rr_df.iloc[:,i::split],
+                                    temp_df = self.temp_df.iloc[:,start_col :end_col], 
+                                    hr_df = self.hr_df.iloc[:,start_col :end_col], 
+                                    gsr_df = self.gsr_df.iloc[:,start_col :end_col], 
+                                    rr_df = self.rr_df.iloc[:,start_col :end_col],
                                     label_df = self.label_df,
                                     normalize=self.normalize)
             print(f"temp after split \n{processing_data.rr_df}")
