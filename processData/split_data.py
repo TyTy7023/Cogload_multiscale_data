@@ -63,6 +63,7 @@ class split_data () :
                                     rr_df = self.rr_df.iloc[:,i::split],
                                     label_df = self.label_df,
                                     normalize=self.normalize)
+            print(f"temp after split \n{processing_data.temp_df}")
             processing_data.extract_features()
 
             temp_split.append(processing_data.temp_stat_features)
@@ -74,4 +75,5 @@ class split_data () :
         self.hr.append(sum(hr_split)/len(hr_split))
         self.gsr.append(sum(gsr_split)/len(gsr_split))
         self.rr.append(sum(rr_split)/len(rr_split))
+
             
