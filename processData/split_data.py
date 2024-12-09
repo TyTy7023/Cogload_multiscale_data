@@ -54,19 +54,26 @@ class split_data () :
         hr_split = []
         gsr_split = []
         rr_split = []
-        step = len(self.temp_df.columns) // split 
+        num_cols = len(self.temp_df.columns)
+
+        # Tính toán số cột mỗi nhóm (chia đều trước)
+        base_step = num_cols // split
+        extra = num_cols % split  # Cột dư để phân bổ vào các nhóm đầu
+        start = 0
+
         for i in range(split):  
-            start_col = i * step
-            end_col = start_col + step if i < step - 1 else len(self.temp_df.columns)            
+            step = base_step + (1 if i < extra else 0)
+            end = start + step
             processing_data = Preprocessing( 
-                                    temp_df = self.temp_df.iloc[:,start_col :end_col], 
-                                    hr_df = self.hr_df.iloc[:,start_col :end_col], 
-                                    gsr_df = self.gsr_df.iloc[:,start_col :end_col], 
-                                    rr_df = self.rr_df.iloc[:,start_col :end_col],
+                                    temp_df = self.temp_df.iloc[:,start :end], 
+                                    hr_df = self.hr_df.iloc[:,start :end], 
+                                    gsr_df = self.gsr_df.iloc[:,start :end], 
+                                    rr_df = self.rr_df.iloc[:,start :end],
                                     label_df = self.label_df,
                                     normalize=self.normalize)
+            start = end
+            
             processing_data.extract_features()
-
             temp_split.append(processing_data.temp_stat_features)
             hr_split.append(processing_data.hr_stat_features)
             gsr_split.append(processing_data.gsr_stat_features)
