@@ -20,19 +20,6 @@ class split_data () :
         self.gsr = []
         self.rr = []
 
-        processing_data = Preprocessing( 
-                                    temp_df = self.temp_df, 
-                                    hr_df = self.hr_df, 
-                                    gsr_df = self.gsr_df, 
-                                    rr_df = self.rr_df,
-                                    label_df = self.label_df,
-                                    normalize=self.normalize)
-        processing_data.extract_features()
-        self.temp.append(processing_data.temp_stat_features)
-        self.hr.append(processing_data.hr_stat_features)
-        self.gsr.append(processing_data.gsr_stat_features)
-        self.rr.append(processing_data.rr_stat_features)
-
         if self.window_size > 1:
             self.SMA()
     
