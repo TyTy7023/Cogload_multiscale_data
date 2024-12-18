@@ -35,6 +35,8 @@ class split_data () :
         self.gsr_df = self.gsr_df.dropna(axis=1, how='all')
         self.rr_df = self.rr_df.dropna(axis=1, how='all')
 
+        print(f'After SMA: {self.temp_df.shape}')
+
     def get_data(self):
         self.all_data_train = []
         self.all_data_test = []
