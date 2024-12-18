@@ -96,14 +96,22 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
         
         # Đọc file CSV gốc để lấy danh sách cột
         df_existing = pd.read_csv(path)
-        df_to_append = pd.DataFrame({
+        if df_existing.empty:   
+            df_to_append = pd.DataFrame({
+                'Model': [model],
+                'Features_removing': [feature_remove],
+                'Accuracy': [acc]
+            })
+            df_to_append.to_csv(path, index=False)
+        else:
+            df_to_append = pd.DataFrame({
             'Model': [model],
             'Features_removing': [feature_remove],
             'Accuracy': [acc], 
 
-        }, columns=df_existing.columns)
+            }, columns=df_existing.columns)
         # Ghi thêm vào file CSV
-        df_to_append.to_csv(path, mode='a', header=False, index=False)
+            df_to_append.to_csv(path, mode='a', header=False, index=False)
 
         print('------------------------------------------------------------------------------------------------------------------\n')
 
