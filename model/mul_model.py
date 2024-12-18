@@ -28,7 +28,7 @@ sys.path.append('/kaggle/working/cogload/')
 from EDA import EDA
 from model_method_I import EnsembleModel_7GB
 
-def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0, models = ['LR', 'LDA', 'KNN', 'RF', 'AB', 'GB', 'SVM', 'XGB']):
+def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0, models = ['MLB','Tabnet','E7GB','ESVM']):
     np.random.seed(42)
     path = os.path.dirname(path)
     path_EDA = path + '/EDA/'
@@ -67,13 +67,24 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
             print(f'User of train_fold({fold}) : {np.unique(train_groups)}')
             print(f'User of val_fold({fold}) :{np.unique(val_groups)}')    
 
-            estimator, param_grid = useModel(model) 
+            if model == 'E7GB':
+                estimator = useModel(model)
+            else:
+                estimator, param_grid = useModel(model) 
             
-            grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=GroupKFold(n_splits=3), scoring='accuracy', verbose=1)
-            grid_search.fit(X_train_fold, y_train_fold, groups = train_groups)
-            
-            y_val_pred = grid_search.predict(X_val_fold)
-            y_pred_prob = grid_search.predict_proba(X_val_fold)[:,1]
+            if model != 'E7GB' and model != 'ESVM':
+                grid_search = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=GroupKFold(n_splits=3), scoring='accuracy', verbose=1)
+                grid_search.fit(X_train_fold, y_train_fold, groups = train_groups)
+                
+                y_val_pred = grid_search.predict(X_val_fold)
+                y_pred_prob = grid_search.predict_proba(X_val_fold)[:,1]
+
+            else:
+                estimator.fit(X_train_fold, y_train_fold)
+                y_val_pred = estimator.predict(X_val_fold)
+                y_pred_prob = estimator.predict_proba(X_val_fold)
+                if model == 'ESVM':
+                    y_pred_prob = y_pred_prob[:,1]
 
             y_pred_vals.append(y_pred_prob)
             accuracy = accuracy_score(y_val_fold, y_val_pred)
@@ -84,17 +95,26 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
 
             if accuracy > best_score:
                 best_score = accuracy
-                best_model = grid_search
+                if model != 'E7GB' and model != 'ESVM':
+                    best_model = grid_search
+                else:
+                    best_model = estimator
 
         # ROC tâp validation K-Fold
         EDA.draw_ROC(path_EDA + "/models/", y_vals, y_pred_vals, model)
 
         # Dự đoán trên tập kiểm tra
-        print(f"Best parameters found: {best_model.best_params_}\n")
+        if model == 'ESVM':
+            print(f"Best parameters found: {useModel(model)[1]}\n")
+        else:
+            print(f"Best parameters found: {best_model.best_params_}\n")
         y_pred = best_model.predict(X_test)
         y_pred_proba = best_model.predict_proba(X_test)
 
-        y_pred_tests.append(y_pred_proba[:, 1])
+        if model == 'E7GB':
+            y_pred_tests.append(y_pred_proba)
+        else: 
+            y_pred_tests.append(y_pred_proba[:, 1])
 
         # Đánh giá mô hình trên tập kiểm tra
         acc = accuracy_score(y_test, y_pred)
@@ -134,68 +154,25 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
 
 def useModel(model):
 # Train model
-    if model == 'LR':
-        estimator = LR(random_state=42)
-        # Find best parmeter 
+    
+    if model == 'E7GB':
+        estimator = EnsembleModel_7GB()
+    elif model == 'ESVM':
+        base_estimator = SVC(probability=True, random_state=42)
+        estimator = AdaBoostClassifier(base_estimator=base_estimator, n_estimators=10, random_state=42)
+        param_grid = estimator.get_params()
+    elif model == 'MLP':
+        estimator = MLPClassifier(random_state=42)
         param_grid = {
-            'C': [0.01, 0.1, 1, 10, 100],
-            'penalty': ['l1', 'l2'],        
-            'solver': ['liblinear']         
+            'hidden_layer_sizes': [(100,), (50, 50), (100, 100)],  # Số lượng nơ-ron ẩn trong mỗi layer
+            'activation': ['relu', 'tanh', 'logistic'],              # Hàm kích hoạt
+            'solver': ['adam', 'sgd'],                                # Thuật toán tối ưu
+            'alpha': [0.0001, 0.001, 0.01],                           # L2 penalty (regularization term) parameter
+            'learning_rate': ['constant', 'invscaling', 'adaptive']   # Phương pháp cập nhật learning rate
         }
-    elif model == 'LDA':
-        estimator = LDA()
-        param_grid = {
-            'solver': ['svd', 'lsqr', 'eigen'],  
-            'shrinkage': [None, 'auto', 0.1, 0.5, 0.9] 
-        }
-    elif model == 'KNN':
-        estimator = KNN()
-        param_grid = {
-            'n_neighbors': [3, 5, 7, 9, 11],        # Số lượng láng giềng k
-            'weights': ['uniform', 'distance'],     # Trọng số: uniform (các điểm đều quan trọng), distance (trọng số theo khoảng cách)
-            'metric': ['euclidean', 'manhattan', 'minkowski']  # Loại khoảng cách: Euclidean, Manhattan hoặc Minkowski
-        }                
-    elif model == 'AB':
-        estimator = AB(random_state=42)
-        param_grid = {
-            'n_estimators': [50, 100, 200],  # Số lượng bộ phân loại cơ sở (number of weak learners)
-            'learning_rate': [0.01, 0.1, 1.0],  # Tốc độ học (learning rate)
-        }    
-    elif model == 'RF':
-        estimator = RF(random_state=42)
-        param_grid = {
-            'n_estimators': [100, 200, 300],  # Number of trees in the forest
-            'max_depth': [10, 20, 30],        # Maximum depth of the tree
-            'min_samples_split': [2, 5, 10],  # Minimum number of samples required to split a node
-            'min_samples_leaf': [1, 2, 4]     # Minimum number of samples required at each leaf node
-        }     
-    elif model == 'GB':
-        estimator = GB(random_state=42)
-        param_grid = {
-            'n_estimators': [100, 200, 300],  # Number of boosting stages to be run
-            'learning_rate': [0.01, 0.1, 0.2],  # Step size shrinkage
-            'max_depth': [3, 5, 7],          # Maximum depth of the tree
-            'min_samples_split': [2, 5, 10], # Minimum number of samples required to split a node
-            'min_samples_leaf': [1, 2, 4]    # Minimum number of samples required at each leaf node
-        }   
-    elif model == 'SVM':
-        estimator = SVC(probability=True, random_state=42)
-        param_grid = {
-            'C': [0.1, 1, 10, 100],                # Điều chỉnh độ phạt sai số
-            'kernel': ['linear', 'rbf', 'poly'],    # Các loại kernel
-            'gamma': ['scale', 'auto', 0.001, 0.01, 0.1, 1],  # Tham số gamma cho RBF, poly kernels
-            'degree': [2, 3, 4]                    # Bậc của polynomial kernel (nếu dùng 'poly')
-        }
-    elif model == 'XGB':
-        estimator = XGBClassifier(random_state=42)
-        param_grid = {
-            'n_estimators': [100, 200, 300],  # Number of boosting stages to be run
-            'learning_rate': [0.01, 0.1, 0.2],  # Step size shrinkage
-            'max_depth': [3, 5, 7],          # Maximum depth of the tree
-            'min_child_weight': [1, 2, 4],   # Minimum sum of instance weight (hessian) needed in a child
-            'subsample': [0.8, 1.0],         # Subsample ratio of the training instance
-            'colsample_bytree': [0.8, 1.0],  # Subsample ratio of columns when constructing each tree
-            'gamma': [0, 0.1, 0.2]           # Minimum loss reduction required to make a further partition on a leaf node of the tree
-        }
-    return estimator, param_grid
+
+    if model == 'E7GB':
+        return estimator
+    else:
+        return estimator, param_grid
         

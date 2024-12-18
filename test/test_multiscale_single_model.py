@@ -20,7 +20,7 @@ from split_data import split_data
 from selection_feature import Feature_Selection
 from EDA import EDA
 sys.path.append('/kaggle/working/cogload/model/')
-from model import train_model
+from single_model import train_model
 
 
 #argument parser
