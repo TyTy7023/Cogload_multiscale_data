@@ -28,6 +28,12 @@ class split_data () :
         self.hr_df = self.hr_df.rolling(self.window_size,axis=1).mean()
         self.gsr_df = self.gsr_df.rolling(self.window_size,axis=1).mean()
         self.rr_df = self.rr_df.rolling(self.window_size,axis=1).mean()
+        
+        # Drop NaN values
+        self.temp_df = self.temp_df.dropna(axis=1, how='all')
+        self.hr_df = self.hr_df.dropna(axis=1, how='all')
+        self.gsr_df = self.gsr_df.dropna(axis=1, how='all')
+        self.rr_df = self.rr_df.dropna(axis=1, how='all')
 
     def get_data(self):
         self.all_data_train = []
