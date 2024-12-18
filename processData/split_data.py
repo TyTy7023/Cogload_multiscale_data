@@ -35,8 +35,6 @@ class split_data () :
         self.gsr_df = self.gsr_df.dropna(axis=1, how='all')
         self.rr_df = self.rr_df.dropna(axis=1, how='all')
 
-        print(f'After SMA: {self.temp_df.shape}')
-
     def get_data(self):
         self.all_data_train = []
         self.all_data_test = []
@@ -57,6 +55,8 @@ class split_data () :
         return sum(self.all_data_train), processing_data.y_train, sum(self.all_data_test), processing_data.y_test, processing_data.user_train, processing_data.user_test
     
     def split_data(self, split = 2):
+        if split <= 0:
+            raise ValueError("Invalid number of splits. Please choose a number greater than 0.")
         temp_split = []
         hr_split = []
         gsr_split = []

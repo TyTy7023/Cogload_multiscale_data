@@ -12,6 +12,7 @@ warnings.simplefilter("ignore")#ignore warnings during executiona
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.ensemble import RandomForestClassifier as RF
 from sklearn.svm import SVC
+from xgboost import XGBClassifier
 
 import sys
 sys.path.append('/kaggle/working/cogload/processData/')
@@ -84,16 +85,16 @@ if args.model_selected_feature == 'RFECV':
         estimator = SVC(probability=True, random_state=42, kernel="linear")
     elif args.estimator_RFECV == 'RF':
         estimator = RF(random_state = 42)
+    else:
+        estimator = XGBClassifier(random_state = 42, n_jobs = -1)
 
     X_train, X_test = Feature_Selection.selected_RFECV(X_train,
                                                     X_test, 
                                                     y_train, 
                                                     user_train, 
                                                     estimator = estimator)
-
-
-print(f'X_train after RFECV: {X_train.shape}\n\n')
-X_train.to_csv('/kaggle/working/X_train_RFECV.csv', index=False)
+    print(f'X_train after RFECV: {X_train.shape}\n\n')
+    X_train.to_csv('/kaggle/working/X_train_selected.csv', index=False)
 
 if args.models == []:
     sys.exit()
