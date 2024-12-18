@@ -49,14 +49,6 @@ if not os.path.exists(directory_name):
 file_name = f'args.csv'  
 log_args.to_csv(os.path.join(directory_name, file_name), index=False)
 
-df = pd.DataFrame({
-        'Model': [],
-        'Features_removing': [],
-        'Accuracy': [],
-    })
-directory_name = f'/kaggle/working/log/result.csv'
-df.to_csv(directory_name, index=False)
-
 #read the data
 label_df = pd.read_excel(args.data_folder_path+'labels.xlsx',index_col=0)
 temp_df= pd.read_excel(args.data_folder_path+'temp.xlsx',index_col=0)

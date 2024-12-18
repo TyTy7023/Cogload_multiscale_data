@@ -43,7 +43,6 @@ class split_data () :
             processing_data.splits_train_test()
             processing_data.X_train, processing_data.X_test = processing_data.normalize_data(processing_data.X_train, processing_data.X_test)
             
-        
             self.all_data_train.append(processing_data.X_train)
             self.all_data_test.append(processing_data.X_test)
         
