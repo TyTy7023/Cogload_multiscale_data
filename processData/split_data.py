@@ -51,7 +51,7 @@ class split_data () :
             
             self.all_data_train.append(processing_data.X_train)
             self.all_data_test.append(processing_data.X_test)
-        
+        print(f'X_test : \n{self.all_data_test}\n\nX_train : \n{self.all_data_train}\n\n')
         return sum(self.all_data_train), processing_data.y_train, sum(self.all_data_test), processing_data.y_test, processing_data.user_train, processing_data.user_test
     
     def split_data(self, split = 2):
