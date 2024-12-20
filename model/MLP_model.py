@@ -34,7 +34,7 @@ class MLP:
         
         def tuner(self, directory):
             return RandomSearch(
-                hypermodel=self.build(),
+                hypermodel=self.build,
                 objective='val_accuracy',
                 max_trials=10, # Số lượng thử nghiệm
                 tune_new_entries=True, # Cho phép thêm tham số mới
