@@ -56,7 +56,7 @@ class MLP:
 
         def predict_proba(self, X_test):
             if self.best_model is not None:
-                return self.best_model.predict_proba(X_test)
+                return self.best_model.predict(X_test)
             else:
                 raise ValueError("Model is not trained yet. Call fit() first.")
         
