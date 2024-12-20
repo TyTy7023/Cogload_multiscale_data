@@ -54,23 +54,23 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
 
             # Train model
             if model == 'MLP_Sklearn':
-                model = MLP.MLP_Sklearn()
-                model.fit(X_train_fold, y_train_fold, train_groups)
+                estimator = MLP.MLP_Sklearn()
+                estimator.fit(X_train_fold, y_train_fold, train_groups)
 
             elif model == 'MLP_Keras':
-                model = MLP.MLP_Keras()
-                model.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold, path)
+                estimator = MLP.MLP_Keras()
+                estimator.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold, path)
 
-            y_pred_prob = model.predict_proba(X_val_fold)[:, 1]
+            y_pred_prob = estimator.predict_proba(X_val_fold)[:, 1]
             y_pred_vals.append(y_pred_prob)
 
-            y_val_pred = model.predict(X_val_fold)
+            y_val_pred = estimator.predict(X_val_fold)
             accuracy = accuracy_score(y_val_fold, y_val_pred)
             accuracy_all.append(accuracy)
 
             if accuracy > best_score:
                 best_score = accuracy
-                best_model = model
+                best_model = estimator
 
         # ROC tâp validation K-Fold
         EDA.draw_ROC(path_EDA + "/models/", y_vals, y_pred_vals, model)
