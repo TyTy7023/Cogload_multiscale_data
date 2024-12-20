@@ -55,8 +55,8 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
             # Train model
             if model == 'MLP_Sklearn':
                 model = MLP.MLP_Sklearn()
-                model.fit(X_train_fold, y_train_fold)
-                
+                model.fit(X_train_fold, y_train_fold, train_groups)
+
             elif model == 'MLP_Keras':
                 model = MLP.MLP_Keras()
                 model.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold, path)
