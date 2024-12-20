@@ -1,7 +1,4 @@
-try:
-    import scikeras
-except ImportError:
-    !python -m pip install scikeras
+import scikeras
 import warnings
 from tensorflow import get_logger
 import numpy as np
