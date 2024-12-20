@@ -56,12 +56,13 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
             if model == 'MLP_Sklearn':
                 estimator = MLP.MLP_Sklearn()
                 estimator.fit(X_train_fold, y_train_fold, train_groups)
+                y_pred_prob = estimator.predict_proba(X_val_fold)[:, 1]
 
             elif model == 'MLP_Keras':
                 estimator = MLP.MLP_Keras()
                 estimator.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold, path)
+                y_pred_prob = estimator.predict_proba(X_val_fold)
 
-            y_pred_prob = estimator.predict_proba(X_val_fold)[:, 1]
             y_pred_vals.append(y_pred_prob)
 
             y_val_pred = estimator.predict(X_val_fold)
@@ -79,7 +80,10 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
         print(f"Best parameters found: {best_model.best_params}\n")
         y_pred = best_model.predict(X_test)
         y_pred_proba = best_model.predict_proba(X_test)
-        y_pred_tests.append(y_pred_proba[:, 1])
+        if model == 'MLP_Keras':
+            y_pred_tests.append(y_pred_proba)
+        else: 
+            y_pred_tests.append(y_pred_proba[:, 1])
 
         # Đánh giá mô hình trên tập kiểm tra
         acc = accuracy_score(y_test, y_pred)
