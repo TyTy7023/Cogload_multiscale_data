@@ -66,7 +66,7 @@ class MLP:
             else:
                 raise ValueError("Model is not trained yet. Call fit() first.")
             
-    class MLP_sklearn:
+    class MLP_Sklearn:
         def __init__(self):
             self.best_model = None
             self.best_params = None
