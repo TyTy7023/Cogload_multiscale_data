@@ -61,7 +61,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
                 model = MLP.MLP_Keras()
                 model.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold, path)
 
-            y_pred_prob = model.predict_proba(X_val_fold)
+            y_pred_prob = model.predict_proba(X_val_fold)[:, 1]
             y_pred_vals.append(y_pred_prob)
 
             y_val_pred = model.predict(X_val_fold)
