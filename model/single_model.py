@@ -17,16 +17,11 @@ from sklearn.ensemble import RandomForestClassifier as RF
 from sklearn.ensemble import AdaBoostClassifier as AB
 from sklearn.ensemble import GradientBoostingClassifier as GB
 from sklearn.svm import SVC
-from sklearn.neural_network import MLPClassifier
 from xgboost import XGBClassifier
-
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 import sys
 sys.path.append('/kaggle/working/cogload/')
 from EDA import EDA
-from model_method_I import EnsembleModel_7GB
 
 def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0, models = ['LR', 'LDA', 'KNN', 'RF', 'AB', 'GB', 'SVM', 'XGB']):
     np.random.seed(42)
@@ -118,7 +113,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
         log_results.append({
             "model": model,
             "accuracy": f"{acc} +- {accuracy_all.std()}",
-            "best_model": best_model.best_params_ if model != "ESVM" else  useModel(model)[1],
+            "best_model": best_model.best_params_ ,
             "f1_score": f1Score,
             "confusion_matrix": conf_matrix
         })
