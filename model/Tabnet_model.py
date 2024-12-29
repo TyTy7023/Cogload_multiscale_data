@@ -100,7 +100,7 @@ class TabNet:
     def predict_proba(self, X_test):
         X_test = X_test.values if isinstance(X_test, pd.DataFrame) else X_test
         if self.best_model is not None:
-            return self.best_model.predict_proba(X_test)
+            return  pd.DataFrame(self.best_model.predict_proba(X_test))
         else:
             raise ValueError("Model is not trained yet. Call fit() first.")
     
