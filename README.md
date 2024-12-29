@@ -18,16 +18,19 @@
 # CÁCH THỰC NGHIỆM MỘT BASELINE: 
 - Kết nối Kaggle với GitHub với tên thư mục là cogload
 - %run /kaggle/working/cogload/test.py
-- Các thông số truyền vào có thể thay đổi
-	+ --data_folder_path, default = "/kaggle/input/cognitiveload/UBIcomp2020/last_30s_segments/" 
-	+ --GroupKFold, default = 3, type = int, help = "Slip data into k group for training model"
-	+ --window_size, default = 1, help ="Window size for feature extraction SMA"
-	+ --normalize, default = "Standard", help = "Normalization method, Standard or MinMax")
-	+ --k_features, default = 11, help = "k of feature selected of SFS")
-	+ --forward, default = False, type = bool, help = "True to use backward, False to use forward"
-	+ --floating, default = True, type = int, help = "True to use sfs with floating, False with no floating"
-	+ --model_selected_feature", default = "None", help = "None, RFECV, SFS"
-	+ --split, default=[], type = int, help = "split the segment to extract"
-	+ --estimator_RFECV, default='SVM', type=str, help="model for RFECV"
-	+ --debug, default = 0, type = int, help="debug mode 0: no debug, 1: debug"
+- Các thông số truyền vào có thể thay đổi:
+
+	+ parser.add_argument("--data_folder_path", default = "/kaggle/input/cognitiveload/UBIcomp2020/last_30s_segments/", type = str, help = "Path to the data folder")
+	+ parser.add_argument("--GroupKFold", default = 3, type = int, help = "Slip data into k group")
+	+ parser.add_argument("--window_size", default = 1, type = int, help = "Window size for feature extraction SMA")
+	+ parser.add_argument("--normalize", default = "Standard", type = str, help = "Normalization method, Standard or MinMax")
+	+ parser.add_argument("--model_selected_feature", default = "None", type = str, help = "None, RFECV, SFS")
+	+ parser.add_argument("--k_features", default = 11, type = int, help = "k of feature selected of SFS")
+	+ parser.add_argument("--forward", default = False, type = bool, help = "True to use backward, False to use forward")
+	+ parser.add_argument("--floating", default = True, type = bool, help = "True to use sfs with floating, False with no floating")
+	+ parser.add_argument("--split", nargs='+', default=[] , type=int, help="the split of data example 2 6 to split data into 2 and 6 to extract feature")
+	+ parser.add_argument("--estimator_RFECV", default='SVM', type=str, help="model for RFECV")
+	+ parser.add_argument("--debug", default = 0, type = int, help="debug mode 0: no debug, 1: debug")
+	+ parser.add_argument("--models_single", nargs='+', default=['LDA', 'SVM', 'RF','XGB'] , type=str, help="models to train")
+	+ parser.add_argument("--models_mul", nargs='+', default=['MLP_Sklearn', 'MLP_Keras','TabNet'] , type=str, help="models to train")
 - Kết quả sẽ được lưu vào kaggle/ouput/log/

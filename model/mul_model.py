@@ -15,7 +15,7 @@ from EDA import EDA
 from MLP_model import MLP
 from Tabnet_model import TabNet
 
-def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0, models = ['MLP_Sklearn', 'MLP_Keras','Tabnet']):
+def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0, models = ['MLP_Sklearn', 'MLP_Keras','TabNet']):
     np.random.seed(42)
     path = os.path.dirname(path)
     path_EDA = path + '/EDA/'
@@ -64,7 +64,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
                 estimator.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold, path)
                 y_pred_prob = estimator.predict_proba(X_val_fold)
 
-            if model == 'Tabnet':
+            if model == 'TabNet':
                 estimator = TabNet()
                 estimator.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold)
                 y_pred_prob = estimator.predict_proba(X_val_fold)[:, 1]
