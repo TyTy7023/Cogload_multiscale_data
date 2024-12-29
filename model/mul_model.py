@@ -13,6 +13,7 @@ import sys
 sys.path.append('/kaggle/working/cogload/')
 from EDA import EDA
 from MLP_model import MLP
+from Tabnet_model import TabNet
 
 def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0, models = ['MLP_Sklearn', 'MLP_Keras','Tabnet']):
     np.random.seed(42)
@@ -62,6 +63,11 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
                 estimator = MLP.MLP_Keras()
                 estimator.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold, path)
                 y_pred_prob = estimator.predict_proba(X_val_fold)
+
+            if model == 'Tabnet':
+                estimator = TabNet()
+                estimator.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold)
+                y_pred_prob = estimator.predict_proba(X_val_fold) 
 
             y_pred_vals.append(y_pred_prob)
 
