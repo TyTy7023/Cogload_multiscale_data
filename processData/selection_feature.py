@@ -10,8 +10,8 @@ from xgboost import XGBClassifier
 from sklearn.svm import SVC
 
 import sys
-sys.path.append('/kaggle/working/cogload/')
-from model.best_model import train_model
+sys.path.append('/kaggle/working/cogload/model/')
+from best_model import train_model
 
 class Feature_Selection:
     @staticmethod
