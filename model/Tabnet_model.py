@@ -101,7 +101,7 @@ class TabNet:
         X_test = X_test.values if isinstance(X_test, pd.DataFrame) else X_test
         if self.best_model is not None:
             probas = self.best_model.predict_proba(X_test)
-            return pd.DataFrame(probas)
+            return probas
         else:
             raise ValueError("Model is not trained yet. Call fit() first.")
     
