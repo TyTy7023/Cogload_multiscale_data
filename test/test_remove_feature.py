@@ -80,6 +80,8 @@ X_train.to_csv('/kaggle/working/X_train.csv', index=False)
 
 if args.model_selected_feature == 'SFS':
     Feature_Selection = Feature_Selection.mine_SFS(X_train, X_test, y_train, y_test, user_train)
+    X_train = X_train[Feature_Selection]
+    X_test = X_test[Feature_Selection]
 if args.models == []:
     sys.exit()
 train_model(X_train, 
