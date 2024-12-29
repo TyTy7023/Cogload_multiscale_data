@@ -9,6 +9,7 @@ from mlxtend.feature_selection import SequentialFeatureSelector as SFS
 from xgboost import XGBClassifier
 from sklearn.svm import SVC
 
+import sys
 sys.path.append('/kaggle/working/cogload/')
 from model.best_model import train_model
 
