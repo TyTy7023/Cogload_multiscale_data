@@ -20,7 +20,7 @@ from split_data import split_data
 from selection_feature import Feature_Selection
 from EDA import EDA
 sys.path.append('/kaggle/working/cogload/model/')
-from mul_model import train_model
+from single_model import train_model
 
 
 #argument parser
@@ -73,15 +73,18 @@ processing_data = split_data(window_size = args.window_size,
 for i in range(len(args.split)):
     processing_data.split_data(split = args.split [i])
 X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_data()
-print(f'X_test : {X_test.shape}\n\n')
-
+print(f'X_test : {X_test.shape}\n')
 print(f'X_train : {X_train.shape}\n\n')
+
 X_train.to_csv('/kaggle/working/X_train.csv', index=False)
 
 if args.model_selected_feature == 'SFS':
     Feature_Selection = Feature_Selection.mine_SFS(X_train, X_test, y_train, y_test, user_train)
     X_train = X_train[Feature_Selection]
     X_test = X_test[Feature_Selection]
+    print(f'X_train : {X_train.shape}\n\n')
+    X_train.to_csv('/kaggle/working/X_train_Selected.csv', index=False)
+
 if args.models == []:
     sys.exit()
 train_model(X_train, 
