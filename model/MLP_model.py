@@ -1,16 +1,4 @@
-import subprocess
-import sys
 
-def install_and_import(package):
-    try:
-        __import__(package)
-    except ImportError:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-
-# Cài đặt và import thư viện
-install_and_import("scikeras")
-
-import scikeras
 import warnings
 from tensorflow import get_logger
 import numpy as np
@@ -29,6 +17,19 @@ from sklearn.model_selection import RandomizedSearchCV, GroupKFold
 class MLP:
     class MLP_Keras:
         def __init__(self):
+            import subprocess
+            import sys
+
+            def install_and_import(package):
+                try:
+                    __import__(package)
+                except ImportError:
+                    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+            # Cài đặt và import thư viện
+            install_and_import("scikeras")
+
+            import scikeras
             self.best_model = None
             self.best_params = None
 
