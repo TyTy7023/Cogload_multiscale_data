@@ -43,6 +43,6 @@
 	+ parser.add_argument("--split", nargs='+', default=[] , type=int, help="the split of data example 2 6 to split data into 2 and 6 to extract feature")
 	+ parser.add_argument("--estimator_RFECV", default='SVM', type=str, help="model for RFECV")
 	+ parser.add_argument("--debug", default = 0, type = int, help="debug mode 0: no debug, 1: debug")
-	+ parser.add_argument("--models_single", nargs='+', default=['LDA', 'SVM', 'RF','XGB'] , type=str, help="models to train")
-	+ parser.add_argument("--models_mul", nargs='+', default=['MLP_Sklearn', 'MLP_Keras','TabNet'] , type=str, help="models to train")
+	+ parser.add_argument("--models_single", nargs='+', default=[] , type=str, help="models single to train, ('LDA', 'SVM', 'RF','XGB')")
+	+ parser.add_argument("--models_mul", nargs='+', default=[] , type=str, help="models mul to train, ('MLP_Sklearn', 'MLP_Keras','TabNet')")
 - Kết quả sẽ được lưu vào kaggle/ouput/log/
