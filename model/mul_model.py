@@ -64,11 +64,13 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
                 estimator.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold, path)
                 y_pred_prob = estimator.predict_proba(X_val_fold)
 
-            if model == 'TabNet':
+            elif model == 'TabNet':
                 estimator = TabNet()
                 estimator.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold)
                 y_pred_prob = estimator.predict_proba(X_val_fold)[:, 1]
-
+            
+            else:
+                raise ValueError(f"Model {model} is not supported")
             y_pred_vals.append(y_pred_prob)
 
             y_val_pred = estimator.predict(X_val_fold)

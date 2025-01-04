@@ -192,5 +192,7 @@ def useModel(model):
             'colsample_bytree': [0.8, 1.0],  # Subsample ratio of columns when constructing each tree
             'gamma': [0, 0.1, 0.2]           # Minimum loss reduction required to make a further partition on a leaf node of the tree
         }
+    else:
+        raise ValueError(f"Model {model} is not supported")
     return estimator, param_grid
         
