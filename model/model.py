@@ -6,7 +6,6 @@ import itertools
 
 from sklearn.model_selection import GroupKFold
 from sklearn.model_selection import GridSearchCV
-from sklearn.ensemble import AdaBoostClassifier
 from sklearn.metrics import classification_report, accuracy_score, log_loss
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
@@ -29,9 +28,11 @@ sys.path.append('/kaggle/working/cogload/')
 from EDA import EDA
 from model_method_I import EnsembleModel_7GB
 
-def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0):
+def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0, models = ['ESVM','E7GB', 'MLP', 'LR', 'LDA', 'KNN', 'RF', 'AB', 'GB', 'SVM', 'XGB']):
     np.random.seed(42)
-    models = ['ESVM','E7GB', 'MLP', 'LR', 'LDA', 'KNN', 'RF', 'AB', 'GB', 'SVC', 'XGB']
+    path = os.path.dirname(path)
+    path_EDA = path + '/EDA/'
+
     if debug == 1:
         models = models[:2]
     log_results = []
@@ -100,7 +101,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
                     best_model = estimator
 
         # ROC tâp validation K-Fold
-        EDA.draw_ROC(path, y_vals, y_pred_vals, model)
+        EDA.draw_ROC(path_EDA + "/models/", y_vals, y_pred_vals, model)
 
         # Dự đoán trên tập kiểm tra
         if model == 'ESVM':
@@ -120,7 +121,6 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
         conf_matrix = confusion_matrix(y_test, y_pred)
         class_report = classification_report(y_test, y_pred)
         f1Score = f1_score(y_test, y_pred, average=None)
-        logloss = log_loss(y_test, y_pred_proba)
 
         test_accuracy_models.append(acc)
         accuracies_all.extend(accuracy_all)
@@ -128,19 +128,6 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
 
         print("Report:" + class_report)
         print(f"ACCURACY: {acc}")
-        print(f"LOGLOSS: {logloss}")
-
-
-        # Xác định các lớp để hiển thị trong ma trận nhầm lẫn
-        unique_labels = np.unique(np.concatenate((y_test, y_pred)))
-        plt.figure(figsize=(6, 4))
-        sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', cbar=False, 
-                    xticklabels=unique_labels.tolist(), 
-                    yticklabels=unique_labels.tolist())
-        plt.xlabel('Predicted')
-        plt.ylabel('Actual')
-        plt.title('Confusion Matrix')
-        plt.show()
 
         accuracy_all = np.array(accuracy_all)
         logloss_all = np.array(logloss_all)
@@ -151,7 +138,6 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
         log_results.append({
             "model": model,
             "accuracy": f"{acc} +- {accuracy_all.std()}",
-            "logloss": f"{logloss} +- {logloss_all.std()}",
             "best_model": best_model.best_params_ if model != "ESVM" else  useModel(model)[1],
             "f1_score": f1Score,
             "confusion_matrix": conf_matrix
@@ -161,10 +147,10 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
     file_name = f'results_model.csv'  # Tên file tự động
     log_results.to_csv(os.path.join(path, file_name), index=False)
 
-    EDA.draw_Bar(path, models, test_accuracy_models, 'Accuracy Test')
-    EDA.draw_BoxPlot(path, list(itertools.chain.from_iterable([[i]*3 for i in models])), accuracies_all, 'Accuracy train')
-    EDA.draw_Bar(path, models, f1_score_models, 'F1 Score')
-    EDA.draw_ROC(path, y_test, y_pred_tests, models)
+    EDA.draw_Bar(path_EDA, models, test_accuracy_models, 'Accuracy Test')
+    EDA.draw_BoxPlot(path_EDA, list(itertools.chain.from_iterable([[i]*3 for i in models])), accuracies_all, 'Accuracy train')
+    EDA.draw_Bar(path_EDA, models, f1_score_models, 'F1 Score')
+    EDA.draw_ROC(path_EDA, y_test, y_pred_tests, models)
 
 def useModel(model):
 # Train model
@@ -212,7 +198,7 @@ def useModel(model):
             'min_samples_split': [2, 5, 10], # Minimum number of samples required to split a node
             'min_samples_leaf': [1, 2, 4]    # Minimum number of samples required at each leaf node
         }   
-    elif model == 'SVC':
+    elif model == 'SVM':
         estimator = SVC(probability=True, random_state=42)
         param_grid = {
             'C': [0.1, 1, 10, 100],                # Điều chỉnh độ phạt sai số

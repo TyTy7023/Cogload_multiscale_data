@@ -35,7 +35,6 @@ class EDA:
         plt.legend(loc="lower right")
 
         # Hiển thị biểu đồ
-        path += '/EDA/'
         if not os.path.exists(path):
             os.makedirs(path)
         plt.savefig(os.path.join(path, f"ROC-{model}"))
@@ -92,5 +91,34 @@ class EDA:
         plt.savefig(os.path.join(path, Type))
         plt.show()
 
+    @staticmethod
+    def draw_LinePlot(path, model, results, Type):
+        data = {
+            'Feature': model,
+            Type: results 
+        }
 
+        # Tạo DataFrame từ dữ liệu
+        df = pd.DataFrame(data)
+
+        # Chuyển đổi cột 'Accuracy' thành kiểu số thực
+        df[Type] = df[Type].astype(float)
+        df['Feature'] = df['Feature'].astype(str)
+        # Vẽ biểu đồ boxplot
+        plt.figure(figsize=(15, 6))
+        line = sns.lineplot(x='Feature', y=Type, data=df, palette='pastel')
+        
+        # Thêm thông số trên các cột
+        for p in line.patches:
+            line.annotate(f'{p.get_height():.2f}', 
+                            (p.get_x() + p.get_width() / 2., p.get_height()), 
+                            ha='center', va='bottom', 
+                            fontsize=12)
+        plt.plot(df['Feature'], df[Type], marker='o')  # marker='o' thêm chấm tròn tại mỗi điểm    
+        plt.title('Algorithm Comparison')
+        plt.ylabel(f'{Type} (Test)')
+        plt.xticks(rotation=90)
+        
+        plt.savefig(os.path.join(path, Type))
+        plt.show()
 
