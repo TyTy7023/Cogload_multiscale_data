@@ -28,6 +28,7 @@
 - EDA: vẽ chart
 - test: chứa các file test
 - main.py: file chạy chính của model
+- noteBook: file chạy trên kaggle
   
 # CÁCH THỰC NGHIỆM MỘT BASELINE: 
 - Kết nối Kaggle với GitHub với tên thư mục là cogload
