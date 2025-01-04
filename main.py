@@ -21,7 +21,6 @@ from selection_feature import Feature_Selection
 from EDA import EDA
 sys.path.append('/kaggle/working/cogload/model/')
 from single_model import train_model as train_model_single
-from mul_model import train_model as train_model_mul
 
 
 #argument parser
@@ -120,6 +119,7 @@ if args.models_single != []:
             models= args.models)
 
 if args.models_mul != []:
+    from mul_model import train_model as train_model_mul
     train_model_mul(X_train,
                 y_train, 
                 X_test, 
