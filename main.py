@@ -114,7 +114,7 @@ if args.models_single != []:
             y_test, 
             user_train,
             n_splits=args.GroupKFold, 
-            path = directory_name, 
+            path = directory_name + 'single_model/', 
             debug = args.debug,
             models= args.models_single)
 
@@ -126,6 +126,6 @@ if args.models_mul != []:
                 y_test, 
                 user_train,
                 n_splits=args.GroupKFold, 
-                path = directory_name, 
+                path = directory_name + 'mul_model/', 
                 debug = args.debug,
                 models= args.models_mul)
