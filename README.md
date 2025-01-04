@@ -25,8 +25,9 @@
    		+ processing_data: chứa class xử lý preprocessing với statistical, splits train test, normalize
 		+ split_data: xử lý multiscale data
 		+ selection_feature.py: File chứa class xử lý selected feature. Có 2 mô hình selected: (RFECV(estimator = XGBClassifier(n_jobs=-1)), selected_SFS(estimator = SVM(kernel='linear')),  selected_SBS())
-  + test: chứa các file test
-  + main.py: file chạy chính của model
+- EDA: vẽ chart
+- test: chứa các file test
+- main.py: file chạy chính của model
   
 # CÁCH THỰC NGHIỆM MỘT BASELINE: 
 - Kết nối Kaggle với GitHub với tên thư mục là cogload
