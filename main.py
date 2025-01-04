@@ -116,7 +116,7 @@ if args.models_single != []:
             n_splits=args.GroupKFold, 
             path = directory_name, 
             debug = args.debug,
-            models= args.models)
+            models= args.models_single)
 
 if args.models_mul != []:
     from mul_model import train_model as train_model_mul
@@ -128,4 +128,4 @@ if args.models_mul != []:
                 n_splits=args.GroupKFold, 
                 path = directory_name, 
                 debug = args.debug,
-                models= args.models)
+                models= args.models_mul)
