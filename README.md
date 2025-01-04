@@ -1,3 +1,11 @@
+# Author
+- Hướng dẫn:
+	+ TS. Đỗ Như Tài
+	+ TS. Nguyễn Quốc Huy
+- Thực hiện:
+	+ Đỗ Minh Quân
+	+ Lê Thị Mỹ Hương
+	+  Trần Bùi Ty Ty
 # cogLoad_experiment
 
 - baselines: chứa 4 thư mục (none, rfecv, sbfs, sffs) là những baseline thực hiện trên kaggle với các feature selection khác nhau và kết quả của các thực nghiệm được lưu tại https://docs.google.com/spreadsheets/d/1zgkSr6DWsrN9pbjXBCUEjU8tTATNmxz-gy427TRlKXw/edit?gid=0#gid=0
