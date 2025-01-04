@@ -120,8 +120,6 @@ if args.models_single != []:
             models= args.models)
 
 if args.models_mul != []:
-    !pip install scikeras
-    !pip install pytorch-tabnet
     train_model_mul(X_train,
                 y_train, 
                 X_test, 

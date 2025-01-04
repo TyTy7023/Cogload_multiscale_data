@@ -1,3 +1,15 @@
+import subprocess
+import sys
+
+def install_and_import(package):
+    try:
+        __import__(package)
+    except ImportError:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+# Cài đặt và import thư viện
+install_and_import("pytorch_tabnet")
+
 import os
 import pandas as pd
 import numpy as np
