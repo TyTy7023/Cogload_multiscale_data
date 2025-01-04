@@ -29,7 +29,7 @@ parser.add_argument("--data_folder_path", default = "/kaggle/input/cognitiveload
 parser.add_argument("--GroupKFold", default = 3, type = int, help = "Slip data into k group")
 parser.add_argument("--window_size", default = 1, type = int, help = "Window size for feature extraction SMA")
 parser.add_argument("--normalize", default = "Standard", type = str, help = "Normalization method, Standard or MinMax")
-parser.add_argument("--model_selected_feature", default = "None", type = str, help = "None, RFECV, SFS")
+parser.add_argument("--model_selected_feature", default = "None", type = str, help = "None, RFECV, SFS, SBS")
 parser.add_argument("--k_features", default = 11, type = int, help = "k of feature selected of SFS")
 parser.add_argument("--forward", default = False, type = bool, help = "True to use backward, False to use forward")
 parser.add_argument("--floating", default = True, type = bool, help = "True to use sfs with floating, False with no floating")
@@ -78,8 +78,8 @@ print(f'X_train : {X_train.shape}\n\n')
 
 X_train.to_csv('/kaggle/working/X_train.csv', index=False)
 
-if args.model_selected_feature == 'SFS':
-    Feature_Selection = Feature_Selection.mine_SFS(X_train, X_test, y_train, y_test, user_train)
+if args.model_selected_feature == 'SBS':
+    Feature_Selection = Feature_Selection.selected_SBS(X_train, X_test, y_train, y_test, user_train)
     X_train = X_train[Feature_Selection]
     X_test = X_test[Feature_Selection]
     print(f'X_train : {X_train.shape}\n\n')

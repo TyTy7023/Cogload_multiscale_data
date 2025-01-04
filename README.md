@@ -7,19 +7,23 @@
 		*statFeatures.csv: 10 thống kê đặc trưng cơ bản (tham khảo từ bài báo gốc:https://colab.research.google.com/drive/1adYKWqgSsky0z5LITB9QjsFTmL7g90gH?usp=sharing) bao gồm mean, standard deviation, skewness, kurtosis, diff, diff2, 25th quantile, 75th, quantile, qdev, max-min.
 		*allFeatures.csv: bao gồm thống kê đặc trưng cơ bản và và các đặc trưng chuyên gia (tham khảo từ bài báo gốc https://colab.research.google.com/drive/1adYKWqgSsky0z5LITB9QjsFTmL7g90gH?usp=sharing)
 	+ last_30s_segments: gồm các tín hiệu sinh lý (gsr, hr, rr, temp) được trích xuất 30s cuối của mỗi tín hiệu và thông tin nhãn (labels)
--model.py:
-   + Hàm chạy lần lượt 9 models = ['LogisticRegression', 'LinearDiscriminantAnalysis', 'KNeighborsClassifier', 'DecisionTreeClassifier', 'GaussianNB', 'RandomForestClassifier', 'AdaBoostClassifier', 'GradientBoostingClassifier', 'SVC'] với random_state = 42
--processing_data.py:
-   + File chứa class xử lý preprocessing với statistical, splits train test, normalize
--selection_feature.py:
-  + File chứa class xử lý selected feature. Có 2 mô hình selected: (RFECV(estimator = XGBClassifier(n_jobs=-1)), SFS(estimator = SVM(kernel='linear')
-  + test.py: file chạy experiment
+- model:
+   + Bao gồm các file model trong đó có 3 file chính:
+		+ mul_model.py: chứa các model MLP và Tabnet
+		+ single_model.py: chứa các model đơn giản của thư viện sklearn,...
+		+ model.py: là file chạy model ban đầu, chứa gần như tất cả model đã được thử nghiệm
+- processData:
+   + Gồm các file xử lý data, có 3 file:
+   		+ processing_data: chứa class xử lý preprocessing với statistical, splits train test, normalize
+		+ split_data: xử lý multiscale data
+		+ selection_feature.py: File chứa class xử lý selected feature. Có 2 mô hình selected: (RFECV(estimator = XGBClassifier(n_jobs=-1)), selected_SFS(estimator = SVM(kernel='linear')),  selected_SBS())
+  + test: chứa các file test
+  + main.py: file chạy chính của model
   
 # CÁCH THỰC NGHIỆM MỘT BASELINE: 
 - Kết nối Kaggle với GitHub với tên thư mục là cogload
-- %run /kaggle/working/cogload/test.py
+- %run /kaggle/working/cogload/main.py
 - Các thông số truyền vào có thể thay đổi:
-
 	+ parser.add_argument("--data_folder_path", default = "/kaggle/input/cognitiveload/UBIcomp2020/last_30s_segments/", type = str, help = "Path to the data folder")
 	+ parser.add_argument("--GroupKFold", default = 3, type = int, help = "Slip data into k group")
 	+ parser.add_argument("--window_size", default = 1, type = int, help = "Window size for feature extraction SMA")

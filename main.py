@@ -96,7 +96,7 @@ if(args.model_selected_feature == "SFS"):
                                                      floating = args.floating
                                                      )
 if args.model_selected_feature == 'SBS':
-    Feature_Selection = Feature_Selection.mine_SFS(X_train = X_train,
+    Feature_Selection = Feature_Selection.selected_SBS(X_train = X_train,
                                                    X_test = X_test, 
                                                    y_train = y_train, 
                                                    y_test = y_test, 
@@ -108,21 +108,8 @@ if args.model_selected_feature == 'SBS':
 print(f'X_train : {X_train.shape}\n\n')
 X_train.to_csv('/kaggle/working/X_train_Selected.csv', index=False)
 
-if args.models_single == []:
-    sys.exit()
-train_model_single(X_train, 
-        y_train, 
-        X_test, 
-        y_test, 
-        user_train,
-        n_splits=args.GroupKFold, 
-        path = directory_name, 
-        debug = args.debug,
-        models= args.models)
-
-if args.models_mul == []:
-    sys.exit()
-train_model_mul(X_train,
+if args.models_single != []:
+    train_model_single(X_train, 
             y_train, 
             X_test, 
             y_test, 
@@ -131,3 +118,16 @@ train_model_mul(X_train,
             path = directory_name, 
             debug = args.debug,
             models= args.models)
+
+if args.models_mul != []:
+    !pip install scikeras
+    !pip install pytorch-tabnet
+    train_model_mul(X_train,
+                y_train, 
+                X_test, 
+                y_test, 
+                user_train,
+                n_splits=args.GroupKFold, 
+                path = directory_name, 
+                debug = args.debug,
+                models= args.models)

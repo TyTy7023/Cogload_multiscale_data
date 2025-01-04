@@ -60,7 +60,7 @@ class Feature_Selection:
         return Feature_Selection.selected_feature(selected_features, X_train, X_test)
 
     @staticmethod
-    def mine_SFS(X_train, X_test, y_train, y_test, user_train):
+    def selected_SBS(X_train, X_test, y_train, y_test, user_train):
         directory_name = '/kaggle/working/log/remove'
         if not os.path.exists(directory_name):
             os.makedirs(directory_name)
