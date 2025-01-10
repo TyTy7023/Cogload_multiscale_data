@@ -78,9 +78,10 @@ class Feature_Selection:
 
         for model in models:
             print(f"MODEL: {model}")
+            directory_name = f'/kaggle/working/log/remove/{model}/'
+            if not os.path.exists(directory_name):
+                os.makedirs(directory_name)
             while(i<39):
-                directory_name = f'/kaggle/working/log/remove/{model}/'
-
                 for feature in features:
                     X_train_cp = X_train.drop(columns=[f'{feature}'])
                     X_test_cp = X_test.drop(columns=[f'{feature}'])
