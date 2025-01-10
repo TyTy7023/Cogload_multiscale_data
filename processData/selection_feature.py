@@ -62,7 +62,7 @@ class Feature_Selection:
 
     @staticmethod
     def selected_SBS(X_train, X_test, y_train, y_test, user_train):
-        single_model = ['LR', 'LDA', 'KNN', 'RF', 'AB', 'GB', 'SVM', 'XGB']
+        single_model = ['LDA', 'RF', 'SVM','XGB']
         multi_model = ['MLP_Sklearn', 'MLP_Keras','TabNet']
         models = single_model + multi_model
 
