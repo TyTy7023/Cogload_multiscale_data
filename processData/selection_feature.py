@@ -95,7 +95,7 @@ class Feature_Selection:
                                         n_splits=3, 
                                         path = directory_name, 
                                         debug = 0,
-                                        models = model,
+                                        models = [model],
                                         index_name = i)
                         
                     elif model in multi_model:
