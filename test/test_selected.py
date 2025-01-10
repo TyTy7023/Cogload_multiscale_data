@@ -61,6 +61,8 @@ print('Heart Rate',hr_df.shape)
 print('GSR',gsr_df.shape)
 print('RR',rr_df.shape)
 
+models = ['LDA', 'SVM', 'RF','XGB', 'MLP_Sklearn', 'MLP_Keras','TabNet']
+
 processing_data = split_data(window_size = args.window_size,
                             temp_df = temp_df,
                             hr_df = hr_df,
@@ -98,7 +100,7 @@ if args.model_selected_feature == 'SBS':
                                                    y_train = y_train, 
                                                    y_test = y_test, 
                                                    user_train = user_train,
-                                                   models = args.models_single + args.models_mul
+                                                   models = models
                                                    )
     X_train = X_train[Feature_Selection]
     X_test = X_test[Feature_Selection]
