@@ -97,7 +97,8 @@ if args.model_selected_feature == 'SBS':
                                                    X_test = X_test, 
                                                    y_train = y_train, 
                                                    y_test = y_test, 
-                                                   user_train = user_train
+                                                   user_train = user_train,
+                                                   models = args.models_single + args.models_mul
                                                    )
     X_train = X_train[Feature_Selection]
     X_test = X_test[Feature_Selection]
