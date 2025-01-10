@@ -77,9 +77,7 @@ class Feature_Selection:
 
         for model in models:
             while(i<39):
-                directory_name = '/kaggle/working/log/remove/'
-                df.to_csv(directory_name, index=False)
-                
+                directory_name = f'/kaggle/working/log/remove/{model}/'
 
                 for feature in features:
                     X_train_cp = X_train.drop(columns=[f'{feature}'])
@@ -114,7 +112,7 @@ class Feature_Selection:
                     else:
                         raise ValueError("Model is not supported")  
                         
-                df = pd.read_csv(directory_name)
+                df = pd.read_csv(directory_name + f'{i}_results_model.csv')
                 max_number = df['Accuracy'].max()
                 if max_number > best_acc:
                     best_acc = max_number
