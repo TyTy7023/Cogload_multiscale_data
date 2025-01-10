@@ -77,6 +77,7 @@ class Feature_Selection:
         i = 0
 
         for model in models:
+            print(f"MODEL: {model}")
             while(i<39):
                 directory_name = f'/kaggle/working/log/remove/{model}/'
 
