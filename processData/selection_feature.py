@@ -116,7 +116,7 @@ class Feature_Selection:
                         raise ValueError("Model is not supported")  
                         
                 df = pd.read_csv(directory_name + f'{i}_results_model.csv')
-                max_number = df['Accuracy'].max()
+                max_number = df['accuracy'].max()
                 if max_number > best_acc:
                     best_acc = max_number
                 else:
