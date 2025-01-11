@@ -64,7 +64,7 @@ class Feature_Selection:
     def selected_SBS(X_train, X_test, y_train, y_test, user_train):
         single_model = ['LDA', 'RF', 'SVM','XGB']
         multi_model = ['MLP_Sklearn', 'MLP_Keras','TabNet']
-        models = multi_model 
+        models = single_model + multi_model 
 
         directory_name = '/kaggle/working/log/remove'
         if not os.path.exists(directory_name):
