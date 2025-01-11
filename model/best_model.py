@@ -45,13 +45,14 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
 
             elif model == 'SVM':
                 estimator = SVC(kernel='rbf', C = 100, degree = 2, gamma = 0.001, probability=True, random_state=42)
+                estimator.fit(X_train_fold, y_train_fold)
                 y_pred_prob = estimator.predict_proba(X_val_fold)[:,1]
 
                 estimator.fit(X_train_fold, y_train_fold)
             elif model == 'RF':
                 estimator = RF(n_estimators=300, max_depth=10, random_state=42, min_samples_leaf=2, min_samples_split=5)
-                y_pred_prob = estimator.predict_proba(X_val_fold)[:,1]
                 estimator.fit(X_train_fold, y_train_fold)
+                y_pred_prob = estimator.predict_proba(X_val_fold)[:,1]
 
             elif model == 'XGB':
                 estimator = XGBClassifier(colsample_bytree= 1.0, gamma= 0, learning_rate= 0.2, max_depth= 5, min_child_weight= 4, n_estimators= 100, subsample= 0.8, n_jobs=-1)
