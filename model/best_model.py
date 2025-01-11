@@ -132,7 +132,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             "model": model,
             "accuracy": f"{acc}",
             "features_remove": [feature_remove],
-            "y_probs": [y_prob],
+            "y_probs": [y_prob.tolist()],
             'y_test': [y_test]
             }, columns=df_existing.columns)
         # Ghi thêm vào file CSV
