@@ -143,9 +143,10 @@ class Feature_Selection:
             plt.savefig(f'/kaggle/working/log/remove/result/{model}_acc.png')
             plt.show()
             
-            best_column, max_accuracy, y_probs = max(test_accuracies, key=lambda x: x[1])
+            best_column, max_accuracy, y_prob = max(test_accuracies, key=lambda x: x[1])
             best_columns.append(best_column)
             accs.append(max_accuracy)
+            y_probs.append(y_prob)
 
         result.append({
             'Model': models,
