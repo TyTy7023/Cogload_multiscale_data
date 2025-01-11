@@ -69,15 +69,15 @@ class Feature_Selection:
         directory_name = '/kaggle/working/log/remove'
         if not os.path.exists(directory_name):
             os.makedirs(directory_name)
-        test_accuracies = []
         X_train_cp = X_train.copy()
         X_test_cp = X_test.copy()
         features = X_train.columns.tolist() 
-        name_max_number = []
-        result = []
-        best_acc = 0
+        best_columns = []
+        accs = []
 
         for model in models:
+            result = []
+            test_accuracies = []
             X_train = X_train_cp.copy()
             X_test = X_test_cp.copy()
             features = X_train.columns.tolist()
@@ -105,21 +105,15 @@ class Feature_Selection:
                         
                 df = pd.read_csv(directory_name + f'{i}_results_model.csv')
                 max_number = df['accuracy'].max()
-                if max_number >= best_acc:
-                    best_acc = max_number
-                    name_max_number = df.loc[df['accuracy'].idxmax(), 'features_remove']
+                name_max_number = df.loc[df['accuracy'].idxmax(), 'features_remove']
+            
+                X_train = X_train.drop(columns=[name_max_number])
+                X_test = X_test.drop(columns=[name_max_number])
+                print(f"REMAIN: {X_train.columns} - ACC: {max_number}")   
+                test_accuracies.append((X_train.columns, max_number)) 
                 
-                    X_train = X_train.drop(columns=[name_max_number])
-                    X_test = X_test.drop(columns=[name_max_number])
-                    print(f"REMAIN: {X_train.columns} - ACC: {max_number}")   
-                    test_accuracies.append((X_train.columns, max_number)) 
-                    
-                    features = X_train.columns.tolist() 
-                    i += 1
-                else:
-                    i = 40
-                
-
+                features = X_train.columns.tolist() 
+                i += 1
             feature_counts = [len(features) for features, _ in test_accuracies]
             accuracies = [accuracy for _, accuracy in test_accuracies]
             
@@ -132,11 +126,14 @@ class Feature_Selection:
             plt.show()
             
             best_column, max_accuracy = max(test_accuracies, key=lambda x: x[1])
-            result.append({
-                'Model': model,
-                'Best columns': best_column,
-                'Shape': len(best_column),
-                'Accuracy': max_accuracy
-            })
+            best_columns.append(best_column)
+            accs.append(max_accuracy)
+
+        result.append({
+            'Model': models,
+            'Best columns': best_columns,
+            'Shape': len(best_column),
+            'Accuracy': accs
+        })
         result = pd.DataFrame(result)
         result.to_csv('/kaggle/working/log/remove/result.csv', index=False)
