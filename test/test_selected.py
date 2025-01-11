@@ -105,4 +105,4 @@ if args.model_selected_feature == 'SBS':
 print(f'X_train : {X_train.shape}\n\n')
 X_train.to_csv('/kaggle/working/X_train_Selected.csv', index=False)
 
-EDA.draw_ROC_models_read_file(models)
+EDA.draw_ROC_models_read_file(models, y_test)
