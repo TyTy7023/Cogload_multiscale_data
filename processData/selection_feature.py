@@ -70,12 +70,17 @@ class Feature_Selection:
         if not os.path.exists(directory_name):
             os.makedirs(directory_name)
         test_accuracies = []
+        X_train_cp = X_train.copy()
+        X_test_cp = X_test.copy()
         features = X_train.columns.tolist() 
         name_max_number = []
         result = []
         best_acc = 0
 
         for model in models:
+            X_train = X_train_cp.copy()
+            X_test = X_test_cp.copy()
+            features = X_train.columns.tolist()
             i = 0
             directory_name = f'/kaggle/working/log/remove/{model}/'
             if not os.path.exists(directory_name):
