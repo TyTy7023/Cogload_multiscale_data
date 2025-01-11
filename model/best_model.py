@@ -97,7 +97,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
         log_results.append({
             "model": model,
             "accuracy": f"{acc}",
-            "feature_remove": feature_remove
+            "features_remove": feature_remove
         })
         df = pd.DataFrame(log_results)
         df.to_csv(f'{path}{index_name}_results_model.csv', index=False)
