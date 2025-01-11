@@ -106,7 +106,6 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
 
         df_existing = pd.read_csv(f'{path}{index_name}_results_model.csv')
         if df_existing.empty: 
-            print('Empty')  
             df_to_append = pd.DataFrame({
                 "model": model,
                 "accuracy": f"{acc}",
@@ -119,6 +118,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             "accuracy": f"{acc}",
             "features_remove": [feature_remove]
             }, columns=df_existing.columns)
+            print(df_to_append)
         # Ghi thêm vào file CSV
             df_to_append.to_csv(f'{path}{index_name}_results_model.csv', mode='a', header=False, index=False)
 
