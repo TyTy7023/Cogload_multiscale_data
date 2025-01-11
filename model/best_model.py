@@ -97,9 +97,14 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
                 best_model = estimator
 
         y_pred = best_model.predict(X_test)
+        if model == 'MLP_Keras':
+            y_prob = best_model.predict_proba(X_test)
+        else:
+            y_prob = best_model.predict_proba(X_test)[:1]
 
         # Đánh giá mô hình trên tập kiểm tra
         acc = accuracy_score(y_test, y_pred)
+        
 
         if not os.path.isfile(f'{path}{index_name}_results_model.csv'):
         # Tạo một DataFrame trống (nếu file cần chứa dữ liệu dạng bảng)
@@ -107,7 +112,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
                 "model": model,
                 "accuracy": f"{acc}",
                 "features_remove": [feature_remove],
-                "y_probs": [y_pred_vals]
+                "y_probs": y_prob
             })
             df.to_csv(f'{path}{index_name}_results_model.csv', index=False)
 
@@ -117,7 +122,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
                 "model": model,
                 "accuracy": f"{acc}",
                 "features_remove": [feature_remove],
-                "y_probs": [y_pred_vals],
+                "y_probs": y_prob,
             })
             df_to_append.to_csv(f'{path}{index_name}_results_model.csv', index=False)
         else:
@@ -125,7 +130,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             "model": model,
             "accuracy": f"{acc}",
             "features_remove": [feature_remove],
-            "y_probs": [y_pred_vals],
+            "y_probs": y_probs,
             }, columns=df_existing.columns)
         # Ghi thêm vào file CSV
             df_to_append.to_csv(f'{path}{index_name}_results_model.csv', mode='a', header=False, index=False)
