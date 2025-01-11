@@ -25,6 +25,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
         # K-Fold Cross-Validation với 6 folds
     kf = GroupKFold(n_splits=n_splits)
 
+    print(f"\n\t\tMODEL: {models}")
     for model in models:
         log_results = []
         best_model = None
