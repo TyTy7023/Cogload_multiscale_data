@@ -15,9 +15,8 @@ class EDA:
         s = np.array(df['Y Probs'].tolist())
         s_cleaned = [item.strip("[]") for item in s]
         y_prob = [float(x) for x in s_cleaned[0].split(', ')]
-        y_prods.append(y_prob)
             
-        EDA.draw_ROC(f'/kaggle/working/log/remove/', y_test, y_prob, models)
+        EDA.draw_ROC(f'/kaggle/working/log/remove/', y_test, np.ndarray(y_prob), models)
 
     @staticmethod
     def draw_ROC(path, y_test, y_preds, model):
