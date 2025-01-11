@@ -94,14 +94,13 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
         # Đánh giá mô hình trên tập kiểm tra
         acc = accuracy_score(y_test, y_pred)
 
-        if not os.path.isfile(f'{path}{index_name}_results_model.csv'):
         # Tạo một DataFrame trống (nếu file cần chứa dữ liệu dạng bảng)
-            df = pd.DataFrame({
-                "model": model,
-                "accuracy": f"{acc}",
-                "features_remove": [feature_remove]
-            })
-            df.to_csv(f'{path}{index_name}_results_model.csv', index=False)
+        df = pd.DataFrame({
+            "model": model,
+            "accuracy": f"{acc}",
+            "features_remove": [feature_remove]
+        })
+        df.to_csv(f'{path}{index_name}_results_model.csv', index=False)
         
         df_existing = pd.read_csv(f'{path}{index_name}_results_model.csv')
         if df_existing.empty:   
