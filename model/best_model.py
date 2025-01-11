@@ -25,7 +25,6 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
         # K-Fold Cross-Validation với 6 folds
     kf = GroupKFold(n_splits=n_splits)
 
-    print(f"\n\t\tMODEL: {models}")
     for model in models:
         log_results = []
         best_model = None
@@ -68,7 +67,6 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
                 y_pred_prob = estimator.predict_proba(X_val_fold)[:, 1]
 
             elif model == 'MLP_Keras':
-                print('is it here')
                 from MLP_model import MLP
                 estimator = MLP.MLP_Keras()
                 estimator.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold, path)
@@ -121,7 +119,6 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             "accuracy": f"{acc}",
             "features_remove": [feature_remove]
             }, columns=df_existing.columns)
-            print(df_to_append)
         # Ghi thêm vào file CSV
             df_to_append.to_csv(f'{path}{index_name}_results_model.csv', mode='a', header=False, index=False)
 
