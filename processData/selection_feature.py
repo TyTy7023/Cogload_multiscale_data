@@ -129,8 +129,8 @@ class Feature_Selection:
             df = pd.DataFrame({'features': REMAIN, 'accuracy': ACC, 'y_probs': Y_PROBS})
             df.to_csv(f'/kaggle/working/log/remove/result/{model}.csv', index=False)
             
-            feature_counts = [len(features) for features, _ in test_accuracies]
-            accuracies = [accuracy for _, accuracy in test_accuracies]
+            feature_counts = [len(features) for features, _, _ in test_accuracies]
+            accuracies = [accuracy for _, accuracy, _ in test_accuracies]
             
             plt.figure(figsize=(8, 5))
             plt.plot(feature_counts, accuracies, marker='o')
