@@ -11,13 +11,14 @@ class EDA:
     def draw_ROC_models_read_file(models, y_test):
         df = pd.read_csv(f'/kaggle/working/log/remove/result/result.csv')
         
-        s = np.array(df['Y Probs'].tolist())
+        s = np.array(df['Y Probs'])
+        parsed_data = ast.literal_eval(s[0])
         # Xử lý các phần tử trong s_cleaned
         y_prob = []
-        for item in s:
-            # Loại bỏ dấu ngoặc vuông và nháy đơn, sau đó tách chuỗi thành các giá trị
-            item_cleaned = item.strip("[]").split(', ')
-            # Chuyển các phần tử thành float
+        for item in parsed_data:
+            # Loại bỏ nháy đơn, nháy kép và dấu ngoặc vuông
+            item_cleaned = item.strip("[]").replace('"', '').replace("'", "").split(', ')
+            # Chuyển thành danh sách số thực
             prob_values = [float(x) for x in item_cleaned]
             y_prob.append(prob_values)
         
