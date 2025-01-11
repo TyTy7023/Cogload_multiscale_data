@@ -19,8 +19,6 @@ sys.path.append('/kaggle/working/cogload/')
 from EDA import EDA
 
 sys.path.append('/kaggle/working/cogload/model/')
-from MLP_model import MLP
-from Tabnet_model import TabNet
 
 def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remove = ['None'], n_splits=3 , debug = 0, models = ['LDA', 'SVM', 'RF']):
         # K-Fold Cross-Validation với 6 folds
@@ -60,16 +58,19 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
                 y_pred_prob = estimator.predict_proba(X_val_fold)[:,1]
             
             elif model == 'MLP_Sklearn':
+                from MLP_model import MLP
                 estimator = MLP.MLP_Sklearn()
                 estimator.fit(X_train_fold, y_train_fold, user_train)
                 y_pred_prob = estimator.predict_proba(X_val_fold)[:, 1]
 
             elif model == 'MLP_Keras':
+                from MLP_model import MLP
                 estimator = MLP.MLP_Keras()
                 estimator.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold, path)
                 y_pred_prob = estimator.predict_proba(X_val_fold)
 
             elif model == 'TabNet':
+                from Tabnet_model import TabNet
                 estimator = TabNet()
                 estimator.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold)
                 y_pred_prob = estimator.predict_proba(X_val_fold)[:, 1]
