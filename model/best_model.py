@@ -97,7 +97,6 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
         log_results.append({
             "model": model,
             "accuracy": f"{acc}",
-            "best_model": best_model.best_params,
             "feature_remove": feature_remove
         })
         df = pd.DataFrame(log_results)
