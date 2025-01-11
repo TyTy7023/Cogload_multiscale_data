@@ -105,7 +105,8 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             df.to_csv(f'{path}{index_name}_results_model.csv', index=False)
 
         df_existing = pd.read_csv(f'{path}{index_name}_results_model.csv')
-        if df_existing.empty:   
+        if df_existing.empty: 
+            print('Empty')  
             df_to_append = pd.DataFrame({
                 "model": model,
                 "accuracy": f"{acc}",
