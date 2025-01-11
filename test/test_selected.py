@@ -44,6 +44,7 @@ log_args = pd.DataFrame([args_dict])
 directory_name = '/kaggle/working/log/'
 if not os.path.exists(directory_name):
     os.makedirs(directory_name)
+    os.makedirs(directory_name+'remove/result')
 file_name = f'args.csv'  
 log_args.to_csv(os.path.join(directory_name, file_name), index=False)
 
