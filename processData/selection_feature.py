@@ -87,6 +87,7 @@ class Feature_Selection:
             REMAIN = []
             ACC = []
             Y_PROBS = []
+            Y_TEST = []
             print(f"MODEL: {model} - SHAPE: {X_train.shape}")
 
             i = 0
@@ -121,12 +122,13 @@ class Feature_Selection:
                 REMAIN.append(X_train.columns)
                 ACC.append(max_number) 
                 Y_PROBS.append(name_max_number['y_probs'])
+                Y_TEST.append(name_max_number['y_test'])
 
                 test_accuracies.append((X_train.columns, max_number, name_max_number['y_probs'])) 
                 
                 features = X_train.columns.tolist() 
                 i += 1
-            df = pd.DataFrame({'features': REMAIN, 'accuracy': ACC, 'y_probs': Y_PROBS})
+            df = pd.DataFrame({'features': REMAIN, 'accuracy': ACC, 'y_probs': Y_PROBS, 'y_test': Y_TEST})
             df.to_csv(f'/kaggle/working/log/remove/result/{model}.csv', index=False)
             
             feature_counts = [len(features) for features, _, _, _ in test_accuracies]
@@ -141,7 +143,7 @@ class Feature_Selection:
             plt.savefig(f'/kaggle/working/log/remove/result/{model}_acc.png')
             plt.show()
             
-            best_column, max_accuracy, y_probs, y_test = max(test_accuracies, key=lambda x: x[1])
+            best_column, max_accuracy, y_probs, y = max(test_accuracies, key=lambda x: x[1])
             best_columns.append(best_column)
             accs.append(max_accuracy)
 
@@ -151,7 +153,7 @@ class Feature_Selection:
             'Shape': len(best_column),
             'Accuracy': accs,
             'Y Probs': y_probs,
-            'Y Test': y_test
+            'Y Test': y
         })
         result = pd.DataFrame(result)
         result.to_csv('/kaggle/working/log/remove/result/result.csv', index=False)
