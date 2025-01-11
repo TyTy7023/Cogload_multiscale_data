@@ -74,10 +74,9 @@ class Feature_Selection:
         name_max_number = []
         result = []
         best_acc = 0
-        i = 0
 
         for model in models:
-            print(f"MODEL: {model}")
+            i = 0
             directory_name = f'/kaggle/working/log/remove/{model}/'
             if not os.path.exists(directory_name):
                 os.makedirs(directory_name)
@@ -119,17 +118,18 @@ class Feature_Selection:
                 max_number = df['accuracy'].max()
                 if max_number > best_acc:
                     best_acc = max_number
+                    name_max_number = df.loc[df['accuracy'].idxmax(), 'features_remove']
+                
+                    X_train = X_train.drop(columns=[name_max_number])
+                    X_test = X_test.drop(columns=[name_max_number])
+                    print(f"REMAIN: {X_train.columns} - ACC: {max_number}")   
+                    test_accuracies.append((X_train.columns, max_number)) 
+                    
+                    features = X_train.columns.tolist() 
+                    i += 1
                 else:
-                    break
-                name_max_number = df.loc[df['accuracy'].idxmax(), 'features_remove']
+                    i = 40
                 
-                X_train = X_train.drop(columns=[name_max_number])
-                X_test = X_test.drop(columns=[name_max_number])
-                print(f"REMAIN: {X_train.columns} - ACC: {max_number}")   
-                test_accuracies.append((X_train.columns, max_number)) 
-                
-                features = X_train.columns.tolist() 
-                i += 1
 
             feature_counts = [len(features) for features, _ in test_accuracies]
             accuracies = [accuracy for _, accuracy in test_accuracies]
