@@ -114,8 +114,8 @@ class Feature_Selection:
                 max_number = df['accuracy'].max()
                 name_max_number = df.loc[df['accuracy'].idxmax(), ['features_remove', 'y_probs']]
             
-                X_train = X_train.drop(columns=[name_max_number])
-                X_test = X_test.drop(columns=[name_max_number])
+                X_train = X_train.drop(columns=[name_max_number['features_remove']])
+                X_test = X_test.drop(columns=[name_max_number['features_remove']])
                 
 
                 REMAIN.append(X_train.columns)
