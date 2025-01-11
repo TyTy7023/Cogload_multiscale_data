@@ -96,6 +96,16 @@ class Feature_Selection:
             if not os.path.exists(directory_name):
                 os.makedirs(directory_name)
             while(i<39):
+                if not os.path.isfile(f'{directory_name}{i}_results_model.csv'):
+                    print('Create new file')
+                # Tạo một DataFrame trống (nếu file cần chứa dữ liệu dạng bảng)
+                    df = pd.DataFrame({
+                        "model": [],
+                        "accuracy": [],
+                        "features_remove": []
+                    })
+                df.to_csv(f'{directory_name}{i}_results_model.csv', index=False)
+
                 for feature in features:
                     X_train_cp = X_train.drop(columns=[f'{feature}'])
                     X_test_cp = X_test.drop(columns=[f'{feature}'])
