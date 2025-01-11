@@ -116,7 +116,7 @@ class Feature_Selection:
                         
                 df = pd.read_csv(directory_name + f'{i}_results_model.csv')
                 max_number = df['accuracy'].max()
-                if max_number > best_acc:
+                if max_number >= best_acc:
                     best_acc = max_number
                     name_max_number = df.loc[df['accuracy'].idxmax(), 'features_remove']
                 
