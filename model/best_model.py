@@ -3,7 +3,6 @@ import pandas as pd
 import os
 
 from sklearn.model_selection import GroupKFold
-from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import classification_report, accuracy_score, log_loss
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import f1_score
@@ -11,12 +10,17 @@ from sklearn.metrics import f1_score
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.ensemble import RandomForestClassifier as RF
 from sklearn.svm import SVC
+from xgboost import XGBClassifier
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 import sys
 sys.path.append('/kaggle/working/cogload/')
 from EDA import EDA
+
+sys.path.append('/kaggle/working/cogload/model/')
+from MLP_model import MLP
+from Tabnet_model import TabNet
 
 def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remove = ['None'], n_splits=3 , debug = 0, models = ['LDA', 'SVM', 'RF']):
         # K-Fold Cross-Validation với 6 folds
@@ -37,16 +41,43 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             # Train model
             if model == 'LDA':
                 estimator = LDA(shrinkage = 0.5, solver = 'lsqr')     
-            if model == 'SVM':
+                estimator.fit(X_train_fold, y_train_fold)
+                y_pred_prob = estimator.predict_proba(X_val_fold)[:,1]
+
+            elif model == 'SVM':
                 estimator = SVC(kernel='rbf', C = 100, degree = 2, gamma = 0.001, probability=True, random_state=42)
-            if model == 'RF':
+                y_pred_prob = estimator.predict_proba(X_val_fold)[:,1]
+
+                estimator.fit(X_train_fold, y_train_fold)
+            elif model == 'RF':
                 estimator = RF(n_estimators=300, max_depth=10, random_state=42, min_samples_leaf=2, min_samples_split=5)
+                y_pred_prob = estimator.predict_proba(X_val_fold)[:,1]
+                estimator.fit(X_train_fold, y_train_fold)
+
+            elif model == 'XGB':
+                estimator = XGBClassifier(colsample_bytree= 1.0, gamma= 0, learning_rate= 0.2, max_depth= 5, min_child_weight= 4, n_estimators= 100, subsample= 0.8, n_jobs=-1)
+                estimator.fit(X_train_fold, y_train_fold)
+                y_pred_prob = estimator.predict_proba(X_val_fold)[:,1]
+            
+            elif model == 'MLP_Sklearn':
+                estimator = MLP.MLP_Sklearn()
+                estimator.fit(X_train_fold, y_train_fold, user_train)
+                y_pred_prob = estimator.predict_proba(X_val_fold)[:, 1]
+
+            elif model == 'MLP_Keras':
+                estimator = MLP.MLP_Keras()
+                estimator.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold, path)
+                y_pred_prob = estimator.predict_proba(X_val_fold)
+
+            elif model == 'TabNet':
+                estimator = TabNet()
+                estimator.fit(X_train_fold, y_train_fold, X_val_fold, y_val_fold)
+                y_pred_prob = estimator.predict_proba(X_val_fold)[:, 1]
+
             if model == []:
                 return
-            estimator.fit(X_train_fold, y_train_fold)
             
             y_val_pred = estimator.predict(X_val_fold)
-            y_pred_prob = estimator.predict_proba(X_val_fold)[:,1]
             y_pred_vals.append(y_pred_prob)
 
             accuracy = accuracy_score(y_val_fold, y_val_pred)

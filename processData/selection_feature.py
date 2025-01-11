@@ -12,7 +12,7 @@ from sklearn.svm import SVC
 
 import sys
 sys.path.append('/kaggle/working/cogload/model/')
-from single_model import train_model as single_train_model
+from best_model import train_model 
 
 class Feature_Selection:
     @staticmethod
@@ -64,7 +64,7 @@ class Feature_Selection:
     def selected_SBS(X_train, X_test, y_train, y_test, user_train):
         single_model = ['LDA', 'RF', 'SVM','XGB']
         multi_model = ['MLP_Sklearn', 'MLP_Keras','TabNet']
-        models = single_model + multi_model
+        models = single_model
 
         directory_name = '/kaggle/working/log/remove'
         if not os.path.exists(directory_name):
@@ -86,7 +86,7 @@ class Feature_Selection:
                     X_test_cp = X_test.drop(columns=[f'{feature}'])
                     
                     if model in single_model:
-                        single_train_model(X_train_cp, 
+                        train_model(X_train_cp, 
                                         y_train, 
                                         X_test_cp, 
                                         y_test, 
@@ -97,22 +97,6 @@ class Feature_Selection:
                                         debug = 0,
                                         models = [model],
                                         index_name = i)
-                        
-                    elif model in multi_model:
-                        from mul_model import train_model as multi_train_model
-                        multi_train_model(X_train_cp, 
-                                    y_train, 
-                                    X_test_cp, 
-                                    y_test, 
-                                    user_train,
-                                    feature_remove=feature, 
-                                    n_splits=3, 
-                                    path = directory_name, 
-                                    debug = 0,
-                                    models = model,
-                                    index_name = i)
-                    else:
-                        raise ValueError("Model is not supported")  
                         
                 df = pd.read_csv(directory_name + f'{i}_results_model.csv')
                 max_number = df['accuracy'].max()
