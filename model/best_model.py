@@ -14,6 +14,7 @@ from xgboost import XGBClassifier
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+
 import sys
 sys.path.append('/kaggle/working/cogload/')
 from EDA import EDA
@@ -78,7 +79,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
                 y_pred_prob = estimator.predict_proba(X_val_fold)[:, 1]
 
             if model == []:
-                return
+                raise ValueError(f"Model {model} is not supported")
             
             y_val_pred = estimator.predict(X_val_fold)
             y_pred_vals.append(y_pred_prob)
