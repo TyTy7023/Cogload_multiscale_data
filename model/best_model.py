@@ -20,11 +20,12 @@ from EDA import EDA
 
 sys.path.append('/kaggle/working/cogload/model/')
 
-def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remove = ['None'], n_splits=3 , debug = 0, models = ['LDA', 'SVM', 'RF']):
+def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remove = ['None'], n_splits=3 , debug = 0, models = ['LDA', 'SVM', 'RF'], index_name = 1):
         # K-Fold Cross-Validation với 6 folds
     kf = GroupKFold(n_splits=n_splits)
 
     for model in models:
+        log_results = []
         best_model = None
         best_score = 0
         y_vals = []
@@ -93,23 +94,14 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
         acc = accuracy_score(y_test, y_pred)
         
         # Đọc file CSV gốc để lấy danh sách cột
-        df_existing = pd.read_csv(path)
-        if df_existing.empty:   
-            df_to_append = pd.DataFrame({
-                'Model': [model],
-                'Features_removing': [feature_remove],
-                'Accuracy': [acc]
-            })
-            df_to_append.to_csv(path, index=False)
-        else:
-            df_to_append = pd.DataFrame({
-            'Model': [model],
-            'Features_removing': [feature_remove],
-            'Accuracy': [acc], 
-
-            }, columns=df_existing.columns)
-        # Ghi thêm vào file CSV
-            df_to_append.to_csv(path, mode='a', header=False, index=False)
+        log_results.append({
+            "model": model,
+            "accuracy": f"{acc}",
+            "best_model": best_model.best_params,
+            "feature_remove": feature_remove
+        })
+        df = pd.DataFrame(log_results)
+        df.to_csv(f'{path}{index_name}_results_model.csv', index=False)
 
 
 
