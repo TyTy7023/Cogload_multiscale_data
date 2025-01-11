@@ -38,6 +38,12 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             y_train_fold, y_val_fold = y_train[train_index], y_train[val_index]
             y_vals.append(y_val_fold)
 
+            
+            id_user = np.array(user_train)
+            # Kiểm tra nhóm trong fold
+            train_groups = id_user[train_index]
+            val_groups = id_user[val_index]
+
             # Train model
             if model == 'LDA':
                 estimator = LDA(shrinkage = 0.5, solver = 'lsqr')     
@@ -63,7 +69,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             elif model == 'MLP_Sklearn':
                 from MLP_model import MLP
                 estimator = MLP.MLP_Sklearn()
-                estimator.fit(X_train_fold, y_train_fold, user_train)
+                estimator.fit(X_train_fold, y_train_fold, train_groups)
                 y_pred_prob = estimator.predict_proba(X_val_fold)[:, 1]
 
             elif model == 'MLP_Keras':
