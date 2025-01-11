@@ -107,7 +107,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
                 "model": model,
                 "accuracy": f"{acc}",
                 "features_remove": [feature_remove],
-                "y_probs": [y_pred_vals],
+                "y_probs": [y_pred_vals]
             })
             df.to_csv(f'{path}{index_name}_results_model.csv', index=False)
 

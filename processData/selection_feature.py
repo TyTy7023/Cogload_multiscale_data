@@ -73,6 +73,7 @@ class Feature_Selection:
         features = X_train.columns.tolist() 
         best_columns = []
         accs = []
+        y_probs = []
 
         for model in models:
             result = []
@@ -85,6 +86,7 @@ class Feature_Selection:
 
             REMAIN = []
             ACC = []
+            Y_PROBS = []
             print(f"MODEL: {model} - SHAPE: {X_train.shape}")
 
             i = 0
@@ -110,18 +112,21 @@ class Feature_Selection:
                         
                 df = pd.read_csv(directory_name + f'{i}_results_model.csv')
                 max_number = df['accuracy'].max()
-                name_max_number = df.loc[df['accuracy'].idxmax(), 'features_remove']
+                name_max_number = df.loc[df['accuracy'].idxmax(), ['features_remove', 'y_probs']]
             
                 X_train = X_train.drop(columns=[name_max_number])
                 X_test = X_test.drop(columns=[name_max_number])
+                
 
                 REMAIN.append(X_train.columns)
                 ACC.append(max_number) 
+                Y_PROBS.append(name_max_number['y_probs'])
+
                 test_accuracies.append((X_train.columns, max_number)) 
                 
                 features = X_train.columns.tolist() 
                 i += 1
-            df = pd.DataFrame({'features': REMAIN, 'accuracy': ACC})
+            df = pd.DataFrame({'features': REMAIN, 'accuracy': ACC, 'y_probs': Y_PROBS})
             df.to_csv(f'/kaggle/working/log/remove/result/{model}.csv', index=False)
             
             feature_counts = [len(features) for features, _ in test_accuracies]
@@ -142,9 +147,10 @@ class Feature_Selection:
 
         result.append({
             'Model': models,
-            'Best columns': best_columns,
+            'Best Column': best_columns,
             'Shape': len(best_column),
-            'Accuracy': accs
+            'Accuracy': accs,
+
         })
         result = pd.DataFrame(result)
         result.to_csv('/kaggle/working/log/remove/result/result.csv', index=False)
