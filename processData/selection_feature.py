@@ -112,7 +112,7 @@ class Feature_Selection:
                         
                 df = pd.read_csv(directory_name + f'{i}_results_model.csv')
                 max_number = df['accuracy'].max()
-                name_max_number = df.loc[df['accuracy'].idxmax(), ['features_remove', 'y_probs']]
+                name_max_number = df.loc[df['accuracy'].idxmax(), ['features_remove', 'y_probs', 'y_test']]
             
                 X_train = X_train.drop(columns=[name_max_number['features_remove']])
                 X_test = X_test.drop(columns=[name_max_number['features_remove']])
@@ -129,8 +129,8 @@ class Feature_Selection:
             df = pd.DataFrame({'features': REMAIN, 'accuracy': ACC, 'y_probs': Y_PROBS})
             df.to_csv(f'/kaggle/working/log/remove/result/{model}.csv', index=False)
             
-            feature_counts = [len(features) for features, _, _ in test_accuracies]
-            accuracies = [accuracy for _, accuracy, _ in test_accuracies]
+            feature_counts = [len(features) for features, _, _, _ in test_accuracies]
+            accuracies = [accuracy for _, accuracy, _, _ in test_accuracies]
             
             plt.figure(figsize=(8, 5))
             plt.plot(feature_counts, accuracies, marker='o')
@@ -141,7 +141,7 @@ class Feature_Selection:
             plt.savefig(f'/kaggle/working/log/remove/result/{model}_acc.png')
             plt.show()
             
-            best_column, max_accuracy, y_probs = max(test_accuracies, key=lambda x: x[1])
+            best_column, max_accuracy, y_probs, y_test = max(test_accuracies, key=lambda x: x[1])
             best_columns.append(best_column)
             accs.append(max_accuracy)
 
@@ -150,7 +150,8 @@ class Feature_Selection:
             'Best Column': best_columns,
             'Shape': len(best_column),
             'Accuracy': accs,
-            'Y Probs': y_probs
+            'Y Probs': y_probs,
+            'Y Test': y_test
         })
         result = pd.DataFrame(result)
         result.to_csv('/kaggle/working/log/remove/result/result.csv', index=False)
