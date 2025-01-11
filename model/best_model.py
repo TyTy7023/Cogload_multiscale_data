@@ -112,8 +112,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
                 "model": model,
                 "accuracy": f"{acc}",
                 "features_remove": [feature_remove],
-                "y_probs": [y_prob],
-                'y_test': [y_test]
+                "y_probs": [y_prob.tolist()]
             })
             df.to_csv(f'{path}{index_name}_results_model.csv', index=False)
 
@@ -123,8 +122,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
                 "model": model,
                 "accuracy": f"{acc}",
                 "features_remove": [feature_remove],
-                "y_probs": [y_prob],
-                'y_test': [y_test]
+                "y_probs": [y_prob.tolist()]
             })
             df_to_append.to_csv(f'{path}{index_name}_results_model.csv', index=False)
         else:
@@ -132,8 +130,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             "model": model,
             "accuracy": f"{acc}",
             "features_remove": [feature_remove],
-            "y_probs": [y_prob.tolist()],
-            'y_test': [y_test]
+            "y_probs": [y_prob.tolist()]
             }, columns=df_existing.columns)
         # Ghi thêm vào file CSV
             df_to_append.to_csv(f'{path}{index_name}_results_model.csv', mode='a', header=False, index=False)

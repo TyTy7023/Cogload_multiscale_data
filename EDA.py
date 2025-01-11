@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -8,13 +9,15 @@ from sklearn.metrics import roc_curve, auc, roc_auc_score
 class EDA:
     @staticmethod
     def draw_ROC_models_read_file(models, y_test):
-        accuracy = []
-        y_prod = []
-        for model in models:
-            df = pd.read_csv(f'/kaggle/working/log/remove/result/{model}.csv')
-            y_prod.append(df['y_probs'])
-            accuracy.append(df['accuracy'])
-        EDA.draw_ROC(f'/kaggle/working/log/remove/', y_test, y_prod, models)
+        y_prods = []
+        df = pd.read_csv(f'/kaggle/working/log/remove/result/result.csv')
+        
+        s = np.array(df['Y Probs'].tolist())
+        s_cleaned = [item.strip("[]") for item in s]
+        y_prob = [float(x) for x in s_cleaned[0].split(', ')]
+        y_prods.append(y_prob)
+            
+        EDA.draw_ROC(f'/kaggle/working/log/remove/', y_test, y_prob, models)
 
     @staticmethod
     def draw_ROC(path, y_test, y_preds, model):
