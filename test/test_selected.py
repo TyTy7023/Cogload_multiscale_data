@@ -104,6 +104,8 @@ if args.model_selected_feature == 'SBS':
                                                    )
 print(f'X_train : {X_train.shape}\n\n')
 X_train.to_csv('/kaggle/working/X_train_Selected.csv', index=False)
+y_test = pd.DataFrame(y_test)
 y_test.to_csv('/kaggle/working/y_test.csv', index=False)
 
+y_test = y_test.values.tolist()
 EDA.draw_ROC_models_read_file(models, y_test)
