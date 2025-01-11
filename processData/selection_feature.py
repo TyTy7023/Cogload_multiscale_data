@@ -69,6 +69,9 @@ class Feature_Selection:
         directory_name = '/kaggle/working/log/remove'
         if not os.path.exists(directory_name):
             os.makedirs(directory_name)
+        raw_train = X_train.copy(deep=True)
+        raw_test = X_test.copy(deep=True)
+
         X_train_cp = X_train.copy(deep=True)
         X_test_cp = X_test.copy(deep=True)
         features = X_train.columns.tolist() 
@@ -78,8 +81,10 @@ class Feature_Selection:
         for model in models:
             result = []
             test_accuracies = []
-            X_train_cp = X_train.copy(deep=True)
-            X_test_cp = X_test.copy(deep=True)
+            X_train_cp = raw_train.copy(deep=True)
+            X_test_cp = raw_test.copy(deep=True)
+            X_train = X_train_cp.copy(deep=True)
+            X_test = X_test_cp.copy(deep=True)
             features = X_train.columns.tolist()
 
             REMAIN = []
