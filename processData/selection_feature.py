@@ -81,6 +81,11 @@ class Feature_Selection:
             X_train = X_train_cp.copy()
             X_test = X_test_cp.copy()
             features = X_train.columns.tolist()
+
+            REMAIN = []
+            ACC = []
+            print(f"MODEL: {model} - FEATURES: {features} - SHAPE: {X_train.shape}")
+
             i = 0
             directory_name = f'/kaggle/working/log/remove/{model}/'
             if not os.path.exists(directory_name):
@@ -109,11 +114,16 @@ class Feature_Selection:
             
                 X_train = X_train.drop(columns=[name_max_number])
                 X_test = X_test.drop(columns=[name_max_number])
-                print(f"REMAIN: {X_train.columns} - ACC: {max_number}")   
+
+                REMAIN.append(X_train.columns)
+                ACC.append(max_number) 
                 test_accuracies.append((X_train.columns, max_number)) 
                 
                 features = X_train.columns.tolist() 
                 i += 1
+            df = pd.DataFrame({'features': REMAIN, 'accuracy': ACC})
+            df.to_csv(f'/kaggle/working/log/remove/{model}.csv', index=False)
+            
             feature_counts = [len(features) for features, _ in test_accuracies]
             accuracies = [accuracy for _, accuracy in test_accuracies]
             
