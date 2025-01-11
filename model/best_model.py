@@ -95,6 +95,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
         acc = accuracy_score(y_test, y_pred)
 
         if not os.path.isfile(f'{path}{index_name}_results_model.csv'):
+            print('Create new file')
         # Tạo một DataFrame trống (nếu file cần chứa dữ liệu dạng bảng)
             df = pd.DataFrame({
                 "model": model,
