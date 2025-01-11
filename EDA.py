@@ -9,14 +9,21 @@ from sklearn.metrics import roc_curve, auc, roc_auc_score
 class EDA:
     @staticmethod
     def draw_ROC_models_read_file(models, y_test):
-        y_prods = []
         df = pd.read_csv(f'/kaggle/working/log/remove/result/result.csv')
         
         s = np.array(df['Y Probs'].tolist())
+        # Kiểm tra lại định dạng chuỗi trong s_cleaned
         s_cleaned = [item.strip("[]") for item in s]
-        y_prob = [float(x) for x in s_cleaned[0].split(', ')]
+        # Xử lý các phần tử trong s_cleaned
+        y_prob = []
+        for item in s_cleaned:
+            # Tách chuỗi thành danh sách và chuyển thành float
+            prob_values = [float(x) for x in item.split(', ')]
+            y_prob.append(prob_values)
+        
+        y_prob = np.array(y_prob)  # Chuyển thành mảng NumPy 2D
             
-        EDA.draw_ROC(f'/kaggle/working/log/remove/', y_test, np.ndarray(y_prob), models)
+        EDA.draw_ROC(f'/kaggle/working/log/remove/', y_test, y_prob, models)
 
     @staticmethod
     def draw_ROC(path, y_test, y_preds, model):
