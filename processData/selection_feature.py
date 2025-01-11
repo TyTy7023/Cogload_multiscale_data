@@ -78,8 +78,8 @@ class Feature_Selection:
         for model in models:
             result = []
             test_accuracies = []
-            X_train = X_train_cp.copy()
-            X_test = X_test_cp.copy()
+            X_train = X_train_cp.copy(deep=True)
+            X_test = X_test_cp.copy(deep=True)
             features = X_train.columns.tolist()
 
             REMAIN = []
