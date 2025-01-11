@@ -7,6 +7,16 @@ from sklearn.metrics import roc_curve, auc, roc_auc_score
     
 class EDA:
     @staticmethod
+    def draw_ROC_models_read_file(models, y_test):
+        accuracy = []
+        y_prod = []
+        for model in models:
+            df = pd.read_csv(f'/kaggle/working/log/remove/result/{model}.csv')
+            y_prod.append(df['y_probs'])
+            accuracy.append(df['accuracy'])
+        EDA.draw_ROC(f'/kaggle/working/log/remove/', y_test, y_prod, models)
+
+    @staticmethod
     def draw_ROC(path, y_test, y_preds, model):
         plt.figure(figsize=(8, 8))
         for i, y_pred in enumerate(y_preds):

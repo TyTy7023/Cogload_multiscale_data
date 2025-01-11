@@ -61,11 +61,7 @@ class Feature_Selection:
         return Feature_Selection.selected_feature(selected_features, X_train, X_test)
 
     @staticmethod
-    def selected_SBS(X_train, X_test, y_train, y_test, user_train):
-        single_model = ['LDA', 'RF', 'SVM','XGB']
-        multi_model = ['MLP_Sklearn', 'MLP_Keras','TabNet']
-        models = single_model + multi_model 
-
+    def selected_SBS(X_train, X_test, y_train, y_test, user_train, models):
         directory_name = '/kaggle/working/log/remove'
         if not os.path.exists(directory_name):
             os.makedirs(directory_name)
@@ -126,7 +122,7 @@ class Feature_Selection:
                 features = X_train.columns.tolist() 
                 i += 1
             df = pd.DataFrame({'features': REMAIN, 'accuracy': ACC})
-            df.to_csv(f'/kaggle/working/log/remove/{model}.csv', index=False)
+            df.to_csv(f'/kaggle/working/log/remove/result/{model}.csv', index=False)
             
             feature_counts = [len(features) for features, _ in test_accuracies]
             accuracies = [accuracy for _, accuracy in test_accuracies]
@@ -137,6 +133,7 @@ class Feature_Selection:
             plt.ylabel(f'Test Accuracy {model}')
             plt.title('Test Accuracy vs. Number of Features (Backward Selection)')
             plt.grid(True)
+            plt.savefig(f'/kaggle/working/log/remove/result/{model}_acc.png')
             plt.show()
             
             best_column, max_accuracy = max(test_accuracies, key=lambda x: x[1])
@@ -150,4 +147,4 @@ class Feature_Selection:
             'Accuracy': accs
         })
         result = pd.DataFrame(result)
-        result.to_csv('/kaggle/working/log/remove/result.csv', index=False)
+        result.to_csv('/kaggle/working/log/remove/result/result.csv', index=False)

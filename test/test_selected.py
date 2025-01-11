@@ -20,7 +20,6 @@ from split_data import split_data
 from selection_feature import Feature_Selection
 from EDA import EDA
 
-
 #argument parser
 parser = ArgumentParser()
 parser.add_argument("--data_folder_path", default = "/kaggle/input/cognitiveload/UBIcomp2020/last_30s_segments/", type = str, help = "Path to the data folder")
@@ -76,6 +75,8 @@ print(f'X_train : {X_train.shape}\n\n')
 
 X_train.to_csv('/kaggle/working/X_train.csv', index=False)
 
+models = args.models_single + args.models_mul
+
 if(args.model_selected_feature == "RFECV"):
     X_train, X_test = Feature_Selection.selected_RFECV(X_train = X_train,
                                                         X_test = X_test, 
@@ -98,9 +99,9 @@ if args.model_selected_feature == 'SBS':
                                                    y_train = y_train, 
                                                    y_test = y_test, 
                                                    user_train = user_train,
+                                                    models = models
                                                    )
-    X_train = X_train[Feature_Selection]
-    X_test = X_test[Feature_Selection]
-
 print(f'X_train : {X_train.shape}\n\n')
 X_train.to_csv('/kaggle/working/X_train_Selected.csv', index=False)
+
+EDA.draw_ROC_models_read_file(models)

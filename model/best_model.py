@@ -116,14 +116,16 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             df_to_append = pd.DataFrame({
                 "model": model,
                 "accuracy": f"{acc}",
-                "features_remove": [feature_remove]
+                "features_remove": [feature_remove],
+                "y_probs": [y_pred_vals],
             })
             df_to_append.to_csv(f'{path}{index_name}_results_model.csv', index=False)
         else:
             df_to_append = pd.DataFrame({
             "model": model,
             "accuracy": f"{acc}",
-            "features_remove": [feature_remove]
+            "features_remove": [feature_remove],
+            "y_probs": [y_pred_vals],
             }, columns=df_existing.columns)
         # Ghi thêm vào file CSV
             df_to_append.to_csv(f'{path}{index_name}_results_model.csv', mode='a', header=False, index=False)
