@@ -126,7 +126,7 @@ class Feature_Selection:
             plt.figure(figsize=(8, 5))
             plt.plot(feature_counts, accuracies, marker='o')
             plt.xlabel('Number of Features')
-            plt.ylabel('Test Accuracy')
+            plt.ylabel(f'Test Accuracy {model}')
             plt.title('Test Accuracy vs. Number of Features (Backward Selection)')
             plt.grid(True)
             plt.show()
