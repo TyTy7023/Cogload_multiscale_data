@@ -12,13 +12,13 @@ class EDA:
         df = pd.read_csv(f'/kaggle/working/log/remove/result/result.csv')
         
         s = np.array(df['Y Probs'].tolist())
-        # Kiểm tra lại định dạng chuỗi trong s_cleaned
-        s_cleaned = [item.strip("[]") for item in s]
         # Xử lý các phần tử trong s_cleaned
         y_prob = []
-        for item in s_cleaned:
-            # Tách chuỗi thành danh sách và chuyển thành float
-            prob_values = [float(x) for x in item.split(', ')]
+        for item in s:
+            # Loại bỏ dấu ngoặc vuông và nháy đơn, sau đó tách chuỗi thành các giá trị
+            item_cleaned = item.strip("[]").split(', ')
+            # Chuyển các phần tử thành float
+            prob_values = [float(x) for x in item_cleaned]
             y_prob.append(prob_values)
         
         y_prob = np.array(y_prob)  # Chuyển thành mảng NumPy 2D
