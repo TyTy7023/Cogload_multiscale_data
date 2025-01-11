@@ -69,8 +69,8 @@ class Feature_Selection:
         directory_name = '/kaggle/working/log/remove'
         if not os.path.exists(directory_name):
             os.makedirs(directory_name)
-        X_train_cp = X_train.copy()
-        X_test_cp = X_test.copy()
+        X_train_cp = X_train.copy(deep=True)
+        X_test_cp = X_test.copy(deep=True)
         features = X_train.columns.tolist() 
         best_columns = []
         accs = []
@@ -84,7 +84,7 @@ class Feature_Selection:
 
             REMAIN = []
             ACC = []
-            print(f"MODEL: {model} - FEATURES: {features} - SHAPE: {X_train.shape}")
+            print(f"MODEL: {model} - SHAPE: {X_train.shape}")
 
             i = 0
             directory_name = f'/kaggle/working/log/remove/{model}/'
