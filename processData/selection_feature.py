@@ -94,36 +94,27 @@ class Feature_Selection:
             directory_name = f'/kaggle/working/log/remove/{model}/'
             if not os.path.exists(directory_name):
                 os.makedirs(directory_name)
-            while(i<39):
-                for feature in features:
-                    X_train_cp = X_train.drop(columns=[f'{feature}'])
-                    X_test_cp = X_test.drop(columns=[f'{feature}'])
-                    if model == 'MLP_Keras' and len(X_train_cp.columns) == 29:
-                        train_model(X_train_cp, 
-                                        y_train, 
-                                        X_test_cp, 
-                                        y_test, 
-                                        user_train,
-                                        feature_remove=feature, 
-                                        n_splits=3, 
-                                        path = directory_name, 
-                                        debug = 0,
-                                        models = [model],
-                                        index_name = i)
-                    else:
-                        train_model(X_train_cp, 
-                                        y_train, 
-                                        X_test_cp, 
-                                        y_test, 
-                                        user_train,
-                                        feature_remove=feature, 
-                                        n_splits=3, 
-                                        path = directory_name, 
-                                        debug = 0,
-                                        models = [model],
-                                        index_name = i)
-                    
-                        
+            if model == 'MLP_Keras':
+                X_train, X_test = Feature_Selection.selected_SFS(X_train = X_train,
+                                                X_test = X_test, 
+                                                y_train = y_train,
+                                                model = SVC(kernel='linear'),
+                                                k_features = 29, 
+                                                forward = False,
+                                                floating = True
+                                                )
+                train_model(X_train_cp, 
+                            y_train, 
+                            X_test_cp, 
+                            y_test, 
+                            user_train,
+                            feature_remove='---', 
+                            n_splits=3, 
+                            path = directory_name, 
+                            debug = 0,
+                            models = [model],
+                            index_name = i)
+                
                 df = pd.read_csv(directory_name + f'{i}_results_model.csv')
                 max_number = df['accuracy'].max()
                 name_max_number = df.loc[df['accuracy'].idxmax(), ['features_remove', 'y_probs']]
@@ -138,8 +129,40 @@ class Feature_Selection:
 
                 test_accuracies.append((X_train.columns, max_number, name_max_number['y_probs'])) 
                 
-                features = X_train.columns.tolist() 
-                i += 1
+            else:
+                while(i<39):
+                    for feature in features:
+                        X_train_cp = X_train.drop(columns=[f'{feature}'])
+                        X_test_cp = X_test.drop(columns=[f'{feature}'])
+                        
+                        train_model(X_train_cp, 
+                                        y_train, 
+                                        X_test_cp, 
+                                        y_test, 
+                                        user_train,
+                                        feature_remove=feature, 
+                                        n_splits=3, 
+                                        path = directory_name, 
+                                        debug = 0,
+                                        models = [model],
+                                        index_name = i)
+                            
+                    df = pd.read_csv(directory_name + f'{i}_results_model.csv')
+                    max_number = df['accuracy'].max()
+                    name_max_number = df.loc[df['accuracy'].idxmax(), ['features_remove', 'y_probs']]
+                
+                    X_train = X_train.drop(columns=[name_max_number['features_remove']])
+                    X_test = X_test.drop(columns=[name_max_number['features_remove']])
+                    
+
+                    REMAIN.append(X_train.columns)
+                    ACC.append(max_number) 
+                    Y_PROBS.append(name_max_number['y_probs'])
+
+                    test_accuracies.append((X_train.columns, max_number, name_max_number['y_probs'])) 
+                    
+                    features = X_train.columns.tolist() 
+                    i += 1
 
             df = pd.DataFrame({'features': REMAIN, 'accuracy': ACC, 'y_probs': Y_PROBS})
             df.to_csv(f'/kaggle/working/log/remove/result/{model}.csv', index=False)
