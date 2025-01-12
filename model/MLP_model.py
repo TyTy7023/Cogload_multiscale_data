@@ -86,29 +86,21 @@ class MLP:
             self.best_params = None
 
         def set_Params(self):
-            layer_sizes = [32, 64, 128]  # Các số nơ-ron có thể có trong mỗi lớp
-            hidden_layer_sizes = []
-
-            random.seed(12)
-            # Thử nghiệm với nhiều chiều và số lớp từ 1 đến 5 lớp
-            for num_layers in range(1, 4):  # Số lớp từ 1 đến 5
-                for combo in itertools.product(layer_sizes, repeat=num_layers):  # Tạo tất cả các kết hợp với số lớp và nơ-ron khác nhau
-                    hidden_layer_sizes.append(combo)
-
-            estimator = MLPClassifier(random_state=42)
-            param = {
-                'hidden_layer_sizes': hidden_layer_sizes,  # Số lượng nơ-ron ẩn trong mỗi layer
-                'activation': ['relu', 'tanh', 'logistic'],              # Hàm kích hoạt
-                'solver': ['adam', 'sgd'],                                # Thuật toán tối ưu
-                'alpha': [0.0001, 0.001, 0.01],                           # L2 penalty (regularization term) parameter
-                'learning_rate': ['constant', 'invscaling', 'adaptive']   # Phương pháp cập nhật learning rate
+            # Fixed parameters
+            fixed_params = {
+                'hidden_layer_sizes': [(32,)],  # Fixed layer sizes
+                'activation': ['logistic'],      # Fixed activation function
+                'solver': ['adam'],              # Fixed solver
+                'alpha': [0.001],                # Fixed regularization term
+                'learning_rate': ['constant']   # Fixed learning rate
             }   
-            return estimator, param
+            estimator = MLPClassifier(random_state=42)
+            return estimator, fixed_params
 
         def fit(self, X_train, y_train, train_groups):
             estimator, param_distributions = self.set_Params()
-            tuner = RandomizedSearchCV(estimator, param_distributions, n_iter=10, random_state=42, cv=GroupKFold(n_splits=3))  # 5-fold cross-validation
-            tuner.fit(X_train, y_train, groups = train_groups)
+            tuner = RandomizedSearchCV(estimator, param_distributions, n_iter=1, random_state=42, cv=GroupKFold(n_splits=3))  # 3-fold cross-validation
+            tuner.fit(X_train, y_train, groups=train_groups)
             self.best_model = tuner.best_estimator_
             self.best_params = tuner.best_params_
 
@@ -123,5 +115,3 @@ class MLP:
                 return self.best_model.predict(X_test)
             else:
                 raise ValueError("Model is not trained yet. Call fit() first.")
-
-    
