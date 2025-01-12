@@ -17,9 +17,6 @@ from sklearn.model_selection import RandomizedSearchCV, GroupKFold
 class MLP:
     class MLP_Keras:
         def __init__(self):
-            import subprocess
-            import sys
-
             def install_and_import(package):
                 try:
                     __import__(package)
@@ -28,19 +25,33 @@ class MLP:
 
             # Cài đặt và import thư viện
             install_and_import("scikeras")
+            install_and_import("keras-tuner")
 
             import scikeras
             self.best_model = None
             self.best_params = None
 
         def build(self, hp):
+            # Tạo mô hình MLP
             model = Sequential()
+
+            # Lấy số lượng đặc trưng của dữ liệu đầu vào (shape)
+            input_shape = (self.shape,)
+
+            # Số lớp ẩn
             num_hidden_layers = hp.Int('num_hidden_layers', min_value=2, max_value=5, step=1)
-            model.add(Dense(units=hp.Int('units', min_value=32, max_value=128, step=32), activation="relu", input_shape=(self.shape,)))
-            for i in range(num_hidden_layers - 1):  # Vì lớp input đã được thêm rồi
+
+            # Lớp đầu vào
+            model.add(Dense(units=hp.Int('units', min_value=32, max_value=128, step=32), activation="relu", input_shape=input_shape))
+
+            # Thêm các lớp ẩn
+            for i in range(num_hidden_layers - 1):
                 model.add(Dense(units=hp.Int(f'units_{i+1}', min_value=32, max_value=128, step=32), activation="relu"))
+
+            # Lớp đầu ra
             model.add(Dense(1, activation="sigmoid"))
 
+            # Biên dịch mô hình
             model.compile(loss="binary_crossentropy", optimizer=hp.Choice('optimizer', values=['adam', 'sgd']), metrics=["accuracy"])
             return model
 
@@ -59,9 +70,9 @@ class MLP:
             )
 
         def fit(self, X_train, y_train, X_test, y_test, directory):
-            self.shape = X_train.shape[1]
+            self.shape = X_train.shape[1]  # Lấy số lượng đặc trưng từ X_train
             
-            # Khởi tạo lại mô hình cho mỗi lần huấn luyện
+            # Khởi tạo lại mô hình cho mỗi lần huấn luyện (mới với số lượng đặc trưng mới)
             tuner = self.tuner(directory)
             tuner.search(X_train, y_train, epochs=10, validation_data=(X_test, y_test))
 
@@ -82,6 +93,7 @@ class MLP:
                 return np.round(self.best_model.predict(X_test))
             else:
                 raise ValueError("Model is not trained yet. Call fit() first.")
+
 
             
     class MLP_Sklearn:
