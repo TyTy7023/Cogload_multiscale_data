@@ -151,7 +151,6 @@ class Feature_Selection:
         result.append({
             'Model': models,
             'Best Column': best_columns,
-            'Shape': len(best_column),
             'Accuracy': accs,
             'Y Probs': y_probs
         })
