@@ -34,7 +34,6 @@ parser.add_argument("--k_features", default = 11, type = int, help = "k of featu
 parser.add_argument("--forward", default = False, type = bool, help = "True to use backward, False to use forward")
 parser.add_argument("--floating", default = True, type = bool, help = "True to use sfs with floating, False with no floating")
 parser.add_argument("--split", nargs='+', default=[1] , type=int, help="the split of data example 2 6 to split data into 2 and 6 to extract feature")
-parser.add_argument("--estimator_RFECV", default='SVM', type=str, help="model for RFECV")
 parser.add_argument("--debug", default = 0, type = int, help="debug mode 0: no debug, 1: debug")
 parser.add_argument("--models_single", nargs='+', default=[] , type=str, help="models to train, 'LDA', 'SVM', 'RF','XGB'")
 parser.add_argument("--models_mul", nargs='+', default=[] , type=str, help="models to train, 'MLP_Sklearn', 'MLP_Keras','TabNet'")
@@ -82,8 +81,7 @@ if(args.model_selected_feature == "RFECV"):
     X_train, X_test = Feature_Selection.selected_RFECV(X_train = X_train,
                                                         X_test = X_test, 
                                                         y_train = y_train,
-                                                        user_train = user_train,
-                                                        estimator = args.estimator_RFECV
+                                                        user_train = user_train
                                                         )
 if(args.model_selected_feature == "SFS"):
     X_train, X_test = Feature_Selection.selected_SFS(X_train = X_train,
