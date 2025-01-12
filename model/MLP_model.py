@@ -37,23 +37,13 @@ class MLP:
             # Tạo mô hình MLP
             model = Sequential()
 
-            # Lấy số lượng đặc trưng của dữ liệu đầu vào (shape)
+            print(self.shape)
             input_shape = (self.shape,)
-
-            # Số lớp ẩn
             num_hidden_layers = hp.Int('num_hidden_layers', min_value=2, max_value=5, step=1)
-
-            # Lớp đầu vào
             model.add(Dense(units=hp.Int('units', min_value=32, max_value=128, step=32), activation="relu", input_shape=input_shape))
-
-            # Thêm các lớp ẩn
             for i in range(num_hidden_layers - 1):
                 model.add(Dense(units=hp.Int(f'units_{i+1}', min_value=32, max_value=128, step=32), activation="relu"))
-
-            # Lớp đầu ra
             model.add(Dense(1, activation="sigmoid"))
-
-            # Biên dịch mô hình
             model.compile(loss="binary_crossentropy", optimizer=hp.Choice('optimizer', values=['adam', 'sgd']), metrics=["accuracy"])
             return model
 
@@ -66,8 +56,8 @@ class MLP:
                 allow_new_entries=True,  # Cho phép thêm tham số mới
                 max_retries_per_trial=3,  # Số lần thử lại tối đa cho mỗi thử nghiệm không thành công
                 max_consecutive_failed_trials=3,  # Số lần thử nghiệm không thành công tối đa liên tiếp
-                directory=directory,
-                project_name='MLP_Keras_output',
+                # directory=directory,
+                # project_name='MLP_Keras_output',
                 seed=42
             )
 
