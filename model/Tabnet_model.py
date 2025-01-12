@@ -35,13 +35,13 @@ class TabNet:
             "n_a": config['n_a'],
             "n_independent": config['n_independent'],
             "n_shared": config['n_shared'],
-            "n_steps": 3,
+            "n_steps": config['n_steps'],  # Đã thay vì 3
             "gamma": 1.3
         }
         model = TabNetClassifier(**tabnet_params)
         return model
 
-    def train_tabnet(self, trial, X_train, y_train, X_valid, y_valid):
+    def train_tabnet(self, X_train, y_train, X_valid, y_valid):
         config = {
             'lr': 0.0001714031215386324,
             'step_size': 10,
