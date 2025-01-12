@@ -21,6 +21,7 @@ import torch
 class TabNet:
     def __init__(self):
         self.best_model = None
+        self.best_params = None
 
     def build(self, config):
         tabnet_params = {
