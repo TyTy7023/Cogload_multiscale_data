@@ -103,9 +103,10 @@ class Feature_Selection:
                                                 forward = False,
                                                 floating = True
                                                 )
-                train_model(X_train_cp, 
+                                                
+                train_model(X_train, 
                             y_train, 
-                            X_test_cp, 
+                            X_test, 
                             y_test, 
                             user_train,
                             feature_remove='---', 
