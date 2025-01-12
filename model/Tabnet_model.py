@@ -43,21 +43,20 @@ class TabNet:
 
     def train_tabnet(self, trial, X_train, y_train, X_valid, y_valid):
         config = {
-                'lr': trial.suggest_loguniform('lr', 1e-5, 1e-1),
-                'step_size': trial.suggest_categorical('step_size', [10, 20, 50]),
-                'gamma': trial.suggest_uniform('gamma', 0.1, 0.9),
-                'mask_type': trial.suggest_categorical('mask_type', ['sparsemax', 'entmax']),
-                'n_d': trial.suggest_categorical('n_d', [8, 16, 32, 64]),
-                'n_a': trial.suggest_categorical('n_a', [8, 16, 32, 64]),
-                'n_independent': trial.suggest_categorical('n_independent', [2, 3, 4]),
-                'n_shared': trial.suggest_categorical('n_shared', [2, 3, 4]),
-                'momentum': trial.suggest_uniform('momentum', 0.01, 0.9),
-                'n_steps': trial.suggest_categorical('n_steps', [3, 5, 7, 10]),
-                'lambda_sparse': trial.suggest_loguniform('lambda_sparse', 1e-6, 1e-3),
-                'virtual_batch_size': trial.suggest_categorical('virtual_batch_size', [64, 128, 256]),
-                'batch_size': trial.suggest_categorical('batch_size', [128, 256, 512]),
-                'clip_value': trial.suggest_uniform('clip_value', 1.0, 2.0)
-            }
+            'lr': trial.suggest_loguniform('lr', 1e-4, 1e-2),
+            'step_size': trial.suggest_categorical('step_size', [5, 10, 20, 50]),
+            'gamma': trial.suggest_uniform('gamma', 0.1, 1.3),
+            'mask_type': trial.suggest_categorical('mask_type', ['sparsemax', 'entmax']),
+            'n_d': trial.suggest_categorical('n_d', [8, 16, 32, 64, 128]),
+            'n_a': trial.suggest_categorical('n_a', [8, 16, 32, 64, 128]),
+            'n_independent': trial.suggest_categorical('n_independent', [2, 3, 4]),
+            'n_shared': trial.suggest_categorical('n_shared', [2, 3, 4]),
+            'n_steps': trial.suggest_categorical('n_steps', [3, 5, 7, 10, 12, 15]),
+            'lambda_sparse': trial.suggest_loguniform('lambda_sparse', 1e-7, 1e-4),
+            'virtual_batch_size': trial.suggest_categorical('virtual_batch_size', [64, 128, 256]),
+            'batch_size': trial.suggest_categorical('batch_size', [128, 256, 512]),
+            'clip_value': 1.5
+        }
 
         model = self.build(config)
 
