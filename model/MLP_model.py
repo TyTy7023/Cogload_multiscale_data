@@ -20,7 +20,7 @@ from sklearn.model_selection import RandomizedSearchCV, GroupKFold
 
 class MLP:
     class MLP_Keras:
-        def __init__(self):
+        def __init__(self):            
             def install_and_import(package):
                 try:
                     __import__(package)
@@ -40,6 +40,9 @@ class MLP:
             model = Sequential()
 
             print(self.shape)
+            # reset the session before building the model
+            clear_session()
+
             input_shape = (self.shape,)
             num_hidden_layers = hp.Int('num_hidden_layers', min_value=2, max_value=5, step=1)
             model.add(Dense(units=hp.Int('units', min_value=32, max_value=128, step=32), activation="relu", input_shape=input_shape))
@@ -64,7 +67,6 @@ class MLP:
             )
 
         def fit(self, X_train, y_train, X_test, y_test, directory):
-            clear_session() # Xóa mô hình trước đó
             self.shape = X_train.shape[1]  # Lấy số lượng đặc trưng từ X_train
             
             # Khởi tạo lại mô hình cho mỗi lần huấn luyện (mới với số lượng đặc trưng mới)
