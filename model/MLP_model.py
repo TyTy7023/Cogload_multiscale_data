@@ -35,41 +35,45 @@ class MLP:
             self.best_model = None
             self.best_params = None
 
-        def build(self, hp):
-            # Tạo mô hình MLP
+        def build(self, hp=None):
+            # Tạo mô hình MLP với các tham số cố định
             model = Sequential()
 
+            # Giả sử self.shape là số lượng đặc trưng trong dữ liệu
             print(self.shape)
-            # reset the session before building the model
             clear_session()
 
             input_shape = (self.shape,)
-            num_hidden_layers = hp.Int('num_hidden_layers', min_value=2, max_value=5, step=1)
-            model.add(Dense(units=hp.Int('units', min_value=32, max_value=128, step=32), activation="relu", input_shape=input_shape))
-            for i in range(num_hidden_layers - 1):
-                model.add(Dense(units=hp.Int(f'units_{i+1}', min_value=32, max_value=128, step=32), activation="relu"))
+            num_hidden_layers = 3  # Cố định số lượng lớp ẩn là 3
+            units = 128  # Cố định số lượng units cho lớp đầu tiên
+            units_1 = 64  # Cố định số lượng units cho lớp ẩn thứ 1
+            units_2 = 128  # Cố định số lượng units cho lớp ẩn thứ 2
+            units_3 = 128  # Cố định số lượng units cho lớp ẩn thứ 3
+            units_4 = 32  # Cố định số lượng units cho lớp cuối cùng
+
+            model.add(Dense(units=units, activation="relu", input_shape=input_shape)) # input_shape là số lượng đặc trưng trong dữ liệu
+            model.add(Dense(units=units_1, activation="relu"))
+            model.add(Dense(units=units_2, activation="relu"))
+            model.add(Dense(units=units_3, activation="relu"))
+            model.add(Dense(units=units_4, activation="relu"))
             model.add(Dense(1, activation="sigmoid"))
-            model.compile(loss="binary_crossentropy", optimizer=hp.Choice('optimizer', values=['adam', 'sgd']), metrics=["accuracy"])
+            
+            # Cố định optimizer là 'adam'
+            model.compile(loss="binary_crossentropy", optimizer='adam', metrics=["accuracy"])
             return model
 
         def tuner(self, directory):
             return RandomSearch(
                 hypermodel=self.build,
                 objective='val_accuracy',
-                max_trials=10,  # Số lượng thử nghiệm
-                tune_new_entries=True,  # Cho phép thêm tham số mới
-                allow_new_entries=True,  # Cho phép thêm tham số mới
-                max_retries_per_trial=3,  # Số lần thử lại tối đa cho mỗi thử nghiệm không thành công
-                max_consecutive_failed_trials=3,  # Số lần thử nghiệm không thành công tối đa liên tiếp
-                # directory=directory,
-                # project_name='MLP_Keras_output',
+                max_trials=1,  # Giảm số lần thử nghiệm vì bạn không cần tìm kiếm tham số nữa
                 seed=42
             )
 
         def fit(self, X_train, y_train, X_test, y_test, directory):
             self.shape = X_train.shape[1]  # Lấy số lượng đặc trưng từ X_train
             
-            # Khởi tạo lại mô hình cho mỗi lần huấn luyện (mới với số lượng đặc trưng mới)
+            # Khởi tạo lại mô hình cho mỗi lần huấn luyện
             tuner = self.tuner(directory)
             tuner.search(X_train, y_train, epochs=10, validation_data=(X_test, y_test))
 
@@ -91,8 +95,6 @@ class MLP:
             else:
                 raise ValueError("Model is not trained yet. Call fit() first.")
 
-
-            
     class MLP_Sklearn:
         def __init__(self):
             self.best_model = None
