@@ -41,7 +41,7 @@ class TabNet:
         model = TabNetClassifier(**tabnet_params)
         return model
 
-    def train_tabnet(self, X_train, y_train, X_valid, y_valid):
+    def train_tabnet(self, trail,X_train, y_train, X_valid, y_valid):
         config = {
             'lr': 0.0001714031215386324,
             'step_size': 10,
