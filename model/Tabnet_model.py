@@ -54,6 +54,7 @@ class TabNet:
             'batch_size': 512,
             'virtual_batch_size': 128,
         }
+        self.best_params = config
 
         model = self.build(config)
 
