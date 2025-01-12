@@ -33,28 +33,32 @@ class MLP:
             self.best_model = None
             self.best_params = None
 
-        # Hàm tạo mô hình với tham số units và số lượng lớp ẩn
-        def build(self, hp):
+        # Hàm tạo mô hình với tham số cố định
+        def build(self, hp=None):
             model = Sequential()
-            num_hidden_layers = hp.Int('num_hidden_layers', min_value=2, max_value=5, step=1)
-            model.add(Dense(units=hp.Int('units', min_value=32, max_value=128, step=32), activation="relu", input_shape=(self.shape,)))
-            for i in range(num_hidden_layers - 1):  # Vì lớp input đã được thêm rồi
-                model.add(Dense(units=hp.Int(f'units_{i+1}', min_value=32, max_value=128, step=32), activation="relu"))
+
+            # Sử dụng tham số cố định
+            num_hidden_layers = 3  # Số lớp ẩn cố định
+            model.add(Dense(units=128, activation="relu", input_shape=(self.shape,)))
+            model.add(Dense(units=64, activation="relu"))
+            model.add(Dense(units=128, activation="relu"))
+            model.add(Dense(units=128, activation="relu"))
+            model.add(Dense(units=32, activation="relu"))
             model.add(Dense(1, activation="sigmoid"))
-            
-            model.compile(loss="binary_crossentropy", optimizer=hp.Choice('optimizer', values=['adam', 'sgd']), metrics=["accuracy"])
+
+            model.compile(loss="binary_crossentropy", optimizer='adam', metrics=["accuracy"])
             return model
-        
+
         def tuner(self, directory):
             return RandomSearch(
                 hypermodel=self.build, 
                 objective='val_accuracy',
-                max_trials=10, # Số lượng thử nghiệm
-                tune_new_entries=True, # Cho phép thêm tham số mới
-                allow_new_entries=True, # Cho phép thêm tham số mới
-                max_retries_per_trial = 3, # Số lần thử lại tối đa cho mỗi thử nghiệm không thành công
-                max_consecutive_failed_trials = 3, # Số lần thử nghiệm không thành công tối đa liên tiếp
-                directory = directory,
+                max_trials=10,  # Số lượng thử nghiệm
+                tune_new_entries=True,  # Cho phép thêm tham số mới
+                allow_new_entries=True,  # Cho phép thêm tham số mới
+                max_retries_per_trial=3,  # Số lần thử lại tối đa cho mỗi thử nghiệm không thành công
+                max_consecutive_failed_trials=3,  # Số lần thử nghiệm không thành công tối đa liên tiếp
+                directory=directory,
                 project_name='MLP_Keras_output',
                 seed=42
             )
@@ -79,6 +83,7 @@ class MLP:
                 return np.round(self.best_model.predict(X_test))
             else:
                 raise ValueError("Model is not trained yet. Call fit() first.")
+
             
     class MLP_Sklearn:
         def __init__(self):
