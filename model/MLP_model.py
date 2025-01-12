@@ -33,25 +33,20 @@ class MLP:
             self.best_model = None
             self.best_params = None
 
-        # Hàm tạo mô hình với tham số cố định
-        def build(self, hp=None):
+        def build(self, hp):
             model = Sequential()
-
-            # Sử dụng tham số cố định
-            num_hidden_layers = 3  # Số lớp ẩn cố định
-            model.add(Dense(units=128, activation="relu", input_shape=(self.shape,)))
-            model.add(Dense(units=64, activation="relu"))
-            model.add(Dense(units=128, activation="relu"))
-            model.add(Dense(units=128, activation="relu"))
-            model.add(Dense(units=32, activation="relu"))
+            num_hidden_layers = hp.Int('num_hidden_layers', min_value=2, max_value=5, step=1)
+            model.add(Dense(units=hp.Int('units', min_value=32, max_value=128, step=32), activation="relu", input_shape=(self.shape,)))
+            for i in range(num_hidden_layers - 1):  # Vì lớp input đã được thêm rồi
+                model.add(Dense(units=hp.Int(f'units_{i+1}', min_value=32, max_value=128, step=32), activation="relu"))
             model.add(Dense(1, activation="sigmoid"))
 
-            model.compile(loss="binary_crossentropy", optimizer='adam', metrics=["accuracy"])
+            model.compile(loss="binary_crossentropy", optimizer=hp.Choice('optimizer', values=['adam', 'sgd']), metrics=["accuracy"])
             return model
 
         def tuner(self, directory):
             return RandomSearch(
-                hypermodel=self.build, 
+                hypermodel=self.build,
                 objective='val_accuracy',
                 max_trials=10,  # Số lượng thử nghiệm
                 tune_new_entries=True,  # Cho phép thêm tham số mới
@@ -65,8 +60,12 @@ class MLP:
 
         def fit(self, X_train, y_train, X_test, y_test, directory):
             self.shape = X_train.shape[1]
+            
+            # Khởi tạo lại mô hình cho mỗi lần huấn luyện
             tuner = self.tuner(directory)
             tuner.search(X_train, y_train, epochs=10, validation_data=(X_test, y_test))
+
+            # Lấy mô hình tốt nhất
             self.best_model = tuner.get_best_models(num_models=1)[0]
             best_trial = tuner.oracle.get_best_trials(num_trials=1)[0]
             self.best_params = best_trial.hyperparameters.values
@@ -77,7 +76,7 @@ class MLP:
                 return self.best_model.predict(X_test)
             else:
                 raise ValueError("Model is not trained yet. Call fit() first.")
-        
+
         def predict(self, X_test):
             if self.best_model is not None:
                 return np.round(self.best_model.predict(X_test))
