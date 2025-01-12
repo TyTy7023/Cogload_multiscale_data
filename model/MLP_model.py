@@ -34,10 +34,10 @@ class MLP:
             self.best_params = None
 
         # Hàm tạo mô hình với tham số units và số lượng lớp ẩn
-        def build(self, hp, shape):
+        def build(self, hp):
             model = Sequential()
             num_hidden_layers = hp.Int('num_hidden_layers', min_value=2, max_value=5, step=1)
-            model.add(Dense(units=hp.Int('units', min_value=32, max_value=128, step=32), activation="relu", input_shape=(shape,)))
+            model.add(Dense(units=hp.Int('units', min_value=32, max_value=128, step=32), activation="relu", input_shape=(self.shape,)))
             for i in range(num_hidden_layers - 1):  # Vì lớp input đã được thêm rồi
                 model.add(Dense(units=hp.Int(f'units_{i+1}', min_value=32, max_value=128, step=32), activation="relu"))
             model.add(Dense(1, activation="sigmoid"))
@@ -45,9 +45,9 @@ class MLP:
             model.compile(loss="binary_crossentropy", optimizer=hp.Choice('optimizer', values=['adam', 'sgd']), metrics=["accuracy"])
             return model
         
-        def tuner(self, directory, shape):
+        def tuner(self, directory):
             return RandomSearch(
-                hypermodel=self.build(shape=shape), 
+                hypermodel=self.build, 
                 objective='val_accuracy',
                 max_trials=10, # Số lượng thử nghiệm
                 tune_new_entries=True, # Cho phép thêm tham số mới
@@ -60,6 +60,7 @@ class MLP:
             )
 
         def fit(self, X_train, y_train, X_test, y_test, directory):
+            self.shape = X_train.shape[1]
             tuner = self.tuner(directory, X_train.shape[1])
             tuner.search(X_train, y_train, epochs=10, validation_data=(X_test, y_test))
             self.best_model = tuner.get_best_models(num_models=1)[0]
