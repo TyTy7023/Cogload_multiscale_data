@@ -7,6 +7,7 @@ import sys
 import random
 import itertools
 
+
 get_logger().setLevel('ERROR')
 warnings.filterwarnings("ignore", message="Setting the random state for TF")
 
@@ -14,6 +15,7 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras_tuner import RandomSearch
 from sklearn.neural_network import MLPClassifier
+from keras.backend import clear_session
 from sklearn.model_selection import RandomizedSearchCV, GroupKFold
 
 class MLP:
@@ -62,6 +64,7 @@ class MLP:
             )
 
         def fit(self, X_train, y_train, X_test, y_test, directory):
+            clear_session() # Xóa mô hình trước đó
             self.shape = X_train.shape[1]  # Lấy số lượng đặc trưng từ X_train
             
             # Khởi tạo lại mô hình cho mỗi lần huấn luyện (mới với số lượng đặc trưng mới)
