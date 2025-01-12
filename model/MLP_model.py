@@ -61,7 +61,7 @@ class MLP:
 
         def fit(self, X_train, y_train, X_test, y_test, directory):
             self.shape = X_train.shape[1]
-            tuner = self.tuner(directory, X_train.shape[1])
+            tuner = self.tuner(directory)
             tuner.search(X_train, y_train, epochs=10, validation_data=(X_test, y_test))
             self.best_model = tuner.get_best_models(num_models=1)[0]
             best_trial = tuner.oracle.get_best_trials(num_trials=1)[0]
