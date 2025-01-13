@@ -44,7 +44,6 @@ class MLP:
             clear_session()
 
             input_shape = (self.shape,)
-            num_hidden_layers = 3  # Cố định số lượng lớp ẩn là 3
             units = 128  # Cố định số lượng units cho lớp đầu tiên
             units_1 = 64  # Cố định số lượng units cho lớp ẩn thứ 1
             units_2 = 128  # Cố định số lượng units cho lớp ẩn thứ 2
