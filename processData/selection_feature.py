@@ -63,7 +63,7 @@ class Feature_Selection:
         return Feature_Selection.selected_feature(selected_features, X_train, X_test)
 
     @staticmethod
-    def selected_SBS(X_train, X_test, y_train, y_test, user_train, models):
+    def selected_SBS(X_train, X_test, y_train, y_test, user_train, models, features_number):
         directory_name = '/kaggle/working/log/remove'
         if not os.path.exists(directory_name):
             os.makedirs(directory_name)
@@ -101,7 +101,7 @@ class Feature_Selection:
                                                 X_test = X_test, 
                                                 y_train = y_train,
                                                 model = SVC(kernel='linear'),
-                                                k_features = 23, 
+                                                k_features = features_number, 
                                                 forward = False,
                                                 floating = True
                                                 )

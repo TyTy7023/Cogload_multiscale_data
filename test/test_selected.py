@@ -100,7 +100,8 @@ if args.model_selected_feature == 'SBS':
                                                    y_train = y_train, 
                                                    y_test = y_test, 
                                                    user_train = user_train,
-                                                    models = models
+                                                    models = models,
+                                                    features_number = args.k_features
                                                    )
 print(f'X_train : {X_train.shape}\n\n')
 X_train.to_csv('/kaggle/working/X_train_Selected.csv', index=False)
