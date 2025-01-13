@@ -7,6 +7,7 @@ import warnings
 from sklearn.model_selection import GroupKFold
 from sklearn.feature_selection import RFECV
 from mlxtend.feature_selection import SequentialFeatureSelector as SFS
+from sklearn.model_selection import StratifiedKFold
 from xgboost import XGBClassifier
 from sklearn.svm import SVC
 
