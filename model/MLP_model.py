@@ -37,6 +37,7 @@ class MLP:
 
         def build(self, hp=None):
             # Tạo mô hình MLP với các tham số cố định
+            
             model = Sequential()
 
             # Giả sử self.shape là số lượng đặc trưng trong dữ liệu
