@@ -101,7 +101,7 @@ class Feature_Selection:
                                                 X_test = X_test, 
                                                 y_train = y_train,
                                                 model = SVC(kernel='linear'),
-                                                k_features = 22, 
+                                                k_features = 23, 
                                                 forward = False,
                                                 floating = True
                                                 )
