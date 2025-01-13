@@ -43,22 +43,18 @@ class TabNet:
     def train_tabnet(self, X_train, y_train, X_valid, y_valid):
         # Tham số cố định
         config = {
-            'lr': 0.0003334565915866021,
+            'lr': 0.001,
             'step_size': 10,
-            'gamma': 0.7074753333070735,
+            'gamma': 0.5,
             'mask_type': 'entmax',
-            'n_d': 64,
-            'n_a': 64,
-            'n_independent': 3,
-            'n_shared': 3,
-            'momentum': 0.7329706785063822,
+            'n_d': 32,
+            'n_a': 32,
+            'n_independent': 2,
+            'n_shared': 2,
             'n_steps': 5,
-            'lambda_sparse': 3.546214066295962e-05,
-            'virtual_batch_size': 256,
             'batch_size': 512,
-            'clip_value': 1.6846178038204465
+            'virtual_batch_size': 128,
         }
-
         self.best_params = config
 
         model = self.build(config)
