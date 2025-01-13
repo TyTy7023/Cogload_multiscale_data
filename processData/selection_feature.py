@@ -45,7 +45,7 @@ class Feature_Selection:
 
     @staticmethod
     def selected_SFS(X_train, X_test, y_train, model = SVC(kernel='linear'), k_features = 11, forward = False, floating = True):
-        cv_splitter = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+        cv_splitter = StratifiedKFold(n_splits=5, shuffle=True, random_state=12)
         original_columns = list(X_train.columns)
         sfs = SFS(model, 
                 k_features=k_features, 
@@ -101,7 +101,7 @@ class Feature_Selection:
                                                 X_test = X_test, 
                                                 y_train = y_train,
                                                 model = SVC(kernel='linear'),
-                                                k_features = 25, 
+                                                k_features = 29, 
                                                 forward = False,
                                                 floating = True
                                                 )
