@@ -63,9 +63,20 @@ class Feature_Selection:
 
     @staticmethod
     def selected_SBS(X_train, X_test, y_train, y_test, user_train, models, features_number):
+        # create folder and file result
         directory_name = '/kaggle/working/log/remove'
         if not os.path.exists(directory_name):
             os.makedirs(directory_name)
+        result = pd.DataFrame({
+            'Model': [],
+            'Best Column': [],
+            'Shape': [],
+            'Accuracy': [],
+            'Y Probs': []
+        })
+        result.to_csv('/kaggle/working/log/remove/result/result.csv', index=False)
+
+        # create variable
         raw_train = X_train.copy(deep=True)
         raw_test = X_test.copy(deep=True)
 
@@ -77,7 +88,6 @@ class Feature_Selection:
         y_probs = []
 
         for model in models:
-            result = []
             test_accuracies = []
             REMAIN = []
             ACC = []
@@ -178,15 +188,24 @@ class Feature_Selection:
             plt.show()
             
             best_column, max_accuracy, y_prob = max(test_accuracies, key=lambda x: x[1])
-            best_columns.append(best_column)
-            accs.append(max_accuracy)
-            y_probs.append(y_prob)
 
-        result.append({
-            'Model': models,
-            'Best Column': best_columns,
-            'Accuracy': accs,
-            'Y Probs': y_probs
-        })
-        result = pd.DataFrame(result)
-        result.to_csv('/kaggle/working/log/remove/result/result.csv', index=False)
+            df_existing = pd.read_csv('/kaggle/working/log/remove/result/result.csv')
+            if df_existing.empty: 
+                df_to_append = pd.DataFrame({
+                    'Model': model,
+                    'Best Column': best_column,
+                    'Shape': len(best_column),
+                    'Accuracy': max_accuracy,
+                    'Y Probs': y_prob
+                })
+                df_to_append.to_csv('/kaggle/working/log/remove/result/result.csv', index=False)
+            else:
+                df_to_append = pd.DataFrame({
+                    'Model': model,
+                    'Best Column': best_column,
+                    'Shape': len(best_column),
+                    'Accuracy': max_accuracy,
+                    'Y Probs': y_prob
+                }, columns=df_existing.columns)
+            # Ghi thêm vào file CSV
+                df_to_append.to_csv('/kaggle/working/log/remove/result/result.csv', mode='a', header=False, index=False)
