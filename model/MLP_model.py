@@ -6,7 +6,12 @@ import subprocess
 import sys
 import random
 import itertools
+import tensorflow as tf
 
+seed_value = 42
+np.random.seed(seed_value)
+tf.random.set_seed(seed_value)
+random.seed(seed_value)
 
 get_logger().setLevel('ERROR')
 warnings.filterwarnings("ignore", message="Setting the random state for TF")
