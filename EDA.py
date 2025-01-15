@@ -12,18 +12,13 @@ class EDA:
     def draw_ROC_models_read_file(models, y_test):
         df = pd.read_csv(f'/kaggle/working/log/remove/result/result.csv')
         
-        y_prob = df['Y Probs'].values
-        # parsed_data = ast.literal_eval(s[0])
-        # # Xử lý các phần tử trong s_cleaned
-        # y_prob = []
-        # for item in parsed_data:
-        #     # Loại bỏ nháy đơn, nháy kép và dấu ngoặc vuông
-        #     item_cleaned = item.strip("[]").replace('"', '').replace("'", "").split(', ')
-        #     # Chuyển thành danh sách số thực
-        #     prob_values = [float(x) for x in item_cleaned]
-        #     y_prob.append(prob_values)
-        
-        # y_prob = np.array(y_prob)  # Chuyển thành mảng NumPy 2D
+        y_prob = []
+        for item in parsed_data:
+            # Chuyển đổi item sang chuỗi và làm sạch dữ liệu
+            item_cleaned = str(item).strip("[]").replace('"', '').replace("'", "").split(', ')
+            # Chuyển thành danh sách số thực
+            prob_values = [float(x) for x in item_cleaned]
+            y_prob.append(prob_values)
             
         EDA.draw_ROC(f'/kaggle/working/log/remove/', y_test, y_prob, models)
 
