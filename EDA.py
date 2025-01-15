@@ -11,7 +11,7 @@ class EDA:
     @staticmethod
     def draw_ROC_models_read_file(models, y_test):
         df = pd.read_csv(f'/kaggle/working/log/remove/result/result.csv')
-        
+        parsed_data = df['Y Probs']
         y_prob = []
         for item in parsed_data:
             # Chuyển đổi item sang chuỗi và làm sạch dữ liệu
