@@ -193,19 +193,19 @@ class Feature_Selection:
             if df_existing.empty: 
                 df_to_append = pd.DataFrame({
                     'Model': model,
-                    'Best Column': best_column,
+                    'Best Column': [best_column],
                     'Shape': len(best_column),
                     'Accuracy': max_accuracy,
-                    'Y Probs': y_prob
+                    'Y Probs': [y_prob]
                 })
                 df_to_append.to_csv('/kaggle/working/log/remove/result/result.csv', index=False)
             else:
                 df_to_append = pd.DataFrame({
                     'Model': model,
-                    'Best Column': best_column,
+                    'Best Column': [best_column],
                     'Shape': len(best_column),
                     'Accuracy': max_accuracy,
-                    'Y Probs': y_prob
+                    'Y Probs': [y_prob]
                 }, columns=df_existing.columns)
             # Ghi thêm vào file CSV
                 df_to_append.to_csv('/kaggle/working/log/remove/result/result.csv', mode='a', header=False, index=False)
