@@ -92,6 +92,8 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             y_pred_tests.append(y_pred_proba)
         else: 
             y_pred_tests.append(y_pred_proba[:, 1])
+            y_pred_proba = y_pred_proba[:, 1]
+            y_pred_proba = [item[0] for item in y_pred_proba]
 
         # Đánh giá mô hình trên tập kiểm tra
         acc = accuracy_score(y_test, y_pred)
@@ -108,7 +110,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
 
         accuracy_all = np.array(accuracy_all)
         print(f"Accuracy all fold: {accuracy_all}\nMean: {accuracy_all.mean()} ---- Std: {accuracy_all.std()}")
-        print(f'y_pred_proba: {y_pred_proba.tolist()}')
+        print(f'y_pred_proba: {y_pred_proba}')
 
         file_name = f'results_model.csv'  # Tên file tự động
         df_existing = pd.read_csv(os.path.join(path, f'{file_name}'))
@@ -118,7 +120,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             "best_model": best_model.best_params,
             "f1_score": f1Score,
             "feature_remove": feature_remove,
-            "Y Probs": y_pred_proba.tolist() if model == 'MLP_Keras' else y_pred_proba[:, 1]
+            "Y Probs": y_pred_proba
         }, columns=df_existing.columns)
     # Ghi thêm vào file CSV
         df_to_append.to_csv(os.path.join(path, f'{file_name}'), mode='a', header=False, index=False)
