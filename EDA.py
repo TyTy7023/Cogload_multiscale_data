@@ -28,7 +28,7 @@ class EDA:
                 prob_values = [float(x) for x in item_cleaned]
                 y_prob.append(prob_values)
             y_prob = np.array(y_prob)  # Chuyển thành mảng NumPy 2D
-            
+        print( y_prob)
         EDA.draw_ROC(f'/kaggle/working/log/remove/', y_test, y_prob, models)
 
     @staticmethod
