@@ -138,7 +138,7 @@ class Feature_Selection:
                 test_accuracies.append((X_train.columns, max_number, name_max_number['y_probs'])) 
                 
             else:
-                while(i<39):
+                while(i<119):
                     for feature in features:
                         X_train_cp = X_train.drop(columns=[f'{feature}'])
                         X_test_cp = X_test.drop(columns=[f'{feature}'])
