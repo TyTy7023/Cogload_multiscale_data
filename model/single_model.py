@@ -115,7 +115,9 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             "accuracy": f"{acc}",
             "best_model": best_model.best_params_ ,
             "f1_score": f1Score,
-            "features_remove": feature_remove
+            "features_remove": feature_remove,
+            "Y Probs": [y_pred_proba[:, 1]]
+
         })
         print("\n===================================================================================================================================\n")
     log_results = pd.DataFrame(log_results)
