@@ -12,10 +12,12 @@ class EDA:
     def draw_ROC_models_read_file(models, y_test,path):
         df = pd.read_csv(path)
         if path == '/kaggle/working/log/results_model.csv':
-            df['Y Probs'] = df['Y Probs'].str.replace("[", "").str.replace("]", "")
-            data= df['Y Probs'].apply(lambda x: [float(i) for i in x.split()])
-            parsed_data =np.array( data)
+            # Xử lý để loại bỏ ký tự xuống dòng (\n)
+            data_cleaned = df['Y Probs'].str.replace("\n", " ", regex=False)
+            # Chuyển thành mảng NumPy
+            parsed_data = np.array(data_cleaned)
         else:
+            # Chuyển trực tiếp thành mảng nếu không cần xử lý
             parsed_data = np.array(df['Y Probs'])
         # Xử lý các phần tử trong s_cleaned
         y_prob = []
