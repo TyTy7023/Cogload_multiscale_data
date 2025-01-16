@@ -13,7 +13,7 @@ class EDA:
         df = pd.read_csv(path)
         
         s = np.array(df['Y Probs'])
-        parsed_data = ast.literal_eval(s[0])
+        parsed_data = np.array(df['Y Probs'])
         # Xử lý các phần tử trong s_cleaned
         y_prob = []
         for item in parsed_data:
