@@ -118,7 +118,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             "accuracy": f"{acc}",
             "best_model": [best_model.best_params],
             "feature_remove": [feature_remove],
-            "Y Probs": y_pred_proba
+            "Y Probs": [y_pred_proba]
         }, columns=df_existing.columns)
     # Ghi thêm vào file CSV
         df_to_append.to_csv(os.path.join(path, f'{file_name}'), mode='a', header=False, index=False)
