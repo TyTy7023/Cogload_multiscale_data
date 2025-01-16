@@ -142,5 +142,5 @@ if args.model_selected_feature == 'None':
                     debug = args.debug,
                     models= args.models_mul)
         
-    EDA.draw_ROC_models_read_file(models, y_test,path=f'/kaggle/working/log/result_model.csv')
+    EDA.draw_ROC_models_read_file(models, y_test,path='/kaggle/working/log/results_model.csv')
 
