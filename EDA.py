@@ -11,8 +11,9 @@ class EDA:
     @staticmethod
     def draw_ROC_models_read_file(models, y_test,path):
         df = pd.read_csv(path)
-        
-        s = np.array(df['Y Probs'])
+        if path == '/kaggle/working/log/results_model.csv':
+            df['Y Probs'] = df['Y Probs'].str.replace(",", ".").str.replace("\n", " ")
+            df['Y Probs'] = df['Y Probs'].apply(lambda x: [float(i) for i in x.split()])
         parsed_data = np.array(df['Y Probs'])
         # Xử lý các phần tử trong s_cleaned
         y_prob = []
