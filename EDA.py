@@ -13,10 +13,12 @@ class EDA:
         df = pd.read_csv(path)
         if path == '/kaggle/working/log/results_model.csv':
             # Xử lý để loại bỏ ký tự xuống dòng (\n)
+            print(df['Y Probs'])
             data_cleaned = df['Y Probs'].str.replace("\n", " ", regex=False)
             data_cleaned = data_cleaned.str.replace("[", "").str.replace("]", "")  # Loại bỏ dấu ngoặc vuông
             # Tách chuỗi và chuyển thành mảng số thực (float)
             y_prob = [np.array([float(x) for x in data_cleaned.iloc[0].split()])]
+            print(y_prob)
         else:
             # Chuyển trực tiếp thành mảng nếu không cần xử lý
             parsed_data = np.array(df['Y Probs'])
