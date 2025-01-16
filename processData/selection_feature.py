@@ -63,6 +63,7 @@ class Feature_Selection:
 
     @staticmethod
     def selected_SBS(X_train, X_test, y_train, y_test, user_train, models, features_number):
+        loop = X_train.shape[1] - 1
         # create folder and file result
         directory_name = '/kaggle/working/log/remove'
         if not os.path.exists(directory_name):
@@ -138,7 +139,7 @@ class Feature_Selection:
                 test_accuracies.append((X_train.columns, max_number, name_max_number['y_probs'])) 
                 
             else:
-                while(i<119):
+                while(i<loop):
                     for feature in features:
                         X_train_cp = X_train.drop(columns=[f'{feature}'])
                         X_test_cp = X_test.drop(columns=[f'{feature}'])

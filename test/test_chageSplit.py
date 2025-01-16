@@ -74,6 +74,7 @@ X_train, y_train, X_test, y_test, user_train, user_test = processing_data.get_da
 
 X_train.columns = [f"{col}_{i}" if list(X_train.columns).count(col) > 1 else col for i, col in enumerate(X_train.columns,1)]
 X_test.columns = [f"{col}_{i}" if list(X_test.columns).count(col) > 1 else col for i, col in enumerate(X_test.columns,1)]
+
 print(f'X_test : {X_test.shape}\n')
 print(f'X_train : {X_train.shape}\n\n')
 
