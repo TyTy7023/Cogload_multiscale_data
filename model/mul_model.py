@@ -108,6 +108,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
 
         accuracy_all = np.array(accuracy_all)
         print(f"Accuracy all fold: {accuracy_all}\nMean: {accuracy_all.mean()} ---- Std: {accuracy_all.std()}")
+        print(f'y_pred_proba: {y_pred_proba}')
 
         file_name = f'results_model.csv'  # Tên file tự động
         df_existing = pd.read_csv(os.path.join(path, f'{file_name}'))
