@@ -92,7 +92,6 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             y_pred_tests.append(y_pred_proba)
         else: 
             y_pred_tests.append(y_pred_proba[:, 1])
-            y_pred_proba = y_pred_proba[:, 1]
 
         # Đánh giá mô hình trên tập kiểm tra
         acc = accuracy_score(y_test, y_pred)
@@ -118,7 +117,7 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
             "best_model": best_model.best_params,
             "f1_score": f1Score,
             "feature_remove": feature_remove,
-            "Y Probs": y_pred_proba
+            "Y Probs": y_pred_proba if model == 'MLP_Keras' else y_pred_proba[:, 1]
         }, columns=df_existing.columns)
     # Ghi thêm vào file CSV
         df_to_append.to_csv(os.path.join(path, f'{file_name}'), mode='a', header=False, index=False)
