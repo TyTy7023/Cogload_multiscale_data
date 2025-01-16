@@ -4,34 +4,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import ast
-import re
 
 from sklearn.metrics import roc_curve, auc, roc_auc_score
     
 class EDA:
     @staticmethod
-    def draw_ROC_models_read_file(models, y_test, path):
-        def fix_invalid_list_format(value):
-            try:
-                # Thử phân tích cú pháp trực tiếp
-                return ast.literal_eval(value)
-            except (ValueError, SyntaxError):
-                # Thêm dấu phẩy vào giữa các số
-                fixed_value = re.sub(r'(?<=\d)\s+(?=\d)', ', ', value)
-                return ast.literal_eval(fixed_value)
-        df = pd.read_csv(path)
-
-        if path == '/kaggle/working/log/results_model.csv':
-            parsed_data = []
-            s = np.array(df['Y Probs'])
-            for value in s:
-                try:
-                    data = fix_invalid_list_format(value)
-                    parsed_data.append(data)
-                except:
-                    continue
-        else:
-            parsed_data = df['Y Probs']
+    def draw_ROC_models_read_file(models, y_test):
+        df = pd.read_csv(f'/kaggle/working/log/remove/result/result.csv')
+        
+        s = np.array(df['Y Probs'])
+        parsed_data = ast.literal_eval(s[0])
         # Xử lý các phần tử trong s_cleaned
         y_prob = []
         for item in parsed_data:
