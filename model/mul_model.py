@@ -109,18 +109,18 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
         accuracy_all = np.array(accuracy_all)
         print(f"Accuracy all fold: {accuracy_all}\nMean: {accuracy_all.mean()} ---- Std: {accuracy_all.std()}")
 
-        f1Score = ','.join(map(str, f1Score))
-        log_results.append({
+        file_name = f'results_model.csv'  # Tên file tự động
+        df_existing = pd.read_csv(os.path.join(path, f'{file_name}'))
+        df_to_append = pd.DataFrame({
             "model": model,
             "accuracy": f"{acc}",
             "best_model": best_model.best_params,
             "f1_score": f1Score,
             "feature_remove": feature_remove
-        })
+        }, columns=df_existing.columns)
+    # Ghi thêm vào file CSV
+        df_to_append.to_csv(os.path.join(path, f'{file_name}'), mode='a', header=False, index=False)
         print("\n===================================================================================================================================\n")
-    log_results = pd.DataFrame(log_results)
-    file_name = f'results_model.csv'  # Tên file tự động
-    log_results.to_csv(os.path.join(path, f'{index_name}_{file_name}'), index=False)
 
     EDA.draw_Bar(path_EDA, models, test_accuracy_models, 'Accuracy Test')
     EDA.draw_BoxPlot(path_EDA, list(itertools.chain.from_iterable([[i]*3 for i in models])), accuracies_all, 'Accuracy train')

@@ -19,6 +19,8 @@ sys.path.append('/kaggle/working/cogload/processData/')
 from split_data import split_data
 from selection_feature import Feature_Selection
 from EDA import EDA
+sys.path.append('/kaggle/working/cogload/model/')
+from single_model import train_model as train_model_single
 
 #argument parser
 parser = ArgumentParser()
@@ -107,10 +109,38 @@ if args.model_selected_feature == 'SBS':
                                                     models = models,
                                                     features_number = args.k_features
                                                    )
-print(f'X_train : {X_train.shape}\n\n')
-X_train.to_csv('/kaggle/working/X_train_Selected.csv', index=False)
-y_test = pd.DataFrame(y_test)
-y_test.to_csv('/kaggle/working/y_test.csv', index=False)
 
-y_test = y_test.values.tolist()
-EDA.draw_ROC_models_read_file(models, y_test)
+    print(f'X_train : {X_train.shape}\n\n')
+    X_train.to_csv('/kaggle/working/X_train_Selected.csv', index=False)
+    y_test = pd.DataFrame(y_test)
+    y_test.to_csv('/kaggle/working/y_test.csv', index=False)
+
+    y_test = y_test.values.tolist()
+    EDA.draw_ROC_models_read_file(models, y_test, path=f'/kaggle/working/log/remove/result/result.csv')
+
+if args.model_selected_feature == 'None':
+    if args.models_single != []:
+        train_model_single(X_train, 
+                y_train, 
+                X_test, 
+                y_test, 
+                user_train,
+                n_splits=args.GroupKFold, 
+                path = directory_name, 
+                debug = args.debug,
+                models= args.models_single)
+
+    if args.models_mul != []:
+        from mul_model import train_model as train_model_mul
+        train_model_mul(X_train,
+                    y_train, 
+                    X_test, 
+                    y_test, 
+                    user_train,
+                    n_splits=args.GroupKFold, 
+                    path = directory_name, 
+                    debug = args.debug,
+                    models= args.models_mul)
+        
+    EDA.draw_ROC_models_read_file(models, y_test,path=f'/kaggle/working/log/result.csv')
+

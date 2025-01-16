@@ -9,8 +9,8 @@ from sklearn.metrics import roc_curve, auc, roc_auc_score
     
 class EDA:
     @staticmethod
-    def draw_ROC_models_read_file(models, y_test):
-        df = pd.read_csv(f'/kaggle/working/log/remove/result/result.csv')
+    def draw_ROC_models_read_file(models, y_test, path):
+        df = pd.read_csv(path)
         
         s = np.array(df['Y Probs'])
         parsed_data = ast.literal_eval(s[0])
