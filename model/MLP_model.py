@@ -7,6 +7,10 @@ import sys
 import random
 import itertools
 
+random.seed(42)
+np.random.seed(42)
+tf.random.set_seed(42)
+os.environ['PYTHONHASHSEED'] = '42'
 
 get_logger().setLevel('ERROR')
 warnings.filterwarnings("ignore", message="Setting the random state for TF")
