@@ -41,29 +41,33 @@ class MLP:
 
         def build(self, hp=None):
             # Tạo mô hình MLP với các tham số cố định
-            
             model = Sequential()
-
-            # Giả sử self.shape là số lượng đặc trưng trong dữ liệu
-            print(self.shape)
             clear_session()
 
-            input_shape = (self.shape,)
-            units = 128  # Cố định số lượng units cho lớp đầu tiên
-            units_1 = 64  # Cố định số lượng units cho lớp ẩn thứ 1
-            units_2 = 128  # Cố định số lượng units cho lớp ẩn thứ 2
-            units_3 = 128  # Cố định số lượng units cho lớp ẩn thứ 3
-            units_4 = 32  # Cố định số lượng units cho lớp cuối cùng
-
-            model.add(Dense(units=units, activation="relu", input_shape=input_shape)) # input_shape là số lượng đặc trưng trong dữ liệu
-            model.add(Dense(units=units_1, activation="relu"))
-            model.add(Dense(units=units_2, activation="relu"))
-            model.add(Dense(units=units_3, activation="relu"))
-            model.add(Dense(units=units_4, activation="relu"))
+            self.fixed_params = {
+                "units": 128,
+                "units_1": 64,
+                "units_2": 128,
+                "units_3": 128,
+                "units_4": 32,
+                "activation": "relu",
+                "optimizer": "adam",
+                "loss": "binary_crossentropy",
+            }
+        
+            model.add(Dense(units=self.fixed_params["units"], activation=self.fixed_params["activation"], input_shape=input_shape))
+            model.add(Dense(units=self.fixed_params["units_1"], activation=self.fixed_params["activation"]))
+            model.add(Dense(units=self.fixed_params["units_2"], activation=self.fixed_params["activation"]))
+            model.add(Dense(units=self.fixed_params["units_3"], activation=self.fixed_params["activation"]))
+            model.add(Dense(units=self.fixed_params["units_4"], activation=self.fixed_params["activation"]))
             model.add(Dense(1, activation="sigmoid"))
             
-            # Cố định optimizer là 'adam'
-            model.compile(loss="binary_crossentropy", optimizer='adam', metrics=["accuracy"])
+            # Sử dụng optimizer cố định
+            model.compile(
+                loss=self.fixed_params["loss"],
+                optimizer=self.fixed_params["optimizer"],
+                metrics=["accuracy"]
+            )
             return model
 
         def tuner(self, directory):
@@ -121,7 +125,7 @@ class MLP:
             tuner = RandomizedSearchCV(estimator, param_distributions, n_iter=1, random_state=42, cv=GroupKFold(n_splits=3))  # 3-fold cross-validation
             tuner.fit(X_train, y_train, groups=train_groups)
             self.best_model = tuner.best_estimator_
-            self.best_params = tuner.best_params_
+            self.best_params = self.fixed_params
 
         def predict_proba(self, X_test):
             if self.best_model is not None:
