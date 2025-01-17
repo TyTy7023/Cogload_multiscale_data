@@ -109,11 +109,10 @@ class MLP:
         def __init__(self):
             self.best_model = None
             self.best_params = None
-            self.fixed_params = None
 
         def set_Params(self):
             # Fixed parameters
-            self.fixed_params = {
+            fixed_params = {
                 'hidden_layer_sizes': [(32,)],  # Fixed layer sizes
                 'activation': ['logistic'],      # Fixed activation function
                 'solver': ['adam'],              # Fixed solver
@@ -129,7 +128,7 @@ class MLP:
             tuner = RandomizedSearchCV(estimator, param_distributions, n_iter=1, random_state=42, cv=GroupKFold(n_splits=3))  # 3-fold cross-validation
             tuner.fit(X_train, y_train, groups=train_groups)
             self.best_model = tuner.best_estimator_
-            self.best_params = self.fixed_params
+            self.best_params = param_distributions
 
         def predict_proba(self, X_test):
             if self.best_model is not None:
