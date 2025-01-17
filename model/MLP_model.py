@@ -6,6 +6,7 @@ import subprocess
 import sys
 import random
 import itertools
+import tensorflow as tf
 
 random.seed(42)
 np.random.seed(42)
