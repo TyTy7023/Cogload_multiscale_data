@@ -39,6 +39,7 @@ class MLP:
             self.best_model = None
             self.best_params = None
             self.input_shape = None
+            self.fixed_params = None
 
         def build(self, hp=None):
             # Tạo mô hình MLP với các tham số cố định
@@ -89,7 +90,7 @@ class MLP:
             # Lấy mô hình tốt nhất
             self.best_model = tuner.get_best_models(num_models=1)[0]
             best_trial = tuner.oracle.get_best_trials(num_trials=1)[0]
-            self.best_params = best_trial.hyperparameters.values
+            self.best_params = self.fixed_params
             self.best_model.summary()
 
         def predict_proba(self, X_test):
@@ -108,10 +109,11 @@ class MLP:
         def __init__(self):
             self.best_model = None
             self.best_params = None
+            self.fixed_params = None
 
         def set_Params(self):
             # Fixed parameters
-            fixed_params = {
+            self.fixed_params = {
                 'hidden_layer_sizes': [(32,)],  # Fixed layer sizes
                 'activation': ['logistic'],      # Fixed activation function
                 'solver': ['adam'],              # Fixed solver
