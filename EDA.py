@@ -19,8 +19,8 @@ class EDA:
             data_cleaned = data_cleaned.str.replace("[", "").str.replace("]", "")  # Loại bỏ dấu ngoặc vuông
             # Tách chuỗi và chuyển thành mảng số thực (float)
             for i in range(len(df['Y Probs'].values)):
-                cleaned_string = data_cleaned.iloc[i].replace(',', '')  # Loại bỏ dấu phẩy
-                y = [np.array([float(x) for x in cleaned_string.split()])]
+                cleaned_string = data_cleaned.iloc[i].replace(',', '').replace('[', '').replace(']', '').strip()
+                y = np.array([float(x) for x in cleaned_string.split()])
                 y_prob.append(y)
         else:
             # Chuyển trực tiếp thành mảng nếu không cần xử lý
