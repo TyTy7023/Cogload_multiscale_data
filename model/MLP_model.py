@@ -38,6 +38,7 @@ class MLP:
             import scikeras
             self.best_model = None
             self.best_params = None
+            self.input_shape = None
 
         def build(self, hp=None):
             # Tạo mô hình MLP với các tham số cố định
