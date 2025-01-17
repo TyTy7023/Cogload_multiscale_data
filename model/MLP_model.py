@@ -55,7 +55,7 @@ class MLP:
                 "loss": "binary_crossentropy",
             }
         
-            model.add(Dense(units=self.fixed_params["units"], activation=self.fixed_params["activation"], input_shape=input_shape))
+            model.add(Dense(units=self.fixed_params["units"], activation=self.fixed_params["activation"], input_shape=self.input_shape))
             model.add(Dense(units=self.fixed_params["units_1"], activation=self.fixed_params["activation"]))
             model.add(Dense(units=self.fixed_params["units_2"], activation=self.fixed_params["activation"]))
             model.add(Dense(units=self.fixed_params["units_3"], activation=self.fixed_params["activation"]))
@@ -121,6 +121,7 @@ class MLP:
             return estimator, fixed_params
 
         def fit(self, X_train, y_train, train_groups):
+            self.input_shape = X_train.shape[1]
             estimator, param_distributions = self.set_Params()
             tuner = RandomizedSearchCV(estimator, param_distributions, n_iter=1, random_state=42, cv=GroupKFold(n_splits=3))  # 3-fold cross-validation
             tuner.fit(X_train, y_train, groups=train_groups)
