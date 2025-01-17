@@ -111,17 +111,19 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remo
         accuracy_all = np.array(accuracy_all)
         print(f"Accuracy all fold: {accuracy_all}\nMean: {accuracy_all.mean()} ---- Std: {accuracy_all.std()}")
         
-        file_name = f'results_model.csv'  # Tên file tự động
-        df_existing = pd.read_csv(os.path.join(path, f'{file_name}'))
+        file_name = 'results_model.csv'
+        os.makedirs(path, exist_ok=True)  # Đảm bảo thư mục tồn tại
+        
+        df_existing = pd.read_csv(os.path.join(path, file_name))
         df_to_append = pd.DataFrame({
-            "model": model,
-            "accuracy": f"{acc}",
-            "best_model": [best_model.best_params],
+            "model": [model],
+            "accuracy": [f"{acc}"],
+            "best_model": [str(best_model.best_params)],
             "feature_remove": [feature_remove],
             "Y Probs": [y_pred_proba]
         }, columns=df_existing.columns)
-    # Ghi thêm vào file CSV
-        df_to_append.to_csv(os.path.join(path, f'{file_name}'), mode='a', header=False, index=False)
+        
+        df_to_append.to_csv(os.path.join(path, file_name), mode='a', header=False, index=False)
         print("\n===================================================================================================================================\n")
 
     EDA.draw_Bar(path_EDA, models, test_accuracy_models, 'Accuracy Test')
