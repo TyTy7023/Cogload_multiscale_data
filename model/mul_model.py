@@ -15,7 +15,7 @@ from EDA import EDA
 from MLP_model import MLP
 from Tabnet_model import TabNet
 
-def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 , debug = 0, models = ['MLP_Sklearn', 'MLP_Keras','TabNet']):
+def train_model(X_train, y_train, X_test, y_test, user_train, path, feature_remove = ['None'], n_splits=3 , debug = 0, models = ['MLP_Sklearn', 'MLP_Keras','TabNet'], index_name = 1):
     np.random.seed(42)
     path = os.path.dirname(path)
     path_EDA = path + '/EDA/'
@@ -90,8 +90,10 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
         y_pred_proba = best_model.predict_proba(X_test)
         if model == 'MLP_Keras':
             y_pred_tests.append(y_pred_proba)
+            y_pred_proba = [item[0] for item in y_pred_proba]
         else: 
             y_pred_tests.append(y_pred_proba[:, 1])
+            y_pred_proba = y_pred_proba[:, 1]
 
         # Đánh giá mô hình trên tập kiểm tra
         acc = accuracy_score(y_test, y_pred)
@@ -108,19 +110,21 @@ def train_model(X_train, y_train, X_test, y_test, user_train, path, n_splits=3 ,
 
         accuracy_all = np.array(accuracy_all)
         print(f"Accuracy all fold: {accuracy_all}\nMean: {accuracy_all.mean()} ---- Std: {accuracy_all.std()}")
-
-        f1Score = ','.join(map(str, f1Score))
-        log_results.append({
-            "model": model,
-            "accuracy": f"{acc} +- {accuracy_all.std()}",
-            "best_model": best_model.best_params,
-            "f1_score": f1Score,
-            "confusion_matrix": conf_matrix
-        })
+        
+        file_name = 'results_model.csv'
+        os.makedirs(path, exist_ok=True)  # Đảm bảo thư mục tồn tại
+        
+        df_existing = pd.read_csv(os.path.join(path, file_name))
+        df_to_append = pd.DataFrame({
+            "model": [model],
+            "accuracy": [f"{acc}"],
+            "best_model": [str(best_model.best_params)],
+            "feature_remove": [feature_remove],
+            "Y Probs": [y_pred_proba]
+        }, columns=df_existing.columns)
+        
+        df_to_append.to_csv(os.path.join(path, file_name), mode='a', header=False, index=False)
         print("\n===================================================================================================================================\n")
-    log_results = pd.DataFrame(log_results)
-    file_name = f'results_model.csv'  # Tên file tự động
-    log_results.to_csv(os.path.join(path, file_name), index=False)
 
     EDA.draw_Bar(path_EDA, models, test_accuracy_models, 'Accuracy Test')
     EDA.draw_BoxPlot(path_EDA, list(itertools.chain.from_iterable([[i]*3 for i in models])), accuracies_all, 'Accuracy train')

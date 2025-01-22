@@ -13,7 +13,6 @@ install_and_import("pytorch_tabnet")
 import os
 import pandas as pd
 import numpy as np
-import optuna
 from sklearn.metrics import accuracy_score
 from pytorch_tabnet.callbacks import Callback
 from pytorch_tabnet.tab_model import TabNetClassifier
@@ -35,40 +34,41 @@ class TabNet:
             "n_a": config['n_a'],
             "n_independent": config['n_independent'],
             "n_shared": config['n_shared'],
-            "n_steps": 3,
+            "n_steps": config['n_steps'],
             "gamma": 1.3
         }
         model = TabNetClassifier(**tabnet_params)
         return model
 
-    def train_tabnet(self, trial, X_train, y_train, X_valid, y_valid):
+    def train_tabnet(self, X_train, y_train, X_valid, y_valid):
+        # Tham số cố định
         config = {
-                'lr': trial.suggest_loguniform('lr', 1e-5, 1e-1),
-                'step_size': trial.suggest_categorical('step_size', [10, 20, 50]),
-                'gamma': trial.suggest_uniform('gamma', 0.1, 0.9),
-                'mask_type': trial.suggest_categorical('mask_type', ['sparsemax', 'entmax']),
-                'n_d': trial.suggest_categorical('n_d', [8, 16, 32, 64]),
-                'n_a': trial.suggest_categorical('n_a', [8, 16, 32, 64]),
-                'n_independent': trial.suggest_categorical('n_independent', [2, 3, 4]),
-                'n_shared': trial.suggest_categorical('n_shared', [2, 3, 4]),
-                'momentum': trial.suggest_uniform('momentum', 0.01, 0.9),
-                'n_steps': trial.suggest_categorical('n_steps', [3, 5, 7, 10]),
-                'lambda_sparse': trial.suggest_loguniform('lambda_sparse', 1e-6, 1e-3),
-                'virtual_batch_size': trial.suggest_categorical('virtual_batch_size', [64, 128, 256]),
-                'batch_size': trial.suggest_categorical('batch_size', [128, 256, 512]),
-                'clip_value': trial.suggest_uniform('clip_value', 1.0, 2.0)
-            }
-
+            'lr': 0.001,
+            'step_size': 10,
+            'gamma': 0.5,
+            'mask_type': 'entmax',
+            'n_d': 32,
+            'n_a': 32,
+            'n_independent': 2,
+            'n_shared': 2,
+            'n_steps': 5,
+            'batch_size': 512,
+            'virtual_batch_size': 128,
+        }
+        self.best_params = config
+        model = self.build(config)
+        self.best_params = config
         model = self.build(config)
 
+        # Kiểm tra và chuẩn hóa dữ liệu
         X_train = X_train.values if isinstance(X_train, pd.DataFrame) else X_train
         y_train = y_train.values if isinstance(y_train, pd.DataFrame) else y_train
         X_valid = X_valid.values if isinstance(X_valid, pd.DataFrame) else X_valid
         y_valid = y_valid.values if isinstance(y_valid, pd.DataFrame) else y_valid
 
+        # Tạo thư mục checkpoint nếu chưa tồn tại
         checkpoint_dir = "checkpoint"
-        if os.path.exists(checkpoint_dir):
-            model.load_model(checkpoint_dir)
+        os.makedirs(checkpoint_dir, exist_ok=True)
 
         class CheckpointCallback(Callback):
             def on_epoch_end(self, epoch, logs=None):
@@ -83,8 +83,8 @@ class TabNet:
             eval_set=[(X_valid, y_valid)],
             max_epochs=100,
             patience=10,
-            batch_size=256,
-            virtual_batch_size=128,
+            batch_size=config['batch_size'],
+            virtual_batch_size=config['virtual_batch_size'],
             num_workers=1,
             drop_last=False,
             callbacks=[checkpoint_callback]
@@ -95,25 +95,39 @@ class TabNet:
         val_accuracy = accuracy_score(y_valid, y_pred)
         return val_accuracy
 
-    def optimize_tabnet(self, X_train, y_train, X_valid, y_valid):
-        study = optuna.create_study(direction='maximize')
-        study.optimize(lambda trial: self.train_tabnet(trial, X_train, y_train, X_valid, y_valid), n_trials=10)
-        best_trial = study.best_trial
-        print(f"Best trial found at {best_trial.number}")
-        print(f"Best hyperparameters: {best_trial.params}")
-        return best_trial
-
     def fit(self, X_train, y_train, X_test, y_test):
-        best_trial = self.optimize_tabnet(X_train, y_train, X_test, y_test)
-        self.best_params = best_trial.params
-        self.best_model = self.build(self.best_params)
+        # Tham số cố định
+        config = {
+            'lr': 0.001,
+            'step_size': 10,
+            'gamma': 0.5,
+            'mask_type': 'entmax',
+            'n_d': 32,
+            'n_a': 32,
+            'n_independent': 2,
+            'n_shared': 2,
+            'n_steps': 5,
+            'batch_size': 512,
+            'virtual_batch_size': 128,
+        }
 
+        self.best_model = self.build(config)
+
+        # Chuẩn hóa dữ liệu
         X_train = X_train.values if isinstance(X_train, pd.DataFrame) else X_train
         y_train = y_train.values if isinstance(y_train, pd.DataFrame) else y_train
         X_test = X_test.values if isinstance(X_test, pd.DataFrame) else X_test
         y_test = y_test.values if isinstance(y_test, pd.DataFrame) else y_test
 
-        self.best_model.fit(X_train, y_train, eval_set=[(X_test, y_test)], max_epochs=100, patience=10)
+        # Huấn luyện mô hình với dữ liệu train và test
+        self.best_model.fit(
+            X_train, y_train,
+            eval_set=[(X_test, y_test)],
+            max_epochs=100,
+            patience=10,
+            batch_size=config['batch_size'],
+            virtual_batch_size=config['virtual_batch_size']
+        )
 
     def predict_proba(self, X_test):
         X_test = X_test.values if isinstance(X_test, pd.DataFrame) else X_test
@@ -122,7 +136,7 @@ class TabNet:
             return probas
         else:
             raise ValueError("Model is not trained yet. Call fit() first.")
-    
+
     def predict(self, X_test):
         X_test = X_test.values if isinstance(X_test, pd.DataFrame) else X_test
         if self.best_model is not None:

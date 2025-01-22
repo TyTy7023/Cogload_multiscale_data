@@ -52,7 +52,7 @@ class split_data () :
             self.all_data_train.append(processing_data.X_train)
             self.all_data_test.append(processing_data.X_test)
         
-        return sum(self.all_data_train), processing_data.y_train, sum(self.all_data_test), processing_data.y_test, processing_data.user_train, processing_data.user_test
+        return pd.concat(self.all_data_train, axis=1), processing_data.y_train, pd.concat(self.all_data_test,axis = 1), processing_data.y_test, processing_data.user_train, processing_data.user_test
     
     def split_data(self, split = 2):
         if split <= 0:
